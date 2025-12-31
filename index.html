@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Cyber TFT - Combat Evolved</title>
+    <style>
+      :root {
+        --gold: #f59e0b;
+        --bg: #020617;
+        --panel: #1e293b;
+        --blue: #3b82f6;
+        --green: #22c55e;
+        --red: #ef4444;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: white;
+        font-family: "Segoe UI", sans-serif;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        overflow: hidden;
+      }
+
+      #header {
+        width: 100%;
+        max-width: 600px;
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 15px;
+        background: rgba(15, 23, 42, 0.9);
+        border-bottom: 2px solid #334155;
+        z-index: 10;
+      }
+      .stat {
+        font-size: 1.1rem;
+        font-weight: bold;
+      }
+      .gold-ui {
+        color: var(--gold);
+      }
+      .hp-ui {
+        color: var(--red);
+      }
+
+      #game-wrapper {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        position: relative;
+      }
+
+      canvas {
+        background: #020617;
+        touch-action: none;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        cursor: grab;
+      }
+
+      #controls {
+        margin: 8px;
+        display: flex;
+        gap: 10px;
+      }
+      button {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 6px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: 0.2s;
+      }
+      .btn-roll {
+        background: var(--blue);
+        color: white;
+      }
+      .btn-start {
+        background: var(--green);
+        color: white;
+      }
+      button:hover {
+        filter: brightness(1.2);
+        transform: translateY(-2px);
+      }
+      button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      #shop {
+        width: 100%;
+        max-width: 600px;
+        height: 100px;
+        background: var(--panel);
+        display: flex;
+        gap: 8px;
+        padding: 10px;
+        box-sizing: border-box;
+        border-radius: 8px 8px 0 0;
+      }
+      .shop-slot {
+        flex: 1;
+        border: 2px solid #334155;
+        border-radius: 6px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: #0f172a;
+        cursor: pointer;
+        font-size: 0.85rem;
+      }
+      .shop-slot:hover {
+        border-color: var(--gold);
+        background: #1e293b;
+      }
+      .shop-slot b {
+        display: block;
+      }
+      .shop-slot span {
+        color: var(--gold);
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="header">
+      <div class="stat gold-ui">💰 <span id="gold-val">10</span></div>
+      <div id="stage-ui">STAGE 1-1</div>
+      <div class="stat hp-ui">❤️ <span id="hp-val">100</span></div>
+    </div>
+
+    <div id="game-wrapper">
+      <canvas id="tftCanvas"></canvas>
+      <div id="controls">
+        <button class="btn-roll" onclick="gameShop.roll()">Roll (2G)</button>
+        <button class="btn-start" id="start-btn" onclick="startBattle()">
+          BẮT ĐẦU CHIẾN ĐẤU
+        </button>
+      </div>
+    </div>
+
+    <div id="shop"></div>
+
+    <script>
+      /* --- CẤU HÌNH DỮ LIỆU GỐC --- */
+      const GRID_SIZE = 60;
+      const COLS = 7,
+        ROWS = 8;
+      const BENCH_ROW = 7;
+
+      const UNIT_DATA = {
+        Warrior: {
+          hp: 800,
+          atk: 55,
+          range: 1,
+          color: "#60a5fa",
+          cost: 1,
+          crit: 0.25,
+          type: "MELEE",
+        },
+        Ranger: {
+          hp: 450,
+          atk: 65,
+          range: 4,
+          color: "#fbbf24",
+          cost: 1,
+          crit: 0.4,
+          type: "RANGED",
+        },
+        Mage: {
+          hp: 550,
+          atk: 75,
+          range: 3,
+          color: "#a78bfa",
+          cost: 2,
+          crit: 0.15,
+          type: "MAGIC",
+        },
+        Tank: {
+          hp: 1300,
+          atk: 35,
+          range: 1,
+          color: "#f87171",
+          cost: 3,
+          crit: 0.1,
+          type: "TANK",
+        },
+      };
+
+      let gold = 10,
+        hp = 100,
+        stage = 1,
+        subStage = 1;
+      let units = [],
+        particles = [],
+        projectiles = [];
+      let gameState = "PREP";
+      let dragUnit = null;
+
+      const canvas = document.getElementById("tftCanvas");
+      const ctx = canvas.getContext("2d");
+      canvas.width = COLS * GRID_SIZE;
+      canvas.height = ROWS * GRID_SIZE;
+
+      /* --- LỚP HIỆU ỨNG ĐẠN BAY --- */
+      class Projectile {
+        constructor(x, y, target, color, type, damage, owner) {
+          this.x = x;
+          this.y = y;
+          this.target = target;
+          this.color = color;
+          this.type = type; // 'arrow', 'fireball', 'wind'
+          this.damage = damage;
+          this.owner = owner;
+          this.speed = 7;
+          this.active = true;
+        }
+
+        update() {
+          if (!this.target || this.target.hp <= 0) {
+            this.active = false;
+            return;
+          }
+          let angle = Math.atan2(
+            this.target.y - this.y,
+            this.target.x - this.x
+          );
+          this.x += Math.cos(angle) * this.speed;
+          this.y += Math.sin(angle) * this.speed;
+
+          if (Math.hypot(this.target.x - this.x, this.target.y - this.y) < 10) {
+            applyDamage(this.owner, this.target, this.damage);
+            createHitEffect(this.x, this.y, this.color, 8);
+            this.active = false;
+          }
+        }
+
+        draw() {
+          ctx.save();
+          ctx.translate(this.x, this.y);
+          if (this.type === "arrow") {
+            let angle = Math.atan2(
+              this.target.y - this.y,
+              this.target.x - this.x
+            );
+            ctx.rotate(angle);
+            ctx.strokeStyle = "#fbbf24";
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(-10, 0);
+            ctx.lineTo(10, 0);
+            ctx.stroke();
+          } else if (this.type === "fireball") {
+            ctx.fillStyle = "#ff6b6b";
+            ctx.shadowBlur = 10;
+            ctx.shadowColor = "#ff4444";
+            ctx.beginPath();
+            ctx.arc(0, 0, 6, 0, Math.PI * 2);
+            ctx.fill();
+          } else {
+            // Wind
+            ctx.strokeStyle = "#60a5fa";
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(0, 0, 8, 0, Math.PI, true);
+            ctx.stroke();
+          }
+          ctx.restore();
+        }
+      }
+
+      /* --- LỚP TƯỚNG --- */
+      class Unit {
+        constructor(name, x, y, team) {
+          let d = UNIT_DATA[name];
+          this.name = name;
+          this.team = team;
+          this.type = d.type;
+          this.gridX = x;
+          this.gridY = y;
+          this.x = x * GRID_SIZE + GRID_SIZE / 2;
+          this.y = y * GRID_SIZE + GRID_SIZE / 2;
+          this.hp = d.hp;
+          this.maxHp = d.hp;
+          this.atk = d.atk;
+          this.range = d.range;
+          this.color = d.color;
+          this.critChance = d.crit;
+          this.shield = 0;
+          this.star = 1;
+          this.mana = 0;
+          this.maxMana = 100;
+          this.lastAtk = 0;
+          this.target = null;
+          this.isHovered = false;
+        }
+
+        draw() {
+          let r = 18 + this.star * 2;
+          if (this.isHovered) {
+            ctx.shadowBlur = 15;
+            ctx.shadowColor = "white";
+          }
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, r, 0, Math.PI * 2);
+          ctx.fillStyle = this.color;
+          ctx.fill();
+          ctx.strokeStyle = this.isHovered
+            ? "yellow"
+            : this.team === "player"
+            ? "white"
+            : "#ff4444";
+          ctx.lineWidth = 2;
+          ctx.stroke();
+          ctx.shadowBlur = 0;
+
+          // Bars
+          const barW = 40,
+            barH = 5,
+            xOff = this.x - 20,
+            yOff = this.y - 32;
+          ctx.fillStyle = "#334155";
+          ctx.fillRect(xOff, yOff, barW, barH);
+          ctx.fillStyle = this.team === "player" ? "#22c55e" : "#ef4444";
+          ctx.fillRect(xOff, yOff, barW * (this.hp / this.maxHp), barH);
+          if (this.shield > 0) {
+            ctx.fillStyle = "#cbd5e1";
+            ctx.fillRect(
+              xOff,
+              yOff,
+              barW * (Math.min(this.shield, this.maxHp) / this.maxHp),
+              barH / 2
+            );
+          }
+          ctx.fillStyle = "#3b82f6";
+          ctx.fillRect(xOff, yOff + 6, barW * (this.mana / this.maxMana), 2);
+
+          ctx.fillStyle = "white";
+          ctx.font = "bold 11px Arial";
+          ctx.textAlign = "center";
+          ctx.fillText("★".repeat(this.star), this.x, this.y - 35);
+          if (this.isHovered) this.drawTooltip();
+        }
+
+        drawTooltip() {
+          const tX = this.x + 30,
+            tY = this.y - 100;
+          const lines = [
+            {
+              label: this.name.toUpperCase(),
+              val: "★".repeat(this.star),
+              c: "#fbbf24",
+            },
+            {
+              label: "Máu:",
+              val: `${Math.floor(this.hp)}/${this.maxHp}`,
+              c: "#22c55e",
+            },
+            { label: "Hệ:", val: this.type, c: "#94a3b8" },
+            { label: "Sát thương:", val: this.atk, c: "#f87171" },
+            { label: "Khiên:", val: Math.floor(this.shield), c: "#cbd5e1" },
+          ];
+          ctx.fillStyle = "rgba(15, 23, 42, 0.95)";
+          ctx.fillRect(tX, tY, 140, 90);
+          ctx.strokeStyle = "#475569";
+          ctx.strokeRect(tX, tY, 140, 90);
+          ctx.textAlign = "left";
+          ctx.font = "bold 10px Arial";
+          lines.forEach((l, i) => {
+            ctx.fillStyle = "white";
+            ctx.fillText(l.label, tX + 8, tY + 18 + i * 15);
+            ctx.fillStyle = l.c;
+            ctx.fillText(l.val, tX + 80, tY + 18 + i * 15);
+          });
+        }
+
+        update(enemies) {
+          if (gameState !== "COMBAT" || this.hp <= 0) return;
+          if (!this.target || this.target.hp <= 0) {
+            this.target = enemies.reduce(
+              (prev, curr) =>
+                Math.hypot(this.x - prev.x, this.y - prev.y) <
+                Math.hypot(this.x - curr.x, this.y - curr.y)
+                  ? prev
+                  : curr,
+              enemies[0]
+            );
+          }
+
+          if (this.target) {
+            let d = Math.hypot(this.x - this.target.x, this.y - this.target.y);
+            if (d <= this.range * GRID_SIZE + 10) {
+              if (Date.now() - this.lastAtk > 1000) {
+                this.attack();
+                this.lastAtk = Date.now();
+              }
+            } else {
+              let angle = Math.atan2(
+                this.target.y - this.y,
+                this.target.x - this.x
+              );
+              this.x += Math.cos(angle) * 2.2;
+              this.y += Math.sin(angle) * 2.2;
+            }
+          }
+        }
+
+        attack() {
+          let dmg = this.atk;
+          if (Math.random() < this.critChance) {
+            dmg *= 2;
+            createHitEffect(this.x, this.y, "white", 3);
+          }
+
+          if (this.type === "RANGED") {
+            projectiles.push(
+              new Projectile(
+                this.x,
+                this.y,
+                this.target,
+                this.color,
+                "arrow",
+                dmg,
+                this
+              )
+            );
+          } else if (this.type === "MAGIC") {
+            projectiles.push(
+              new Projectile(
+                this.x,
+                this.y,
+                this.target,
+                this.color,
+                "fireball",
+                dmg,
+                this
+              )
+            );
+          } else if (this.name === "Warrior") {
+            projectiles.push(
+              new Projectile(
+                this.x,
+                this.y,
+                this.target,
+                this.color,
+                "wind",
+                dmg,
+                this
+              )
+            );
+          } else {
+            applyDamage(this, this.target, dmg);
+            createHitEffect(this.target.x, this.target.y, this.color, 5);
+          }
+        }
+
+        cast() {
+          this.mana = 0;
+          switch (this.name) {
+            case "Tank":
+              this.shield += 400;
+              createHitEffect(this.x, this.y, "#cbd5e1", 20);
+              break;
+            case "Mage":
+              createHitEffect(this.x, this.y, "#a78bfa", 30);
+              units.forEach((u) => {
+                if (
+                  u.team !== this.team &&
+                  Math.hypot(this.x - u.x, this.y - u.y) < 180
+                ) {
+                  applyDamage(this, u, this.atk * 2.5);
+                  createHitEffect(u.x, u.y, "#ff4444", 10);
+                }
+              });
+              break;
+            case "Ranger":
+              for (let i = 0; i < 3; i++) {
+                setTimeout(() => {
+                  if (this.target && this.hp > 0)
+                    projectiles.push(
+                      new Projectile(
+                        this.x,
+                        this.y,
+                        this.target,
+                        this.color,
+                        "arrow",
+                        this.atk,
+                        this
+                      )
+                    );
+                }, i * 150);
+              }
+              break;
+            case "Warrior":
+              createHitEffect(this.x, this.y, "#60a5fa", 25);
+              units.forEach((u) => {
+                if (
+                  u.team !== this.team &&
+                  Math.hypot(this.x - u.x, this.y - u.y) < 100
+                ) {
+                  applyDamage(this, u, this.atk * 2);
+                }
+              });
+              break;
+          }
+        }
+      }
+
+      /* --- LOGIC CƠ BẢN --- */
+      function applyDamage(owner, target, dmg) {
+        if (!target || target.hp <= 0) return;
+        if (target.shield > 0) {
+          target.shield -= dmg;
+          if (target.shield < 0) {
+            target.hp += target.shield;
+            target.shield = 0;
+          }
+        } else {
+          target.hp -= dmg;
+        }
+        owner.mana = Math.min(owner.maxMana, owner.mana + 20);
+        if (owner.mana >= owner.maxMana) owner.cast();
+      }
+
+      function createHitEffect(x, y, color, count = 6) {
+        for (let i = 0; i < count; i++) {
+          particles.push({
+            x,
+            y,
+            vx: (Math.random() - 0.5) * 8,
+            vy: (Math.random() - 0.5) * 8,
+            life: 1,
+            color,
+          });
+        }
+      }
+
+      const gameShop = {
+        slots: [],
+        roll() {
+          if (gold < 2) return;
+          gold -= 2;
+          const keys = Object.keys(UNIT_DATA);
+          this.slots = Array(5)
+            .fill(0)
+            .map(() => keys[Math.floor(Math.random() * keys.length)]);
+          this.render();
+          updateUI();
+        },
+        buy(idx) {
+          let name = this.slots[idx];
+          if (!name || gold < UNIT_DATA[name].cost) return;
+          for (let i = 0; i < COLS; i++) {
+            if (!units.find((u) => u.gridX === i && u.gridY === BENCH_ROW)) {
+              gold -= UNIT_DATA[name].cost;
+              units.push(new Unit(name, i, BENCH_ROW, "player"));
+              this.slots[idx] = null;
+              checkUpgrades();
+              this.render();
+              updateUI();
+              return;
+            }
+          }
+        },
+        render() {
+          document.getElementById("shop").innerHTML = this.slots
+            .map((s, i) =>
+              s
+                ? `<div class="shop-slot" onclick="gameShop.buy(${i})"><b>${s}</b><span>${UNIT_DATA[s].cost}G</span></div>`
+                : `<div class="shop-slot" style="opacity:0.3">Empty</div>`
+            )
+            .join("");
+        },
+      };
+
+      function checkUpgrades() {
+        let counts = {};
+        units
+          .filter((u) => u.team === "player" && u.star < 3)
+          .forEach((u) => {
+            let id = u.name + u.star;
+            counts[id] = (counts[id] || 0) + 1;
+            if (counts[id] >= 3) {
+              let rem = 3;
+              units = units.filter((un) => {
+                if (un.name === u.name && un.star === u.star && rem > 0) {
+                  rem--;
+                  return false;
+                }
+                return true;
+              });
+              let up = new Unit(u.name, u.gridX, u.gridY, "player");
+              up.star = u.star + 1;
+              up.maxHp *= 1.8;
+              up.hp = up.maxHp;
+              up.atk *= 1.5;
+              units.push(up);
+              checkUpgrades();
+            }
+          });
+      }
+
+      function startBattle() {
+        if (gameState === "COMBAT") return;
+        units = units.filter((u) => u.team !== "enemy");
+        let count = Math.min(stage + 1, 7);
+        for (let i = 0; i < count; i++) {
+          let names = Object.keys(UNIT_DATA);
+          let u = new Unit(
+            names[Math.floor(Math.random() * names.length)],
+            i,
+            Math.floor(Math.random() * 3),
+            "enemy"
+          );
+          if (stage >= 3) u.star = 2;
+          units.push(u);
+        }
+        gameState = "COMBAT";
+        document.getElementById("start-btn").disabled = true;
+      }
+
+      function endBattle(winner) {
+        gameState = "PREP";
+        if (winner === "enemy") hp -= 15;
+        gold += 5 + Math.floor(gold / 10);
+        subStage++;
+        if (subStage > 4) {
+          subStage = 1;
+          stage++;
+        }
+        units.forEach((u) => {
+          u.hp = u.maxHp;
+          u.mana = 0;
+          u.shield = 0;
+          u.x = u.gridX * GRID_SIZE + GRID_SIZE / 2;
+          u.y = u.gridY * GRID_SIZE + GRID_SIZE / 2;
+        });
+        projectiles = [];
+        document.getElementById("start-btn").disabled = false;
+        gameShop.roll();
+        updateUI();
+      }
+
+      /* --- INPUT & LOOP --- */
+      canvas.addEventListener("mousedown", (e) => {
+        if (gameState !== "PREP") return;
+        const r = canvas.getBoundingClientRect();
+        const mx = e.clientX - r.left,
+          my = e.clientY - r.top;
+        dragUnit = units.find(
+          (u) => u.team === "player" && Math.hypot(u.x - mx, u.y - my) < 25
+        );
+      });
+
+      window.addEventListener("mousemove", (e) => {
+        const r = canvas.getBoundingClientRect();
+        const mx = e.clientX - r.left,
+          my = e.clientY - r.top;
+        units.forEach(
+          (u) => (u.isHovered = Math.hypot(u.x - mx, u.y - my) < 25)
+        );
+        if (dragUnit) {
+          dragUnit.x = mx;
+          dragUnit.y = my;
+        }
+      });
+
+      window.addEventListener("mouseup", () => {
+        if (dragUnit) {
+          let gx = Math.floor(dragUnit.x / GRID_SIZE),
+            gy = Math.floor(dragUnit.y / GRID_SIZE);
+          if (gy >= 4 && gx >= 0 && gx < COLS) {
+            dragUnit.gridX = gx;
+            dragUnit.gridY = gy;
+          }
+          dragUnit.x = dragUnit.gridX * GRID_SIZE + GRID_SIZE / 2;
+          dragUnit.y = dragUnit.gridY * GRID_SIZE + GRID_SIZE / 2;
+          dragUnit = null;
+        }
+      });
+
+      function updateUI() {
+        document.getElementById("gold-val").innerText = gold;
+        document.getElementById("hp-val").innerText = hp;
+        document.getElementById(
+          "stage-ui"
+        ).innerText = `STAGE ${stage}-${subStage}`;
+      }
+
+      function animate() {
+        ctx.fillStyle = "#020617";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        for (let r = 0; r < ROWS; r++)
+          for (let c = 0; c < COLS; c++) {
+            ctx.fillStyle =
+              (r + c) % 2 === 0 ? "rgba(30, 41, 59, 0.2)" : "transparent";
+            ctx.fillRect(c * GRID_SIZE, r * GRID_SIZE, GRID_SIZE, GRID_SIZE);
+          }
+
+        let pTeam = units.filter((u) => u.team === "player" && u.hp > 0);
+        let eTeam = units.filter((u) => u.team === "enemy" && u.hp > 0);
+
+        units.forEach((u) => {
+          if (u.hp > 0) {
+            if (u !== dragUnit) u.update(u.team === "player" ? eTeam : pTeam);
+            u.draw();
+          }
+        });
+
+        projectiles = projectiles.filter((p) => {
+          p.update();
+          p.draw();
+          return p.active;
+        });
+
+        particles = particles.filter((p) => {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.life -= 0.04;
+          ctx.fillStyle = p.color;
+          ctx.globalAlpha = p.life;
+          ctx.fillRect(p.x, p.y, 3, 3);
+          ctx.globalAlpha = 1;
+          return p.life > 0;
+        });
+
+        if (gameState === "COMBAT") {
+          if (eTeam.length === 0) endBattle("player");
+          else if (pTeam.length === 0) endBattle("enemy");
+        }
+        requestAnimationFrame(animate);
+      }
+
+      gameShop.roll();
+      animate();
+    </script>
+  </body>
+</html>
