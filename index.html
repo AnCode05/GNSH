@@ -1,303 +1,241 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="vi">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Gửi Người Thương</title>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ôn Tập Tin Học 10 - Full 80 Câu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-      :root {
-        --primary-pink: #ff758f;
-        --bg-color: #fff0f3;
-      }
-
-      body,
-      html {
-        margin: 0;
-        padding: 0;
-        width: 100%;
-        height: 100%;
-        overflow: hidden;
-        background: var(--bg-color);
-        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-      }
-
-      /* Lớp phủ mở đầu */
-      #overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: var(--bg-color);
-        z-index: 200;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        cursor: pointer;
-      }
-
-      .heart-btn {
-        font-size: 100px;
-        animation: beat 1.2s infinite;
-      }
-
-      @keyframes beat {
-        0%,
-        100% {
-          transform: scale(1);
-        }
-        50% {
-          transform: scale(1.2);
-        }
-      }
-
-      /* Ghi chú */
-      .note {
-        position: absolute;
-        width: 170px;
-        min-height: 90px;
-        padding: 15px;
-        border-radius: 15px;
-        backdrop-filter: blur(5px);
-        border: 1px solid rgba(255, 255, 255, 0.3);
-        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
-        font-size: 15px;
-        font-weight: 500;
-        color: #444;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-        opacity: 0;
-        transform: scale(0.5);
-        transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        z-index: 10;
-      }
-
-      .note.show {
-        opacity: 1;
-        transform: scale(1) rotate(var(--r));
-      }
-
-      /* Card chung cho Tỏ tình & Cảm ơn */
-      .card {
-        display: none;
-        position: relative;
-        background: rgba(255, 255, 255, 0.95);
-        padding: 30px;
-        border-radius: 30px;
-        text-align: center;
-        box-shadow: 0 20px 50px rgba(255, 77, 109, 0.2);
-        z-index: 1000;
-        width: 80%;
-        max-width: 300px;
-        animation: zoomIn 0.6s ease;
-      }
-
-      .memorable-img {
-        width: 100%;
-        height: 200px;
-        object-fit: cover;
-        border-radius: 15px;
-        margin-bottom: 15px;
-        border: 3px solid #ffccd5;
-      }
-
-      .btn-group {
-        margin-top: 20px;
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-      }
-
-      button {
-        padding: 15px;
-        border: none;
-        border-radius: 50px;
-        font-size: 16px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: 0.2s;
-      }
-      button:active {
-        transform: scale(0.95);
-      }
-
-      .btn-yes {
-        background: #ff4d6d;
-        color: white;
-      }
-      .btn-no {
-        background: #ffccd5;
-        color: #ff4d6d;
-      }
-
-      @keyframes zoomIn {
-        from {
-          opacity: 0;
-          transform: scale(0.5);
-        }
-        to {
-          opacity: 1;
-          transform: scale(1);
-        }
-      }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .option-btn:hover { transform: translateX(5px); }
+        .correct { background-color: #d1fae5 !important; border-color: #10b981 !important; color: #065f46 !important; }
+        .wrong { background-color: #fee2e2 !important; border-color: #ef4444 !important; color: #991b1b !important; }
+        .sticky-stats { position: sticky; top: 0; z-index: 50; }
     </style>
-  </head>
-  <body>
-    <div id="overlay" onclick="startSurprise()">
-      <div class="heart-btn">💖</div>
-      <p style="color: #ff4d6d; font-weight: bold; margin-top: 20px">
-        Bấm vào đây để nhận bất ngờ :33
-      </p>
+</head>
+<body class="bg-slate-100 min-h-screen">
+
+    <!-- Sticky Stats Bar -->
+    <div class="sticky-stats bg-white shadow-md border-b border-slate-200 py-3 px-4">
+        <div class="max-w-3xl mx-auto flex justify-between items-center">
+            <div class="flex gap-4">
+                <div class="text-center">
+                    <p class="text-xs text-slate-500 uppercase font-bold">Đúng</p>
+                    <p id="correct-count" class="text-xl font-black text-emerald-600">0</p>
+                </div>
+                <div class="text-center border-x px-4 border-slate-200">
+                    <p class="text-xs text-slate-500 uppercase font-bold">Sai</p>
+                    <p id="wrong-count" class="text-xl font-black text-rose-600">0</p>
+                </div>
+                <div class="text-center">
+                    <p class="text-xs text-slate-500 uppercase font-bold">Tiến độ</p>
+                    <p class="text-xl font-black text-indigo-600"><span id="answered-count">0</span>/<span id="total-count">80</span></p>
+                </div>
+            </div>
+            <button onclick="shuffleAndRender()" class="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-indigo-700 transition">Làm mới</button>
+        </div>
+        <!-- Progress Bar -->
+        <div class="max-w-3xl mx-auto mt-2 h-1.5 bg-slate-200 rounded-full overflow-hidden">
+            <div id="progress-bar" class="h-full bg-indigo-500 transition-all duration-300" style="width: 0%"></div>
+        </div>
     </div>
 
-    <div id="notes-container"></div>
+    <div id="app" class="max-w-3xl mx-auto px-4 py-8">
+        <div class="text-center mb-10">
+            <h1 class="text-2xl font-black text-slate-800 uppercase tracking-tight">Ngân hàng câu hỏi Tin học 10</h1>
+            <p class="text-slate-500 italic">Bám sát Bài 20 - 25: Vòng lặp, Danh sách & Xâu</p>
+        </div>
 
-    <div id="proposal-card" class="card">
-      <h2 style="color: #ff4d6d; margin-bottom: 10px">
-        Bo ơiii. Bo làm người yêu tớ nhá❤️
-      </h2>
-      <p>
-        Thế giới này thật rộng lớn, nhưng tớ chỉ muốn được ở bên cạnh mỗi mình
-        cậu thôi.
-      </p>
-      <div class="btn-group">
-        <button class="btn-yes" onclick="showSuccess()">Đồng ý luôn!</button>
-        <button class="btn-no" onclick="showSuccess()">
-          Không thể không đồng ý
-        </button>
-      </div>
+        <!-- Quiz Container -->
+        <div id="quiz-container" class="space-y-6"></div>
+
+        <div class="py-20 text-center">
+            <p class="text-slate-400">Bạn đã xem hết các câu hỏi trong ngân hàng này.</p>
+        </div>
     </div>
-
-    <div id="success-card" class="card">
-      <img src="/tải xuống.png" alt="Couple" class="memorable-img" />
-      <h2 style="color: #ff4d6d">Cảm ơn cậu! ❤️</h2>
-      <p>
-        Tớ hứa sẽ trân trọng và làm cậu hạnh phúc mỗi ngày. Yêu cậu rất nhiều!
-      </p>
-      <p style="font-size: 12px; color: #aaa; margin-top: 10px">
-        Happy Ending ✨
-      </p>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
     <script>
-      const messages = [
-        "Chào SIÊU BẠN THÂN của tớ!",
-        "Hôm nay nhân dịp ngày 14/2 tớ có đôi chút điều muốn nói với Trâm...",
-        "Hôm nay Valentine tớ cũng muốn đi chơi với Trâm lắm đó!",
-        "Nhưng mà vì gia đình bận rộn quá Trâm với tớ không sắp xếp được thời gian đi chơi cùng nhau.",
-        "Tuy có hơn chút buồn vì không thể gặp Trâm trong ngày đặc biệt này  :<",
-        "Nên tớ đã chuẩn bị một bất ngờ nho nhỏ này để gửi đến Trâm đây ><",
-        "Hmm thì thì ...",
-        "Tớ không có quà cho Trâm nhưng tớ có rất nhiều lời muốn nói với Trâm :33",
-        "Valentine này tớ chúc Trâm vui vẻ ❤️",
-        "Chúc người đẹp luôn xinh tươi rạng rỡ nhé 😊",
-        "Chúc người đẹp luôn thành công trong cuộc sống và học tập ❤️",
-        "Chúc Trâm luôn hạnh phúc và có nhiều niềm vui trong cuộc sống này :33",
-        "Tớ còn điều này muốn nói với Trâm nữa",
-        "Cảm ơn Trâm đã luôn là người an ủi, lắng nghe và đồng hành cùng tớ suốt thời gian qua.",
-        "Thông qua nhiều cuộc trò chuyện, gặp gỡ tớ thấy tớ không thể thiếu Trâm trong cuộc sống này :33",
-        "Trâm là người đặc biệt nhất đối với tớ, và tớ muốn được ở bên cạnh Trâm mãi mãi.",
-        "Vậy nên tớ muốn hỏi Trâm là Trâm có thể cho tớ cơ hội được làm người yêu Trâm không? ❤️",
-        "Tớ biết là Trâm không muốn công khai cũng như tớ không muốn ép buộc Trâm điều gì cả :33",
-        "Vì vậy nên tớ chỉ muốn nói với Trâm rằng tớ sẽ luôn ở đây, luôn chờ đợi và sẵn sàng trò chuyện với Trâm bất cứ lúc nào khi Trâm vui, Trâm buồn thì Trâm có thể tìm đến tớ nhé :33",
-        "Tớ luôn lắng nghe Trâm những câu chuyện của Trâm, những cảm xúc của Trâm, và tớ sẽ luôn cố gắng để hiểu Trâm hơn nữa :33",
-        "Tớ chỉ muốn nói rằng tớ yêu Trâm rất nhìuuu ^^",
-        "Tớ sẽ không quản lý Trâm, không ghen tuông, không kiểm soát Trâm, tớ chỉ muốn được là người bạn đồng hành, người yêu thương và người hiểu Trâm nhất mà thôi :33",
-        "Và tớ cũng cần 1 người yêu thương tớ, hiểu tớ, và ở bên cạnh tớ lúc buồn, lúc vui cũng như quản lí tớ hơn nữa tại vì tớ hư quá rùii :33",
-        "Tớ hy vọng Trâm sẽ cho tớ cơ hội được làm người yêu Trâm, được ở bên cạnh Trâm, được chăm sóc Trâm và làm Trâm hạnh phúc mỗi ngày :33",
-        "Tớ sẽ luôn trân trọng và yêu thương Trâm thật nhiều nếu Trâm đồng ý nhé :33",
-        "Nhưng tớ vẫn tôn trọng quyết định của Trâm dù có là gì đi nữa, tớ chỉ mong Trâm sẽ luôn hạnh phúc và vui vẻ trong cuộc sống này :33",
-      ];
+        const questionBank = [
+            // BÀI 20: FOR
+            { q: "Lệnh lặp for i in range(n) thực hiện lặp bao nhiêu lần?", options: ["n lần", "n-1 lần", "n+1 lần", "Vô hạn"], a: 0 },
+            { q: "Trong for i in range(start, stop), i sẽ nhận giá trị cuối cùng là?", options: ["stop", "stop - 1", "start", "stop + 1"], a: 1 },
+            { q: "Lệnh range(10) tương đương với lệnh nào sau đây?", options: ["range(1, 10)", "range(0, 10)", "range(0, 9)", "range(1, 11)"], a: 1 },
+            { q: "Để lặp qua từng phần tử của danh sách A, ta dùng?", options: ["for i in range(A):", "for x in A:", "while x in A:", "if x in A:"], a: 1 },
+            { q: "Lệnh range(5, 1, -1) cho các giá trị?", options: ["5, 4, 3, 2, 1", "5, 4, 3, 2", "4, 3, 2, 1", "5, 1, -1"], a: 1 },
+            { q: "Lệnh lặp for được dùng khi nào?", options: ["Biết trước số lần lặp", "Không biết trước số lần lặp", "Điều kiện dừng luôn đúng", "Khi muốn dừng chương trình"], a: 0 },
+            { q: "Cú pháp for i in range(1, 10, 2), bước nhảy (step) là bao nhiêu?", options: ["1", "10", "2", "9"], a: 2 },
+            { q: "Trong lệnh for, sau dấu ':' là gì?", options: ["Khối lệnh được lặp (lùi đầu dòng)", "Một điều kiện logic", "Lệnh kết thúc chương trình", "Một biến mới"], a: 0 },
+            { q: "range(2, 2) sẽ tạo ra bao nhiêu giá trị?", options: ["0", "1", "2", "Lỗi"], a: 0 },
+            { q: "Vòng lặp for kết thúc khi nào?", options: ["Khi hết các giá trị trong vùng chỉ định", "Khi điều kiện sai", "Khi biến i bằng 0", "Khi gặp lệnh if"], a: 0 },
 
-      function startSurprise() {
-        document.getElementById("overlay").style.display = "none";
-        showNotes();
-      }
+            // BÀI 21: WHILE
+            { q: "Lệnh lặp while thực hiện khối lệnh khi nào?", options: ["Khi điều kiện còn đúng", "Khi điều kiện sai", "Chỉ thực hiện 1 lần", "Vô hạn lần bất kể điều kiện"], a: 0 },
+            { q: "Để tránh vòng lặp vô hạn trong while, ta cần làm gì?", options: ["Thay đổi giá trị biến điều kiện trong khối lệnh", "Dùng lệnh range", "Không cần làm gì", "Dùng lệnh print"], a: 0 },
+            { q: "Cú pháp của lệnh while là?", options: ["while <điều kiện>:", "while (điều kiện) do", "while i in range:", "while <điều kiện> do:"], a: 0 },
+            { q: "Lệnh while là cấu trúc lặp gì?", options: ["Lặp với số lần chưa biết trước", "Lặp với số lần biết trước", "Lặp tuần tự", "Lặp rẽ nhánh"], a: 0 },
+            { q: "Nếu điều kiện của while sai ngay từ đầu thì sao?", options: ["Khối lệnh không thực hiện lần nào", "Khối lệnh thực hiện 1 lần", "Báo lỗi", "Vòng lặp vô hạn"], a: 0 },
+            { q: "Trong while, điều kiện thường là một?", options: ["Biểu thức logic", "Số nguyên", "Xâu ký tự", "Danh sách"], a: 0 },
+            { q: "So với for, lệnh while linh hoạt hơn ở điểm nào?", options: ["Xử lý được các tình huống chưa rõ số lần lặp", "Dễ viết hơn", "Chạy nhanh hơn", "Ít tốn bộ nhớ hơn"], a: 0 },
+            { q: "Lệnh while dừng khi?", options: ["Điều kiện nhận giá trị False", "Điều kiện nhận giá trị True", "Hết vùng giá trị", "Gặp dấu nháy kép"], a: 0 },
+            { q: "Đoạn code: i=0; while i<3: i+=1 lặp mấy lần?", options: ["2", "3", "4", "0"], a: 1 },
+            { q: "Câu lệnh lùi đầu dòng sau while được gọi là?", options: ["Khối lệnh của vòng lặp", "Điều kiện lặp", "Thân chương trình", "Chú thích"], a: 0 },
 
-      function showNotes() {
-        const container = document.getElementById("notes-container");
-        let index = 0;
+            // BÀI 22: LIST
+            { q: "List trong Python được khởi tạo bằng cặp dấu nào?", options: ["[ ]", "{ }", "( )", "< >"], a: 0 },
+            { q: "Phần tử thứ k của danh sách A được truy cập bằng?", options: ["A[k]", "A(k)", "A{k}", "A[k-1]"], a: 0 },
+            { q: "Chỉ số của danh sách A có n phần tử chạy từ?", options: ["0 đến n", "1 đến n", "0 đến n-1", "1 đến n-1"], a: 2 },
+            { q: "Lệnh len(A) trả về?", options: ["Độ dài danh sách", "Giá trị lớn nhất", "Giá trị nhỏ nhất", "Tổng danh sách"], a: 0 },
+            { q: "Để thêm phần tử vào cuối danh sách, dùng lệnh?", options: ["A.append(x)", "A.add(x)", "A.insert(x)", "A.push(x)"], a: 0 },
+            { q: "A = [1, 2, 3]. Sau lệnh A[0] = 5, A là?", options: ["[5, 2, 3]", "[1, 2, 3, 5]", "[1, 2, 3]", "[5, 1, 2, 3]"], a: 0 },
+            { q: "Chỉ số âm A[-1] truy cập vào?", options: ["Phần tử đầu tiên", "Phần tử cuối cùng", "Phần tử thứ hai", "Lỗi"], a: 1 },
+            { q: "Lệnh del A[2] có tác dụng gì?", options: ["Xóa phần tử tại chỉ số 2", "Xóa giá trị 2 trong danh sách", "Xóa toàn bộ danh sách", "Xóa 2 phần tử đầu"], a: 0 },
+            { q: "Danh sách có thể chứa nhiều kiểu dữ liệu khác nhau không?", options: ["Có", "Không", "Chỉ chứa số", "Chỉ chứa chữ"], a: 0 },
+            { q: "Phép cộng hai danh sách [1] + [2] kết quả là?", options: ["[1, 2]", "[3]", "[[1], [2]]", "Lỗi"], a: 0 },
 
-        function displayNextNote() {
-          if (index < messages.length) {
-            const currentMsg = messages[index];
-            const note = document.createElement("div");
-            note.className = "note";
-            note.innerText = currentMsg;
+            // BÀI 23: LIST METHODS
+            { q: "Lệnh 'x in A' trả về giá trị gì?", options: ["True hoặc False", "Vị trí của x", "Số lượng x", "Giá trị x"], a: 0 },
+            { q: "Để xóa toàn bộ phần tử trong danh sách A, dùng?", options: ["A.clear()", "A.remove()", "del A", "A.pop()"], a: 0 },
+            { q: "Lệnh A.remove(x) dùng để?", options: ["Xóa phần tử đầu tiên tìm thấy có giá trị x", "Xóa phần tử tại vị trí x", "Xóa tất cả các số x", "Xóa phần tử cuối"], a: 0 },
+            { q: "Để chèn x vào vị trí k trong danh sách A, dùng?", options: ["A.insert(k, x)", "A.append(k, x)", "A.add(k, x)", "A.push(k, x)"], a: 0 },
+            { q: "A.insert(0, x) tương đương với?", options: ["Chèn x vào đầu danh sách", "Chèn x vào cuối danh sách", "Chèn x vào vị trí bất kỳ", "Lỗi"], a: 0 },
+            { q: "Lệnh nào kiểm tra sự tồn tại của phần tử?", options: ["in", "is", "at", "find"], a: 0 },
+            { q: "Nếu remove(x) mà x không có trong danh sách thì?", options: ["Báo lỗi (ValueError)", "Không làm gì", "Trả về False", "Xóa phần tử cuối"], a: 0 },
+            { q: "Lệnh clear() làm cho độ dài danh sách bằng bao nhiêu?", options: ["0", "1", "None", "Lỗi"], a: 0 },
+            { q: "Để duyệt danh sách bằng chỉ số, ta dùng?", options: ["for i in range(len(A)):", "for i in A:", "while i in A:", "if i in A:"], a: 0 },
+            { q: "Phép nhân danh sách A * 2 có tác dụng gì?", options: ["Nhân đôi các giá trị", "Nhân bản danh sách thành 2 lần", "Báo lỗi", "Tăng kích thước gấp đôi"], a: 1 },
 
-            const rotation = (Math.random() - 0.5) * 40;
-            const posX = Math.random() * (window.innerWidth - 200) + 10;
-            const posY = Math.random() * (window.innerHeight - 150) + 20;
+            // BÀI 24: STRING
+            { q: "Xâu ký tự là tập hợp các ký tự đặt trong?", options: ["Nháy đơn hoặc nháy kép", "Ngoặc vuông", "Ngoặc nhọn", "Dấu gạch chéo"], a: 0 },
+            { q: "Lệnh len(S) với S là xâu trả về?", options: ["Số lượng ký tự trong xâu", "Số lượng từ", "Mã ASCII", "Vị trí ký tự cuối"], a: 0 },
+            { q: "Xâu ký tự có tính chất 'immutable' nghĩa là?", options: ["Không thể thay đổi từng ký tự của xâu", "Có thể thay đổi thoải mái", "Chỉ chứa được số", "Luôn cố định độ dài"], a: 0 },
+            { q: "S = 'Python'. S[0] là?", options: ["P", "y", "n", "Error"], a: 0 },
+            { q: "Để duyệt từng ký tự của xâu S, ta dùng?", options: ["for ch in S:", "for i in range(len(S)):", "Cả A và B đều đúng", "while i < S:"], a: 2 },
+            { q: "Phép ghép xâu dùng toán tử nào?", options: ["+", "*", "&", "join"], a: 0 },
+            { q: "S = 'A'. S * 3 cho kết quả?", options: ["'AAA'", "3A", "Error", "65*3"], a: 0 },
+            { q: "Muốn lấy chỉ số của ký tự cuối xâu S, ta dùng?", options: ["len(S) - 1", "len(S)", "-1", "Cả A và C đều đúng"], a: 3 },
+            { q: "S = 'Hello'. S[1] = 'a' sẽ?", options: ["Báo lỗi", "Đổi thành 'Hallo'", "Không làm gì", "Thêm 'a' vào"], a: 0 },
+            { q: "Xâu rỗng được ký hiệu là?", options: ["'' hoặc \"\"", "None", "[]", "0"], a: 0 },
 
-            note.style.backgroundColor = [
-              "#ffccdc",
-              "#d0f4de",
-              "#a2d2ff",
-              "#fdffb6",
-              "#ffc6ff",
-            ][index % 5];
-            note.style.left = `${posX}px`;
-            note.style.top = `${posY}px`;
-            note.style.setProperty("--r", `${rotation}deg`);
+            // BÀI 25: STRING METHODS
+            { q: "Lệnh S.find(sub) trả về giá trị gì?", options: ["Chỉ số đầu tiên của sub trong S", "-1 nếu không thấy", "Cả A và B đều đúng", "True nếu thấy"], a: 2 },
+            { q: "Lệnh split() không tham số sẽ tách xâu dựa trên?", options: ["Dấu phẩy", "Khoảng trắng", "Dấu chấm", "Dấu gạch ngang"], a: 1 },
+            { q: "Lệnh join() dùng để nối các phần tử của ... thành một xâu?", options: ["Danh sách các xâu", "Các số nguyên", "Các xâu con", "Các tệp tin"], a: 0 },
+            { q: "S = 'a-b-c'. S.split('-') cho kết quả?", options: ["['a', 'b', 'c']", "['a-b-c']", "'abc'", "['a', '-', 'b', '-', 'c']"], a: 0 },
+            { q: "Để nối danh sách L = ['A', 'B'] bằng dấu phẩy, dùng?", options: ["','.join(L)", "join(',', L)", "L.join(',')", "split(',', L)"], a: 0 },
+            { q: "Lệnh S.replace(old, new) dùng để?", options: ["Thay thế old bằng new", "Xóa old", "Tìm kiếm old", "Đổi vị trí old và new"], a: 0 },
+            { q: "Lệnh 'in' dùng với xâu để kiểm tra?", options: ["Xâu con", "Độ dài", "Ký tự đầu", "Ký tự cuối"], a: 0 },
+            { q: "Kết quả của 'Tin hoc'.find('hoc') là?", options: ["4", "3", "5", "0"], a: 0 },
+            { q: "Hàm nào chuyển xâu về chữ thường?", options: ["lower()", "upper()", "strip()", "find()"], a: 0 },
+            { q: "Hàm nào chuyển xâu về chữ hoa?", options: ["upper()", "lower()", "join()", "split()"], a: 0 },
 
-            container.appendChild(note);
-            setTimeout(() => note.classList.add("show"), 100);
+            // THÊM 20 CÂU ĐỂ ĐỦ 80 (TỔNG HỢP THEO ẢNH)
+            { q: "Cấu trúc lặp while kết thúc khi điều kiện có giá trị?", options: ["False", "True", "0", "None"], a: 0 },
+            { q: "Lệnh nào không thuộc về xử lý List trong các phương án sau?", options: ["append", "insert", "find", "clear"], a: 2 },
+            { q: "Lệnh nào không thuộc về xử lý Xâu trong các phương án sau?", options: ["find", "split", "append", "join"], a: 2 },
+            { q: "Để lấy xâu con từ chỉ số 1 đến 3 của S, dùng?", options: ["S[1:4]", "S[1:3]", "S[1,3]", "S.sub(1,3)"], a: 0 },
+            { q: "Biểu thức 5 in [1, 3, 5] trả về?", options: ["True", "False", "5", "1"], a: 0 },
+            { q: "Lệnh range(1, 5, 2) lặp bao nhiêu lần?", options: ["2", "4", "5", "1"], a: 0 },
+            { q: "for i in range(len(S)) giúp ta truy cập xâu qua?", options: ["Chỉ số", "Giá trị ký tự", "Địa chỉ ô nhớ", "Mã màu"], a: 0 },
+            { q: "Kiểu dữ liệu nào có thể thay đổi (mutable)?", options: ["List", "String", "Số nguyên", "Số thực"], a: 0 },
+            { q: "Lệnh pop() của danh sách mặc định xóa phần tử nào?", options: ["Cuối cùng", "Đầu tiên", "Bất kỳ", "Lỗi"], a: 0 },
+            { q: "Lệnh ' ' * 5 tạo ra xâu có độ dài?", options: ["5", "0", "1", "10"], a: 0 },
+            { q: "Muốn kiểm tra 'Python' có bắt đầu bằng 'P' không, dùng?", options: ["'Python'[0] == 'P'", "'P' in 'Python'", "Cả hai đều được", "Không cách nào"], a: 2 },
+            { q: "Trong while, nếu điều kiện là 'True' mà không có lệnh dừng thì?", options: ["Lặp vô hạn", "Báo lỗi", "Dừng ngay", "Lặp 1 lần"], a: 0 },
+            { q: "Lệnh nào dùng để tìm độ dài của cả xâu và danh sách?", options: ["len()", "size()", "count()", "length()"], a: 0 },
+            { q: "Toán tử nào dùng để kiểm tra phần tử có thuộc tập hợp?", options: ["in", "is", "==", "not"], a: 0 },
+            { q: "A = [0] * 3 tạo danh sách?", options: ["[0, 0, 0]", "[0, 3]", "[3]", "[0]"], a: 0 },
+            { q: "Lệnh S.split(':') tách xâu tại?", options: ["Dấu hai chấm", "Dấu phẩy", "Dấu cách", "Dấu chấm"], a: 0 },
+            { q: "Lệnh nào thêm phần tử vào vị trí đầu tiên của List A?", options: ["A.insert(0, x)", "A.append(x)", "A.add(0, x)", "A.push(0, x)"], a: 0 },
+            { q: "S = 'abc'. S.upper() cho kết quả?", options: ["'ABC'", "'abc'", "'Abc'", "Lỗi"], a: 0 },
+            { q: "Số đối số tối đa trong hàm range() là?", options: ["3", "1", "2", "4"], a: 0 },
+            { q: "Mọi phần tử trong List có bắt buộc cùng kiểu dữ liệu không?", options: ["Không", "Có", "Bắt buộc là số", "Bắt buộc là xâu"], a: 0 }
+        ];
 
-            // Logic thời gian: > 100 kí tự là 7s (7000ms), ngược lại là 5s (5000ms)
-            let delay = currentMsg.length > 100 ? 7000 : 5000;
+        let correct = 0;
+        let wrong = 0;
+        let answered = 0;
+        let currentQuestions = [];
 
-            index++;
-            setTimeout(displayNextNote, delay);
-          } else {
-            setTimeout(() => {
-              document.getElementById("proposal-card").style.display = "block";
-            }, 2000);
-          }
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
         }
-        displayNextNote();
-      }
 
-      function showSuccess() {
-        document.getElementById("proposal-card").style.display = "none";
-        document
-          .querySelectorAll(".note")
-          .forEach((n) => (n.style.opacity = "0.1"));
-        document.getElementById("success-card").style.display = "block";
+        function renderQuiz() {
+            const container = document.getElementById('quiz-container');
+            container.innerHTML = '';
+            correct = 0;
+            wrong = 0;
+            answered = 0;
+            updateStats();
 
-        const end = Date.now() + 10 * 1000;
-        (function frame() {
-          confetti({
-            particleCount: 3,
-            angle: 60,
-            spread: 55,
-            origin: { x: 0, y: 0.8 },
-            colors: ["#ff4d6d", "#ff758f"],
-          });
-          confetti({
-            particleCount: 3,
-            angle: 120,
-            spread: 55,
-            origin: { x: 1, y: 0.8 },
-            colors: ["#ff4d6d", "#ff758f"],
-          });
-          confetti({
-            particleCount: 2,
-            spread: 100,
-            origin: { y: 0 },
-            shapes: ["heart"],
-            colors: ["#ff0000", "#ff85a1"],
-          });
-          if (Date.now() < end) requestAnimationFrame(frame);
-        })();
-      }
+            currentQuestions.forEach((item, index) => {
+                let optionsWithInfo = item.options.map((opt, i) => ({ text: opt, isCorrect: i === item.a }));
+                shuffle(optionsWithInfo);
+
+                const card = document.createElement('div');
+                card.className = "bg-white p-6 rounded-2xl shadow-sm border border-slate-200 transition-all";
+                card.id = `card-${index}`;
+                
+                card.innerHTML = `
+                    <div class="flex items-start gap-3 mb-5">
+                        <span class="bg-indigo-100 text-indigo-700 text-xs font-black px-2 py-1 rounded-md mt-1">Q${index + 1}</span>
+                        <p class="font-bold text-slate-800 text-lg leading-snug">${item.q}</p>
+                    </div>
+                    <div class="grid grid-cols-1 gap-3" id="options-group-${index}">
+                        ${optionsWithInfo.map((opt, i) => `
+                            <button onclick="checkAnswer(${index}, ${opt.isCorrect}, this)" 
+                                    class="option-btn text-left p-4 rounded-xl border-2 border-slate-100 hover:border-indigo-200 hover:bg-slate-50 transition-all flex items-center gap-4 group">
+                                <span class="w-7 h-7 flex items-center justify-center rounded-full bg-slate-100 text-slate-400 font-bold text-xs group-hover:bg-indigo-100 group-hover:text-indigo-500">${String.fromCharCode(65 + i)}</span>
+                                <span class="text-slate-700 font-medium">${opt.text}</span>
+                            </button>
+                        `).join('')}
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function checkAnswer(qIdx, isCorrect, btn) {
+            const group = document.getElementById(`options-group-${qIdx}`);
+            if (group.dataset.answered === "true") return;
+
+            group.dataset.answered = "true";
+            answered++;
+
+            if (isCorrect) {
+                btn.classList.add('correct');
+                correct++;
+            } else {
+                btn.classList.add('wrong');
+                wrong++;
+                // Highlight the correct one
+                const buttons = group.querySelectorAll('.option-btn');
+                // (Logic highlight correct could be added here)
+            }
+            updateStats();
+        }
+
+        function updateStats() {
+            document.getElementById('correct-count').innerText = correct;
+            document.getElementById('wrong-count').innerText = wrong;
+            document.getElementById('answered-count').innerText = answered;
+            document.getElementById('total-count').innerText = currentQuestions.length;
+            
+            const progress = (answered / currentQuestions.length) * 100;
+            document.getElementById('progress-bar').style.width = `${progress}%`;
+        }
+
+        function shuffleAndRender() {
+            currentQuestions = shuffle([...questionBank]);
+            renderQuiz();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        window.onload = shuffleAndRender;
     </script>
-  </body>
+</body>
 </html>
