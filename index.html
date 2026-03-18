@@ -3,115 +3,134 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ôn Tập Tin Học 10 - Trọng Tâm</title>
+    <title>Ôn Tập Tin Học 10 - 50 Câu Trọng Tâm</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        .option-btn:hover { transform: translateX(5px); }
-        .correct { background-color: #d1fae5 !important; border-color: #10b981 !important; color: #065f46 !important; }
+        body { font-family: 'Inter', system-ui, -apple-system, sans-serif; }
+        .option-btn:hover { transform: translateX(4px); background-color: #f0fdfa; border-color: #5eead4; }
+        .correct { background-color: #ccfbf1 !important; border-color: #14b8a6 !important; color: #0f766e !important; }
         .wrong { background-color: #fee2e2 !important; border-color: #ef4444 !important; color: #991b1b !important; }
-        .correct-hint { border-color: #10b981 !important; background-color: #f0fdf4; border-width: 2px; }
-        .sticky-stats { position: sticky; top: 0; z-index: 50; }
+        .correct-hint { border-color: #14b8a6 !important; background-color: #f0fdfa; border-width: 2px; position: relative; }
+        .correct-hint::after { content: "✓ Đáp án đúng"; position: absolute; right: 10px; font-size: 0.75rem; color: #14b8a6; font-weight: bold; }
+        .sticky-stats { position: sticky; top: 0; z-index: 50; backdrop-filter: blur(8px); background-color: rgba(255, 255, 255, 0.9); }
     </style>
 </head>
-<body class="bg-slate-100 min-h-screen">
+<body class="bg-slate-50 min-h-screen">
 
-    <!-- Sticky Stats Bar -->
-    <div class="sticky-stats bg-white shadow-md border-b border-slate-200 py-3 px-4">
+    <!-- Thanh thống kê cố định -->
+    <div class="sticky-stats shadow-sm border-b border-teal-100 py-3 px-4">
         <div class="max-w-3xl mx-auto flex justify-between items-center">
-            <div class="flex gap-4">
+            <div class="flex gap-6">
                 <div class="text-center">
-                    <p class="text-xs text-slate-500 uppercase font-bold">Đúng</p>
-                    <p id="correct-count" class="text-xl font-black text-emerald-600">0</p>
+                    <p class="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Đúng</p>
+                    <p id="correct-count" class="text-xl font-black text-teal-600">0</p>
                 </div>
-                <div class="text-center border-x px-4 border-slate-200">
-                    <p class="text-xs text-slate-500 uppercase font-bold">Sai</p>
-                    <p id="wrong-count" class="text-xl font-black text-rose-600">0</p>
+                <div class="text-center border-x px-6 border-slate-100">
+                    <p class="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Sai</p>
+                    <p id="wrong-count" class="text-xl font-black text-rose-500">0</p>
                 </div>
                 <div class="text-center">
-                    <p class="text-xs text-slate-500 uppercase font-bold">Tiến độ</p>
-                    <p class="text-xl font-black text-indigo-600"><span id="answered-count">0</span>/<span id="total-count">0</span></p>
+                    <p class="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Hoàn thành</p>
+                    <p class="text-xl font-black text-slate-700"><span id="answered-count">0</span>/<span id="total-count">50</span></p>
                 </div>
             </div>
-            <button onclick="shuffleAndRender()" class="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-indigo-700 transition shadow-lg active:scale-95">Làm mới (Đảo câu hỏi)</button>
+            <button onclick="shuffleAndRender()" class="bg-teal-600 text-white px-5 py-2.5 rounded-xl text-sm font-bold hover:bg-teal-700 transition-all shadow-md active:scale-95">Đảo câu hỏi</button>
         </div>
-        <div class="max-w-3xl mx-auto mt-2 h-1.5 bg-slate-200 rounded-full overflow-hidden">
-            <div id="progress-bar" class="h-full bg-indigo-500 transition-all duration-300" style="width: 0%"></div>
+        <div class="max-w-3xl mx-auto mt-2 h-1 bg-slate-100 rounded-full overflow-hidden">
+            <div id="progress-bar" class="h-full bg-teal-500 transition-all duration-500" style="width: 0%"></div>
         </div>
     </div>
 
     <div id="app" class="max-w-3xl mx-auto px-4 py-8">
-        <div class="text-center mb-10">
-            <h1 class="text-2xl font-black text-slate-800 uppercase tracking-tight">Ôn tập Python Trọng Tâm</h1>
-            <p class="text-slate-500 italic">Chủ đề: for, range, while, list, len(), append(), in, clear(), remove(), insert(), find(), split(), join()</p>
+        <div class="text-center mb-12">
+            <h1 class="text-3xl font-black text-teal-900 uppercase tracking-tight mb-2">Trắc Nghiệm Python 10</h1>
+            <p class="text-slate-500 font-medium">Nội dung: Vòng lặp, Danh sách & Xâu ký tự</p>
+            <div class="mt-4 flex flex-wrap justify-center gap-2">
+                <span class="px-2 py-1 bg-teal-50 text-teal-700 text-[10px] rounded border border-teal-100">for/range</span>
+                <span class="px-2 py-1 bg-teal-50 text-teal-700 text-[10px] rounded border border-teal-100">while</span>
+                <span class="px-2 py-1 bg-teal-50 text-teal-700 text-[10px] rounded border border-teal-100">list/methods</span>
+                <span class="px-2 py-1 bg-teal-50 text-teal-700 text-[10px] rounded border border-teal-100">string/find/split/join</span>
+            </div>
         </div>
 
-        <div id="quiz-container" class="space-y-6"></div>
+        <div id="quiz-container" class="space-y-8"></div>
 
-        <div class="py-20 text-center">
-            <p class="text-slate-400 font-medium">Bạn đã hoàn thành xong bộ câu hỏi ôn tập!</p>
+        <div class="py-24 text-center">
+            <div class="inline-block p-8 bg-white rounded-3xl shadow-sm border border-slate-100">
+                <p class="text-slate-400 font-bold uppercase text-xs tracking-widest mb-2">Kết quả cuối cùng</p>
+                <p class="text-slate-600">Bạn đã xem hết 50 câu hỏi ôn tập.</p>
+            </div>
         </div>
     </div>
 
     <script>
-        // Ngân hàng câu hỏi gốc (30 câu mẫu tiêu chuẩn)
-        const rawQuestionBank = [
-            // FOR & RANGE
-            { q: "Lệnh range(5) tạo ra dãy số nào?", options: ["0, 1, 2, 3, 4, 5", "1, 2, 3, 4, 5", "0, 1, 2, 3, 4", "1, 2, 3, 4"], a: 2 },
-            { q: "Trong lệnh for i in range(1, 6), biến i nhận giá trị cuối cùng là?", options: ["6", "5", "1", "0"], a: 1 },
-            { q: "Lệnh range(2, 10, 2) tạo ra dãy số nào?", options: ["2, 4, 6, 8, 10", "2, 4, 6, 8", "2, 3, 4, 5, 6, 7, 8, 9", "10, 8, 6, 4, 2"], a: 1 },
-            { q: "Lệnh range(10, 0, -1) tạo ra dãy số bắt đầu từ giá trị nào?", options: ["0", "1", "10", "9"], a: 2 },
-            { q: "Vòng lặp for i in range(3): print(i) sẽ in ra các số nào?", options: ["1, 2, 3", "0, 1, 2", "0, 1, 2, 3", "3, 2, 1"], a: 1 },
+        const questionBank = [
+            // FOR & RANGE (10 câu)
+            { q: "Lệnh range(1, 10, 3) tạo ra dãy số nào?", options: ["1, 4, 7, 10", "1, 4, 7", "1, 3, 6, 9", "0, 3, 6, 9"], a: 1 },
+            { q: "Trong lệnh for i in range(10), biến i sẽ nhận giá trị cuối cùng là?", options: ["10", "9", "0", "1"], a: 1 },
+            { q: "Lệnh range(5, 0, -1) tạo ra dãy số nào?", options: ["5, 4, 3, 2, 1, 0", "4, 3, 2, 1, 0", "5, 4, 3, 2, 1", "0, 1, 2, 3, 4, 5"], a: 2 },
+            { q: "Vòng lặp for i in range(n) thực hiện khối lệnh bao nhiêu lần?", options: ["n lần", "n-1 lần", "n+1 lần", "Vô hạn"], a: 0 },
+            { q: "Lệnh range(2, 2) tạo ra bao nhiêu giá trị?", options: ["0", "1", "2", "Lỗi"], a: 0 },
+            { q: "Trong range(start, stop, step), tham số nào bắt buộc phải có?", options: ["step", "start", "stop", "Cả 3 đều bắt buộc"], a: 2 },
+            { q: "Đoạn mã for i in range(1, 4): print(i) in ra?", options: ["1 2 3 4", "1 2 3", "0 1 2 3", "4 3 2 1"], a: 1 },
+            { q: "Lệnh range(0, 10, 2) có bước nhảy (step) là bao nhiêu?", options: ["0", "10", "2", "5"], a: 2 },
+            { q: "Cú pháp for i in range(5): thực hiện lặp i từ?", options: ["1 đến 5", "0 đến 4", "0 đến 5", "1 đến 4"], a: 1 },
+            { q: "Để lặp lùi từ 10 về 1, ta dùng lệnh range nào?", options: ["range(10, 0, -1)", "range(10, 1)", "range(1, 11)", "range(0, 10, -1)"], a: 0 },
 
-            // WHILE
-            { q: "Lệnh lặp while kết thúc khi điều kiện trở thành?", options: ["True", "False", "None", "0"], a: 1 },
-            { q: "Trong vòng lặp while, nếu điều kiện luôn luôn True thì xảy ra hiện tượng gì?", options: ["Vòng lặp không chạy", "Vòng lặp chạy 1 lần", "Vòng lặp vô hạn", "Báo lỗi"], a: 2 },
-            { q: "Cú pháp đúng của lệnh while là?", options: ["while <điều kiện>:", "while (điều kiện) do", "while <điều kiện> do:", "while: <điều kiện>"], a: 0 },
-            { q: "Để dừng vòng lặp while, ta phải làm gì trong khối lệnh lặp?", options: ["Thay đổi giá trị biến điều kiện để nó thành False", "Sử dụng lệnh print", "Giữ nguyên biến điều kiện", "Dùng lệnh range"], a: 0 },
+            // WHILE (7 câu)
+            { q: "Vòng lặp while dừng lại khi nào?", options: ["Khi điều kiện đúng", "Khi điều kiện sai", "Khi hết giá trị trong range", "Khi biến đếm bằng 0"], a: 1 },
+            { q: "Cú pháp đúng của lệnh while là?", options: ["while <điều kiện>:", "while (điều kiện) do", "while: <điều kiện>", "while <điều kiện> do:"], a: 0 },
+            { q: "Nếu điều kiện vòng lặp while luôn đúng, chuyện gì xảy ra?", options: ["Lỗi cú pháp", "Vòng lặp vô hạn", "Vòng lặp tự dừng sau 100 lần", "Chương trình chạy nhanh hơn"], a: 1 },
+            { q: "Lệnh while là cấu trúc lặp với số lần?", options: ["Biết trước", "Chưa biết trước", "Vô hạn", "Cố định là 10"], a: 1 },
+            { q: "Đoạn code: i=1; while i<4: i+=1. Sau khi dừng, i bằng?", options: ["3", "4", "5", "1"], a: 1 },
+            { q: "Để dừng vòng lặp while, ta cần thay đổi gì trong khối lệnh?", options: ["Thay đổi giá trị biến điều kiện", "Thay đổi tên biến", "In ra màn hình", "Không cần thay đổi"], a: 0 },
+            { q: "Lệnh while thực hiện khối lệnh khi điều kiện trả về giá trị?", options: ["True", "False", "None", "0"], a: 0 },
 
-            // LIST: LEN, APPEND, IN, CLEAR, REMOVE, INSERT
-            { q: "Cách khởi tạo một danh sách (list) rỗng là?", options: ["L = []", "L = {}", "L = ()", "L = list()", "Cả A và D đều đúng"], a: 4 },
-            { q: "Để thêm số 4 vào cuối danh sách A, lệnh nào đúng?", options: ["A.add(4)", "A.append(4)", "A.insert(4)", "A + 4"], a: 1 },
-            { q: "Để lấy độ dài (số phần tử) của danh sách A, dùng lệnh?", options: ["A.length()", "length(A)", "len(A)", "A.size()"], a: 2 },
-            { q: "Lệnh A.remove(x) có tác dụng gì?", options: ["Xóa phần tử tại vị trí x", "Xóa phần tử đầu tiên trong A có giá trị là x", "Xóa tất cả phần tử x", "Xóa danh sách"], a: 1 },
-            { q: "Lệnh A.clear() thực hiện công việc gì?", options: ["Xóa tên biến A", "Xóa toàn bộ các phần tử trong A", "Xóa phần tử cuối cùng", "Xóa phần tử đầu tiên"], a: 1 },
-            { q: "Lệnh A.insert(1, 10) thực hiện công việc gì?", options: ["Xóa phần tử 1 và thêm 10", "Thêm 10 vào cuối danh sách", "Chèn giá trị 10 vào vị trí có chỉ số 1", "Chèn giá trị 1 vào vị trí 10"], a: 2 },
-            { q: "Để kiểm tra giá trị x có xuất hiện trong danh sách A hay không, dùng?", options: ["x in A", "A has x", "find(x, A)", "x is A"], a: 0 },
-            { q: "Cho A = [10, 20]. Sau lệnh A.append(30), danh sách A là?", options: ["[30, 10, 20]", "[10, 30, 20]", "[10, 20, 30]", "[10, 20]"], a: 2 },
-            { q: "Lệnh len([1, 2, 3, 4]) trả về giá trị bao nhiêu?", options: ["4", "3", "5", "0"], a: 0 },
-            { q: "A = [1, 2, 3]. Sau lệnh A.clear(), len(A) bằng bao nhiêu?", options: ["3", "0", "None", "Lỗi"], a: 1 },
+            // LIST: LEN, APPEND, IN, CLEAR, REMOVE, INSERT (18 câu)
+            { q: "Lệnh nào dùng để lấy số lượng phần tử của danh sách A?", options: ["A.len()", "size(A)", "len(A)", "count(A)"], a: 2 },
+            { q: "Lệnh A.append(10) thực hiện công việc gì?", options: ["Thêm 10 vào đầu danh sách", "Thêm 10 vào cuối danh sách", "Xóa số 10", "Chèn 10 vào giữa"], a: 1 },
+            { q: "Lệnh 'x in A' dùng để làm gì?", options: ["In x ra màn hình", "Kiểm tra x có trong A không", "Nhập x vào A", "Xóa x khỏi A"], a: 1 },
+            { q: "Để xóa toàn bộ phần tử trong danh sách A, ta dùng?", options: ["A.remove()", "A.clear()", "A.delete()", "del(A)"], a: 1 },
+            { q: "Lệnh A.remove(5) thực hiện gì?", options: ["Xóa phần tử tại chỉ số 5", "Xóa phần tử đầu tiên có giá trị là 5", "Xóa tất cả các số 5", "Báo lỗi"], a: 1 },
+            { q: "Cú pháp chèn giá trị x vào vị trí chỉ số k trong danh sách A?", options: ["A.insert(k, x)", "A.insert(x, k)", "A.add(k, x)", "A.append(k, x)"], a: 0 },
+            { q: "Cho A = [1, 2]. Sau lệnh A.insert(0, 9), A trở thành?", options: ["[1, 2, 9]", "[1, 9, 2]", "[9, 1, 2]", "[0, 9, 1, 2]"], a: 2 },
+            { q: "Để khởi tạo một danh sách rỗng, ta dùng?", options: ["A = []", "A = ()", "A = {}", "A = 0"], a: 0 },
+            { q: "A = [10, 20, 30]. len(A) cho kết quả?", options: ["30", "2", "3", "0"], a: 2 },
+            { q: "Biểu thức 5 in [1, 2, 3, 4] trả về?", options: ["True", "False", "None", "Error"], a: 1 },
+            { q: "Sau lệnh A.clear(), danh sách A trở thành?", options: ["Danh sách rỗng []", "Biến A bị xóa mất", "A = [0]", "A = None"], a: 0 },
+            { q: "Lệnh A.append([3, 4]) vào danh sách A = [1, 2] sẽ tạo ra?", options: ["[1, 2, 3, 4]", "[1, 2, [3, 4]]", "[3, 4, 1, 2]", "Lỗi"], a: 1 },
+            { q: "Muốn chèn phần tử vào cuối danh sách bằng insert, ta dùng chỉ số nào?", options: ["0", "1", "len(A)", "-1"], a: 2 },
+            { q: "Nếu remove(x) mà x không có trong danh sách, Python sẽ?", options: ["Bỏ qua", "Xóa phần tử đầu tiên", "Báo lỗi ValueError", "Xóa phần tử cuối"], a: 2 },
+            { q: "Duyệt danh sách A: for i in range(len(A)) giúp ta truy cập qua?", options: ["Giá trị phần tử", "Chỉ số phần tử", "Địa chỉ ô nhớ", "Tên biến"], a: 1 },
+            { q: "Danh sách A có 5 phần tử, chỉ số của phần tử cuối cùng là?", options: ["5", "4", "0", "-1 (hoặc 4)"], a: 3 },
+            { q: "Phép toán [1, 2] + [3, 4] cho kết quả?", options: ["[4, 6]", "[1, 2, 3, 4]", "[[1, 2], [3, 4]]", "Lỗi"], a: 1 },
+            { q: "Lệnh nào xóa phần tử theo vị trí chỉ số?", options: ["remove()", "clear()", "del A[i]", "in"], a: 2 },
 
-            // STRING: FIND, SPLIT, JOIN
-            { q: "Lệnh S.find('a') trả về giá trị gì nếu không tìm thấy 'a' trong S?", options: ["0", "False", "-1", "None"], a: 2 },
-            { q: "Lệnh S.split() mặc định tách xâu dựa trên ký tự nào?", options: ["Dấu phẩy", "Dấu gạch ngang", "Dấu chấm", "Khoảng trắng"], a: 3 },
-            { q: "Lệnh '-'.join(['A', 'B', 'C']) cho kết quả là gì?", options: ["ABC", "A-B-C", "A B C", "['A-B-C']"], a: 1 },
-            { q: "Kết quả của 'Tin hoc'.find('hoc') là?", options: ["4", "3", "5", "0"], a: 0 },
-            { q: "S = 'a,b,c'. S.split(',') cho kết quả là danh sách nào?", options: ["['a,b,c']", "['a', 'b', 'c']", "['abc']", "['a', ',', 'b', ',', 'c']"], a: 1 },
-            { q: "Để nối danh sách L = ['Hello', 'World'] thành xâu 'Hello World', dùng?", options: ["' '.join(L)", "L.join(' ')", "join(' ', L)", "L.split(' ')"], a: 0 },
-            { q: "Nếu dùng find() tìm thấy ký tự, nó sẽ trả về?", options: ["Giá trị True", "Ký tự đó", "Chỉ số (vị trí) đầu tiên tìm thấy", "Số lượng ký tự tìm thấy"], a: 2 },
-            { q: "Lệnh nào dùng để tách một xâu thành một danh sách các từ?", options: ["join()", "split()", "find()", "len()"], a: 1 },
-            { q: "Phát biểu nào đúng về xâu và danh sách?", options: ["Xâu có thể dùng append()", "Danh sách có thể dùng split()", "Cả hai đều dùng được len()", "Cả hai đều dùng được clear()"], a: 2 },
-            { q: "Trong range(1, 10, 2), số 2 đóng vai trò là?", options: ["Giá trị bắt đầu", "Giá trị kết thúc", "Bước nhảy (step)", "Số lần lặp"], a: 2 },
-            { q: "Lệnh in dùng để làm gì?", options: ["Kiểm tra phần tử có thuộc tập hợp không", "In dữ liệu ra màn hình", "Nhập dữ liệu", "Khai báo biến lặp"], a: 0 }
+            // STRING: FIND, SPLIT, JOIN (15 câu)
+            { q: "Lệnh S.find('x') trả về gì nếu không tìm thấy 'x'?", options: ["0", "None", "-1", "False"], a: 2 },
+            { q: "Lệnh split() dùng để làm gì?", options: ["Nối các xâu", "Tách xâu thành danh sách", "Tìm kiếm ký tự", "Đếm độ dài"], a: 1 },
+            { q: "Lệnh nào dùng để nối các phần tử của một danh sách thành xâu?", options: ["split()", "find()", "join()", "append()"], a: 2 },
+            { q: "S = 'A B C'. S.split() cho kết quả?", options: ["['A B C']", "['A', 'B', 'C']", "'ABC'", "['A', ' ', 'B', ' ', 'C']"], a: 1 },
+            { q: "'-'.join(['20', '10', '2024']) kết quả là?", options: ["20102024", "['20-10-2024']", "20-10-2024", "20 10 2024"], a: 2 },
+            { q: "Kết quả của 'banana'.find('a') là?", options: ["1", "2", "0", "3"], a: 0 },
+            { q: "Lệnh 'abc'.find('bc') trả về?", options: ["0", "1", "2", "-1"], a: 1 },
+            { q: "S = '1:2:3'. Lệnh S.split(':') dùng dấu gì làm mốc tách?", options: ["Dấu cách", "Dấu phẩy", "Dấu hai chấm", "Dấu chấm"], a: 2 },
+            { q: "Để kiểm tra xâu con 'tin' có trong 'tin hoc' không, dùng?", options: ["find", "in", "Cả A và B đều đúng", "split"], a: 2 },
+            { q: "Lệnh join() yêu cầu các phần tử trong danh sách phải là kiểu?", options: ["Số nguyên", "Xâu ký tự (string)", "Số thực", "Bất kỳ kiểu nào"], a: 1 },
+            { q: "len('Hello World') cho giá trị bao nhiêu?", options: ["10", "11", "12", "9"], a: 1 },
+            { q: "S = 'Python'. Lệnh S.find('P') trả về?", options: ["0", "1", "-1", "P"], a: 0 },
+            { q: "Xâu ký tự có thể thay đổi từng ký tự bằng phép gán S[i] = 'a' không?", options: ["Có", "Không", "Chỉ với xâu dài", "Tùy phiên bản"], a: 1 },
+            { q: "Lệnh ' '.join(['Hoc', 'Tin']) cho kết quả?", options: ["'HocTin'", "'Hoc Tin'", "'Hoc,Tin'", "Lỗi"], a: 1 },
+            { q: "S = 'a,b,c,d'. S.split(',', 2) sẽ tách xâu thành bao nhiêu phần tử?", options: ["2", "3", "4", "1"], a: 1 }
         ];
-
-        // Tạo mảng 80 câu dựa trên các câu hỏi trọng tâm (nhân bản có biến đổi nhẹ để ôn tập kỹ)
-        let questionBank = [];
-        for (let i = 0; i < 80; i++) {
-            const template = rawQuestionBank[i % rawQuestionBank.length];
-            questionBank.push({
-                q: (i >= rawQuestionBank.length) ? `[Ôn tập] ${template.q}` : template.q,
-                options: [...template.options],
-                a: template.a
-            });
-        }
 
         let correct = 0;
         let wrong = 0;
         let answered = 0;
         let currentQuestions = [];
 
-        function shuffle(array) {
+        // Hàm xáo trộn mảng
+        function shuffleArray(array) {
             for (let i = array.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
                 [array[i], array[j]] = [array[j], array[i]];
@@ -129,20 +148,21 @@
 
             currentQuestions.forEach((item, index) => {
                 const card = document.createElement('div');
-                card.className = "bg-white p-6 rounded-2xl shadow-sm border border-slate-200 transition-all";
+                card.className = "bg-white p-7 rounded-3xl shadow-sm border border-slate-100 transition-all hover:shadow-md";
                 card.id = `card-${index}`;
                 
+                // Lưu ý: Không đảo vị trí options trong item.options để tránh lỗi logic A, B, C, D
                 card.innerHTML = `
-                    <div class="flex items-start gap-3 mb-5">
-                        <span class="bg-indigo-100 text-indigo-700 text-xs font-black px-2 py-1 rounded-md mt-1">Q${index + 1}</span>
-                        <p class="font-bold text-slate-800 text-lg leading-snug">${item.q}</p>
+                    <div class="flex items-start gap-4 mb-6">
+                        <span class="bg-teal-600 text-white text-[10px] font-black px-2.5 py-1 rounded-lg mt-1 shadow-sm">CÂU ${index + 1}</span>
+                        <p class="font-bold text-slate-800 text-lg leading-tight">${item.q}</p>
                     </div>
-                    <div class="grid grid-cols-1 gap-3" id="options-group-${index}">
+                    <div class="grid grid-cols-1 gap-3" id="group-${index}">
                         ${item.options.map((opt, i) => `
                             <button onclick="checkAnswer(${index}, ${i === item.a}, this, ${item.a})" 
-                                    class="option-btn text-left p-4 rounded-xl border-2 border-slate-100 hover:border-indigo-200 hover:bg-slate-50 transition-all flex items-center gap-4 group">
-                                <span class="w-7 h-7 flex items-center justify-center rounded-full bg-slate-100 text-slate-400 font-bold text-xs group-hover:bg-indigo-100 group-hover:text-indigo-500">${String.fromCharCode(65 + i)}</span>
-                                <span class="text-slate-700 font-medium">${opt}</span>
+                                    class="option-btn text-left p-4 rounded-2xl border-2 border-slate-50 transition-all flex items-center gap-4 group bg-slate-50/50">
+                                <span class="w-8 h-8 flex items-center justify-center rounded-xl bg-white text-slate-400 font-bold text-xs shadow-sm group-hover:text-teal-500">${String.fromCharCode(65 + i)}</span>
+                                <span class="text-slate-600 font-semibold text-sm">${opt}</span>
                             </button>
                         `).join('')}
                     </div>
@@ -152,7 +172,7 @@
         }
 
         function checkAnswer(qIdx, isCorrect, btn, correctIdx) {
-            const group = document.getElementById(`options-group-${qIdx}`);
+            const group = document.getElementById(`group-${qIdx}`);
             if (group.dataset.answered === "true") return;
 
             group.dataset.answered = "true";
@@ -164,7 +184,7 @@
             } else {
                 btn.classList.add('wrong');
                 wrong++;
-                // Chức năng mới: Hiển thị ngay đáp án đúng khi trả lời sai
+                // Hiển thị đáp án đúng khi trả lời sai
                 const buttons = group.querySelectorAll('.option-btn');
                 buttons[correctIdx].classList.add('correct-hint');
             }
@@ -182,8 +202,8 @@
         }
 
         function shuffleAndRender() {
-            // Chỉ xáo trộn vị trí câu hỏi, không xáo trộn options trong câu hỏi
-            currentQuestions = shuffle([...questionBank]);
+            // Chỉ xáo trộn vị trí các câu hỏi, không xáo trộn options bên trong
+            currentQuestions = shuffleArray([...questionBank]);
             renderQuiz();
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
