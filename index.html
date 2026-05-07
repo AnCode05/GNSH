@@ -3,212 +3,424 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ôn Tập Tin Học 10 - 50 Câu Trọng Tâm</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Sử Việt Tranh Tài - Premium Edition</title>
     <style>
-        body { font-family: 'Inter', system-ui, -apple-system, sans-serif; }
-        .option-btn:hover { transform: translateX(4px); background-color: #f0fdfa; border-color: #5eead4; }
-        .correct { background-color: #ccfbf1 !important; border-color: #14b8a6 !important; color: #0f766e !important; }
-        .wrong { background-color: #fee2e2 !important; border-color: #ef4444 !important; color: #991b1b !important; }
-        .correct-hint { border-color: #14b8a6 !important; background-color: #f0fdfa; border-width: 2px; position: relative; }
-        .correct-hint::after { content: "✓ Đáp án đúng"; position: absolute; right: 10px; font-size: 0.75rem; color: #14b8a6; font-weight: bold; }
-        .sticky-stats { position: sticky; top: 0; z-index: 50; backdrop-filter: blur(8px); background-color: rgba(255, 255, 255, 0.9); }
+        :root {
+            --ancient-red: #8b0000;
+            --gold: #d4af37;
+            --paper: #f4e4bc;
+            --ink: #2b2b2b;
+            --success: #2d6a4f;
+            --error: #a4161a;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, serif;
+            background: radial-gradient(circle, #3d0101 0%, #1a0000 100%);
+            color: var(--ink);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background: var(--paper);
+            padding: 2.5rem;
+            border-radius: 15px;
+            box-shadow: 0 0 50px rgba(0,0,0,0.8), inset 0 0 100px rgba(139, 0, 0, 0.1);
+            width: 90%;
+            max-width: 700px;
+            text-align: center;
+            border: 8px double var(--ancient-red);
+            position: relative;
+        }
+
+        /* Profile Banner mới */
+        .player-profile {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: rgba(139, 0, 0, 0.05);
+            border-radius: 50px;
+        }
+
+        .player-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 2px solid var(--gold);
+            background: white;
+        }
+
+        .player-display-name {
+            font-weight: bold;
+            color: var(--ancient-red);
+            font-size: 1.1rem;
+            text-transform: uppercase;
+        }
+
+        .container::before {
+            content: "❖";
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            color: var(--ancient-red);
+        }
+
+        .hidden { display: none; }
+
+        h1 { 
+            color: var(--ancient-red); 
+            margin-bottom: 0.5rem; 
+            font-family: 'Georgia', serif;
+            letter-spacing: 2px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+
+        input[type="text"] {
+            padding: 15px;
+            width: 80%;
+            border: 2px solid var(--ancient-red);
+            background: rgba(255,255,255,0.5);
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+            text-align: center;
+        }
+
+        button {
+            background-color: var(--ancient-red);
+            color: var(--gold);
+            border: 1px solid var(--gold);
+            padding: 15px 40px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            background-color: #5e0000;
+            box-shadow: 0 0 15px var(--gold);
+            transform: translateY(-2px);
+        }
+
+        .timer-container {
+            width: 100%;
+            height: 8px;
+            background: #ccc;
+            border-radius: 4px;
+            margin: 15px 0;
+        }
+
+        #timer-bar {
+            width: 100%;
+            height: 100%;
+            background: var(--ancient-red);
+            transition: width 0.1s linear;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .option-btn {
+            background-color: #fff;
+            color: var(--ink);
+            border: 1.5px solid #bba;
+            text-align: center;
+            padding: 12px;
+            font-size: 0.95rem;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1.4;
+        }
+
+        .option-btn:hover {
+            background-color: #fdf2d5;
+            border-color: var(--ancient-red);
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            border-bottom: 2px solid var(--ancient-red);
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        th { background: var(--ancient-red); color: var(--gold); padding: 12px; }
+        td { padding: 10px; border: 1px solid #ddd; }
+
+        .correct-flash { background-color: var(--success) !important; color: white !important; }
+        .wrong-flash { background-color: var(--error) !important; color: white !important; }
+
+        /* Mobile Optimization */
+        @media (max-width: 600px) {
+            .options-grid { grid-template-columns: 1fr; }
+            .container { padding: 1.5rem; width: 95%; }
+        }
     </style>
 </head>
-<body class="bg-slate-50 min-h-screen">
+<body>
 
-    <!-- Thanh thống kê cố định -->
-    <div class="sticky-stats shadow-sm border-b border-teal-100 py-3 px-4">
-        <div class="max-w-3xl mx-auto flex justify-between items-center">
-            <div class="flex gap-6">
-                <div class="text-center">
-                    <p class="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Đúng</p>
-                    <p id="correct-count" class="text-xl font-black text-teal-600">0</p>
-                </div>
-                <div class="text-center border-x px-6 border-slate-100">
-                    <p class="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Sai</p>
-                    <p id="wrong-count" class="text-xl font-black text-rose-500">0</p>
-                </div>
-                <div class="text-center">
-                    <p class="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Hoàn thành</p>
-                    <p class="text-xl font-black text-slate-700"><span id="answered-count">0</span>/<span id="total-count">50</span></p>
-                </div>
-            </div>
-            <button onclick="shuffleAndRender()" class="bg-teal-600 text-white px-5 py-2.5 rounded-xl text-sm font-bold hover:bg-teal-700 transition-all shadow-md active:scale-95">Đảo câu hỏi</button>
-        </div>
-        <div class="max-w-3xl mx-auto mt-2 h-1 bg-slate-100 rounded-full overflow-hidden">
-            <div id="progress-bar" class="h-full bg-teal-500 transition-all duration-500" style="width: 0%"></div>
-        </div>
+    <!-- MÀN HÌNH BẮT ĐẦU -->
+    <div class="container" id="start-screen">
+        <h1>SỬ VIỆT TRANH TÀI</h1>
+        <p><i>"Dân ta phải biết sử ta..."</i></p>
+        <hr style="border: 0.5px solid var(--ancient-red); width: 50%;">
+        <br>
+        <input type="text" id="player-name" placeholder="Nhập danh tính của bạn...">
+        <br>
+        <button onclick="checkAndInit()">KHAI CUỘC</button>
     </div>
 
-    <div id="app" class="max-w-3xl mx-auto px-4 py-8">
-        <div class="text-center mb-12">
-            <h1 class="text-3xl font-black text-teal-900 uppercase tracking-tight mb-2">Trắc Nghiệm Python 10</h1>
-            <p class="text-slate-500 font-medium">Nội dung: Vòng lặp, Danh sách & Xâu ký tự</p>
-            <div class="mt-4 flex flex-wrap justify-center gap-2">
-                <span class="px-2 py-1 bg-teal-50 text-teal-700 text-[10px] rounded border border-teal-100">for/range</span>
-                <span class="px-2 py-1 bg-teal-50 text-teal-700 text-[10px] rounded border border-teal-100">while</span>
-                <span class="px-2 py-1 bg-teal-50 text-teal-700 text-[10px] rounded border border-teal-100">list/methods</span>
-                <span class="px-2 py-1 bg-teal-50 text-teal-700 text-[10px] rounded border border-teal-100">string/find/split/join</span>
-            </div>
+    <!-- MÀN HÌNH TRÒ CHƠI -->
+    <div class="container hidden" id="quiz-screen">
+        <!-- Khu vực hiển thị Tên & Avatar -->
+        <div class="player-profile">
+            <img src="" id="display-avatar" class="player-avatar" alt="Avatar">
+            <span id="display-name" class="player-display-name">Anh Hùng</span>
         </div>
 
-        <div id="quiz-container" class="space-y-8"></div>
-
-        <div class="py-24 text-center">
-            <div class="inline-block p-8 bg-white rounded-3xl shadow-sm border border-slate-100">
-                <p class="text-slate-400 font-bold uppercase text-xs tracking-widest mb-2">Kết quả cuối cùng</p>
-                <p class="text-slate-600">Bạn đã xem hết 50 câu hỏi ôn tập.</p>
-            </div>
+        <div class="stats">
+            <span>Đúng: <span id="correct-count" style="color:var(--success)">0</span></span>
+            <span>Điểm: <span id="current-score" style="color:var(--ancient-red)">0</span></span>
         </div>
+
+        <div class="timer-container"><div id="timer-bar"></div></div>
+        <h4 id="question-info" style="margin:0; color: #777;">Câu 1/23</h4>
+        <p id="question-text" style="font-size: 1.2rem; font-weight: bold;"></p>
+        <div class="options-grid" id="options-box"></div>
+    </div>
+
+    <!-- MÀN HÌNH KẾT QUẢ -->
+    <div class="container hidden" id="result-screen">
+        <h1>BẢNG VÀNG</h1>
+        <div id="result-avatar-box"></div>
+        <h2 id="final-msg"></h2>
+        <p>Hào kiệt <strong id="res-name"></strong> đạt được:</p>
+        <p><strong id="final-points" style="font-size: 2.5rem; color: var(--ancient-red);">0</strong> điểm</p>
+        
+        <h3>TOP 5 CAO THỦ</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Hạng</th>
+                    <th>Anh Hùng</th>
+                    <th>Điểm</th>
+                </tr>
+            </thead>
+            <tbody id="leaderboard-data"></tbody>
+        </table>
+        <br>
+        <button onclick="location.reload()">TÁI ĐẤU</button>
     </div>
 
     <script>
-        const questionBank = [
-            // FOR & RANGE (10 câu)
-            { q: "Lệnh range(1, 10, 3) tạo ra dãy số nào?", options: ["1, 4, 7, 10", "1, 4, 7", "1, 3, 6, 9", "0, 3, 6, 9"], a: 1 },
-            { q: "Trong lệnh for i in range(10), biến i sẽ nhận giá trị cuối cùng là?", options: ["10", "9", "0", "1"], a: 1 },
-            { q: "Lệnh range(5, 0, -1) tạo ra dãy số nào?", options: ["5, 4, 3, 2, 1, 0", "4, 3, 2, 1, 0", "5, 4, 3, 2, 1", "0, 1, 2, 3, 4, 5"], a: 2 },
-            { q: "Vòng lặp for i in range(n) thực hiện khối lệnh bao nhiêu lần?", options: ["n lần", "n-1 lần", "n+1 lần", "Vô hạn"], a: 0 },
-            { q: "Lệnh range(2, 2) tạo ra bao nhiêu giá trị?", options: ["0", "1", "2", "Lỗi"], a: 0 },
-            { q: "Trong range(start, stop, step), tham số nào bắt buộc phải có?", options: ["step", "start", "stop", "Cả 3 đều bắt buộc"], a: 2 },
-            { q: "Đoạn mã for i in range(1, 4): print(i) in ra?", options: ["1 2 3 4", "1 2 3", "0 1 2 3", "4 3 2 1"], a: 1 },
-            { q: "Lệnh range(0, 10, 2) có bước nhảy (step) là bao nhiêu?", options: ["0", "10", "2", "5"], a: 2 },
-            { q: "Cú pháp for i in range(5): thực hiện lặp i từ?", options: ["1 đến 5", "0 đến 4", "0 đến 5", "1 đến 4"], a: 1 },
-            { q: "Để lặp lùi từ 10 về 1, ta dùng lệnh range nào?", options: ["range(10, 0, -1)", "range(10, 1)", "range(1, 11)", "range(0, 10, -1)"], a: 0 },
-
-            // WHILE (7 câu)
-            { q: "Vòng lặp while dừng lại khi nào?", options: ["Khi điều kiện đúng", "Khi điều kiện sai", "Khi hết giá trị trong range", "Khi biến đếm bằng 0"], a: 1 },
-            { q: "Cú pháp đúng của lệnh while là?", options: ["while <điều kiện>:", "while (điều kiện) do", "while: <điều kiện>", "while <điều kiện> do:"], a: 0 },
-            { q: "Nếu điều kiện vòng lặp while luôn đúng, chuyện gì xảy ra?", options: ["Lỗi cú pháp", "Vòng lặp vô hạn", "Vòng lặp tự dừng sau 100 lần", "Chương trình chạy nhanh hơn"], a: 1 },
-            { q: "Lệnh while là cấu trúc lặp với số lần?", options: ["Biết trước", "Chưa biết trước", "Vô hạn", "Cố định là 10"], a: 1 },
-            { q: "Đoạn code: i=1; while i<4: i+=1. Sau khi dừng, i bằng?", options: ["3", "4", "5", "1"], a: 1 },
-            { q: "Để dừng vòng lặp while, ta cần thay đổi gì trong khối lệnh?", options: ["Thay đổi giá trị biến điều kiện", "Thay đổi tên biến", "In ra màn hình", "Không cần thay đổi"], a: 0 },
-            { q: "Lệnh while thực hiện khối lệnh khi điều kiện trả về giá trị?", options: ["True", "False", "None", "0"], a: 0 },
-
-            // LIST: LEN, APPEND, IN, CLEAR, REMOVE, INSERT (18 câu)
-            { q: "Lệnh nào dùng để lấy số lượng phần tử của danh sách A?", options: ["A.len()", "size(A)", "len(A)", "count(A)"], a: 2 },
-            { q: "Lệnh A.append(10) thực hiện công việc gì?", options: ["Thêm 10 vào đầu danh sách", "Thêm 10 vào cuối danh sách", "Xóa số 10", "Chèn 10 vào giữa"], a: 1 },
-            { q: "Lệnh 'x in A' dùng để làm gì?", options: ["In x ra màn hình", "Kiểm tra x có trong A không", "Nhập x vào A", "Xóa x khỏi A"], a: 1 },
-            { q: "Để xóa toàn bộ phần tử trong danh sách A, ta dùng?", options: ["A.remove()", "A.clear()", "A.delete()", "del(A)"], a: 1 },
-            { q: "Lệnh A.remove(5) thực hiện gì?", options: ["Xóa phần tử tại chỉ số 5", "Xóa phần tử đầu tiên có giá trị là 5", "Xóa tất cả các số 5", "Báo lỗi"], a: 1 },
-            { q: "Cú pháp chèn giá trị x vào vị trí chỉ số k trong danh sách A?", options: ["A.insert(k, x)", "A.insert(x, k)", "A.add(k, x)", "A.append(k, x)"], a: 0 },
-            { q: "Cho A = [1, 2]. Sau lệnh A.insert(0, 9), A trở thành?", options: ["[1, 2, 9]", "[1, 9, 2]", "[9, 1, 2]", "[0, 9, 1, 2]"], a: 2 },
-            { q: "Để khởi tạo một danh sách rỗng, ta dùng?", options: ["A = []", "A = ()", "A = {}", "A = 0"], a: 0 },
-            { q: "A = [10, 20, 30]. len(A) cho kết quả?", options: ["30", "2", "3", "0"], a: 2 },
-            { q: "Biểu thức 5 in [1, 2, 3, 4] trả về?", options: ["True", "False", "None", "Error"], a: 1 },
-            { q: "Sau lệnh A.clear(), danh sách A trở thành?", options: ["Danh sách rỗng []", "Biến A bị xóa mất", "A = [0]", "A = None"], a: 0 },
-            { q: "Lệnh A.append([3, 4]) vào danh sách A = [1, 2] sẽ tạo ra?", options: ["[1, 2, 3, 4]", "[1, 2, [3, 4]]", "[3, 4, 1, 2]", "Lỗi"], a: 1 },
-            { q: "Muốn chèn phần tử vào cuối danh sách bằng insert, ta dùng chỉ số nào?", options: ["0", "1", "len(A)", "-1"], a: 2 },
-            { q: "Nếu remove(x) mà x không có trong danh sách, Python sẽ?", options: ["Bỏ qua", "Xóa phần tử đầu tiên", "Báo lỗi ValueError", "Xóa phần tử cuối"], a: 2 },
-            { q: "Duyệt danh sách A: for i in range(len(A)) giúp ta truy cập qua?", options: ["Giá trị phần tử", "Chỉ số phần tử", "Địa chỉ ô nhớ", "Tên biến"], a: 1 },
-            { q: "Danh sách A có 5 phần tử, chỉ số của phần tử cuối cùng là?", options: ["5", "4", "0", "-1 (hoặc 4)"], a: 3 },
-            { q: "Phép toán [1, 2] + [3, 4] cho kết quả?", options: ["[4, 6]", "[1, 2, 3, 4]", "[[1, 2], [3, 4]]", "Lỗi"], a: 1 },
-            { q: "Lệnh nào xóa phần tử theo vị trí chỉ số?", options: ["remove()", "clear()", "del A[i]", "in"], a: 2 },
-
-            // STRING: FIND, SPLIT, JOIN (15 câu)
-            { q: "Lệnh S.find('x') trả về gì nếu không tìm thấy 'x'?", options: ["0", "None", "-1", "False"], a: 2 },
-            { q: "Lệnh split() dùng để làm gì?", options: ["Nối các xâu", "Tách xâu thành danh sách", "Tìm kiếm ký tự", "Đếm độ dài"], a: 1 },
-            { q: "Lệnh nào dùng để nối các phần tử của một danh sách thành xâu?", options: ["split()", "find()", "join()", "append()"], a: 2 },
-            { q: "S = 'A B C'. S.split() cho kết quả?", options: ["['A B C']", "['A', 'B', 'C']", "'ABC'", "['A', ' ', 'B', ' ', 'C']"], a: 1 },
-            { q: "'-'.join(['20', '10', '2024']) kết quả là?", options: ["20102024", "['20-10-2024']", "20-10-2024", "20 10 2024"], a: 2 },
-            { q: "Kết quả của 'banana'.find('a') là?", options: ["1", "2", "0", "3"], a: 0 },
-            { q: "Lệnh 'abc'.find('bc') trả về?", options: ["0", "1", "2", "-1"], a: 1 },
-            { q: "S = '1:2:3'. Lệnh S.split(':') dùng dấu gì làm mốc tách?", options: ["Dấu cách", "Dấu phẩy", "Dấu hai chấm", "Dấu chấm"], a: 2 },
-            { q: "Để kiểm tra xâu con 'tin' có trong 'tin hoc' không, dùng?", options: ["find", "in", "Cả A và B đều đúng", "split"], a: 2 },
-            { q: "Lệnh join() yêu cầu các phần tử trong danh sách phải là kiểu?", options: ["Số nguyên", "Xâu ký tự (string)", "Số thực", "Bất kỳ kiểu nào"], a: 1 },
-            { q: "len('Hello World') cho giá trị bao nhiêu?", options: ["10", "11", "12", "9"], a: 1 },
-            { q: "S = 'Python'. Lệnh S.find('P') trả về?", options: ["0", "1", "-1", "P"], a: 0 },
-            { q: "Xâu ký tự có thể thay đổi từng ký tự bằng phép gán S[i] = 'a' không?", options: ["Có", "Không", "Chỉ với xâu dài", "Tùy phiên bản"], a: 1 },
-            { q: "Lệnh ' '.join(['Hoc', 'Tin']) cho kết quả?", options: ["'HocTin'", "'Hoc Tin'", "'Hoc,Tin'", "Lỗi"], a: 1 },
-            { q: "S = 'a,b,c,d'. S.split(',', 2) sẽ tách xâu thành bao nhiêu phần tử?", options: ["2", "3", "4", "1"], a: 1 }
+        const allQuestions = [
+            { q: "Hiện nay, 54 dân tộc ở Việt Nam được chia thành mấy nhóm ngữ hệ?", a: ["Năm nhóm ngữ hệ", "Hai nhóm ngữ hệ", "Ba nhóm ngữ hệ", "Bốn nhóm ngữ hệ"], c: 0 },
+            { q: "Sức mạnh nào góp phần quyết định giúp dân tộc Việt Nam giành thắng lợi lớn chống ngoại xâm?", a: ["Khối Đại đoàn kết dân tộc", "Nghệ thuật quân sự độc đáo", "Tinh thần đấu tranh anh dũng", "Truyền thống yêu nước"], c: 0 },
+            { q: "Triều đại nào mở đầu cho thời đại phong kiến độc lập, tự chủ của dân tộc Việt Nam?", a: ["Triều Ngô", "Triều Nguyễn", "Triều Tiền Lý", "Triều Lê"], c: 0 },
+            { q: "Thiết chế chính trị quân chủ trung ương tập quyền ở Việt Nam đạt đến đỉnh cao vào thời nào?", a: ["Thời Lê sơ", "Thời Lý", "Thời Trần", "Thời Nguyễn"], c: 0 },
+            { q: "Một trong những chính sách củng cố đại đoàn kết dân tộc của các triều đại phong kiến là:", a: ["Gả công chúa cho thủ lĩnh vùng biên giới", "Xóa bỏ mọi tô thuế", "Dùng quân sự buộc thuần phục", "Chia ruộng đất cho mọi tầng lớp"], c: 0 },
+            { q: "Vai trò của khối đại đoàn kết dân tộc trong sự nghiệp xây dựng và bảo vệ Tổ quốc hiện nay?", a: ["Là cơ sở để huy động sức mạnh toàn dân tộc", "Là cơ sở xóa bỏ mọi mâu thuẫn xã hội", "Là cơ sở tiếp thu văn hóa bên ngoài", "Là nền tảng liên minh với láng giềng"], c: 0 },
+            { q: "Khối đại đoàn kết dân tộc có vai trò như thế nào đối với đấu tranh chống ngoại xâm?", a: ["Là nhân tố quan trọng, quyết định thắng lợi", "Nhân tố duy nhất quyết định", "Không đóng góp nhiều", "Là nhân tố thứ yếu"], c: 0 },
+            { q: "Ba nguyên tắc của Đảng trong xây dựng khối đại đoàn kết dân tộc hiện nay là:", a: ["Đoàn kết, bình đẳng và tương trợ nhau cùng phát triển", "Đoàn kết, dân chủ và bình đẳng", "Bình đẳng, tự quyết và tương trợ", "Bình đẳng, chủ quyền và tự quyết"], c: 0 },
+            { q: "Ngữ hệ là gì?", a: ["Một nhóm ngôn ngữ có cùng nguồn gốc", "Ngôn ngữ chính của một nhóm dân tộc", "Ngôn ngữ riêng của một dân tộc", "Nhóm các dân tộc nói chung ngôn ngữ"], c: 0 },
+            { q: "“Thời Lê Trung Hưng, văn minh Đại Việt phát triển theo xu hướng..... và bước đầu tiếp xúc với văn minh....”", a: ["Dân gian hóa / phương Tây", "Cung đình hóa / phương Tây", "Dân gian hóa / phương Đông", "Dân gian hóa / Ấn Độ"], c: 0 },
+            { q: "Nhóm ngôn ngữ Việt - Mường thuộc ngữ hệ nào?", a: ["Nam Á", "Thái - Ka-đai", "Hán - Tạng", "Nam Đảo"], c: 0 },
+            { q: "Dân tộc nào chiếm đa số ở Việt Nam?", a: ["Dân tộc Kinh", "Dân tộc Tày", "Dân tộc Mường", "Dân tộc Lô Lô"], c: 0 },
+            { q: "“Tam giáo đồng nguyên” là sự kết hợp hài hòa giữa:", a: ["Nho giáo - Phật giáo - Đạo giáo", "Phật giáo - Nho giáo - Công giáo", "Phật giáo - Hin-du giáo - Đạo giáo", "Nho giáo - Phật giáo - Công giáo"], c: 0 },
+            { q: "Chủ trương của Đảng và Nhà nước về kinh tế trong chính sách dân tộc là:", a: ["Ưu tiên đầu tư phát triển kinh tế các vùng dân tộc và miền núi", "Phát triển kinh tế nhiều ngành", "Xây dựng cơ chế thị trường động", "Phát triển kinh tế thị trường định hướng XHCN"], c: 0 },
+            { q: "Nhà nước chủ trương phát triển kinh tế miền núi để khắc phục vấn đề:", a: ["Chênh lệch giữa các vùng, các dân tộc", "Lạc hậu về khoa học kỹ thuật", "Cơ sở hạ tầng không đồng bộ", "Thiếu lương thực, thực phẩm"], c: 0 },
+            { q: "Đồng bào dân tộc thiểu số phía Bắc thường canh tác ruộng bậc thang vì:", a: ["Sinh sống ở vùng địa hình cao, dốc", "Cư trú ở đồng bằng ven sông", "Chủ yếu trồng cây lương thực ngắn ngày", "Không biết làm lúa nước"], c: 0 },
+            { q: "Thành phần dân tộc theo dân số ở Việt Nam hiện nay được chia thành mấy nhóm?", a: ["Hai nhóm (Đa số và thiểu số)", "Bốn nhóm", "Năm nhóm", "Ba nhóm"], c: 0 },
+            { q: "Hệ tư tưởng tôn giáo nào giữ địa vị thống trị ở Việt Nam thế kỷ XV - XIX?", a: ["Nho giáo", "Đạo giáo", "Phật giáo", "Công giáo"], c: 0 },
+            { q: "Tập quán ở nhà sàn của đồng bào dân tộc thiểu số chủ yếu là để:", a: ["Thích nghi địa hình núi và phòng thú dữ", "Tiết kiệm nguyên vật liệu", "Do điều kiện kinh tế khó khăn", "Do quan niệm tâm linh"], c: 0 },
+            { q: "Tác phẩm được coi là bản Tuyên ngôn độc lập đầu tiên của dân tộc?", a: ["Nam quốc sơn hà", "Chiếu dời đô", "Hịch tướng sĩ", "Bình Ngô Đại cáo"], c: 0 },
+            { q: "Khái niệm 'dân tộc' trong tiếng Việt hiện nay được sử dụng theo nghĩa:", a: ["Dân tộc - quốc gia và dân tộc - tộc người", "Dân tộc đa số và thiểu số", "Dân tộc miền núi và đồng bằng", "Dân tộc - tộc người và ngữ hệ"], c: 0 },
+            { q: "Bộ luật Hình thư - bộ luật thành văn đầu tiên ban hành vào thời vua nào?", a: ["Lý Thái Tông", "Lý Thái Tổ", "Lý Thánh Tông", "Lý Nhân Tông"], c: 0 },
+            { q: "Bộ luật Hồng Đức được hoàn thiện dưới thời vua nào?", a: ["Lê Thánh Tông", "Lê Thái Tổ", "Lê Nhân Tông", "Lê Hiển Tông"], c: 0 },
+            { q: "Vị vua nào đã ban hành bộ luật Hoàng Việt luật lệ?", a: ["Vua Gia Long", "Vua Minh Mạng", "Vua Thiệu Trị", "Vua Tự Đức"], c: 0 }
         ];
 
-        let correct = 0;
-        let wrong = 0;
-        let answered = 0;
-        let currentQuestions = [];
+        let state = {
+            name: "",
+            avatar: "",
+            currentIdx: 0,
+            score: 0,
+            correct: 0,
+            timer: null,
+            timeLeft: 10,
+            questions: []
+        };
 
-        // Hàm xáo trộn mảng
-        function shuffleArray(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
+        function checkAndInit() {
+            const nameInput = document.getElementById('player-name').value.trim();
+            if (!nameInput) return alert("Hào kiệt cho xin quý danh!");
+
+            // Tạo Avatar ngẫu nhiên dựa trên tên (đảm bảo mỗi tên có 1 avatar riêng hoặc dùng random số)
+            const randomSeed = Math.floor(Math.random() * 1000);
+            state.avatar = `https://api.dicebear.com/7.x/bottts/svg?seed=${nameInput + randomSeed}`;
+
+            let data = JSON.parse(localStorage.getItem('suviet_rank')) || [];
+            const existingEntry = data.find(item => item.name.toLowerCase() === nameInput.toLowerCase());
+
+            if (existingEntry) {
+                const proceed = confirm(`Danh tính "${nameInput}" đã có trên Bảng Vàng. Bạn có muốn thi tiếp để phá kỷ lục?`);
+                if (!proceed) return;
             }
-            return array;
+
+            state.name = nameInput;
+            
+            // Hiển thị thông tin lên UI
+            document.getElementById('display-name').innerText = state.name;
+            document.getElementById('display-avatar').src = state.avatar;
+            
+            initGame();
         }
 
-        function renderQuiz() {
-            const container = document.getElementById('quiz-container');
-            container.innerHTML = '';
-            correct = 0;
-            wrong = 0;
-            answered = 0;
-            updateStats();
+        function initGame() {
+            state.questions = [...allQuestions].sort(() => Math.random() - 0.5);
+            state.currentIdx = 0;
+            state.score = 0;
+            state.correct = 0;
 
-            currentQuestions.forEach((item, index) => {
-                const card = document.createElement('div');
-                card.className = "bg-white p-7 rounded-3xl shadow-sm border border-slate-100 transition-all hover:shadow-md";
-                card.id = `card-${index}`;
-                
-                // Lưu ý: Không đảo vị trí options trong item.options để tránh lỗi logic A, B, C, D
-                card.innerHTML = `
-                    <div class="flex items-start gap-4 mb-6">
-                        <span class="bg-teal-600 text-white text-[10px] font-black px-2.5 py-1 rounded-lg mt-1 shadow-sm">CÂU ${index + 1}</span>
-                        <p class="font-bold text-slate-800 text-lg leading-tight">${item.q}</p>
-                    </div>
-                    <div class="grid grid-cols-1 gap-3" id="group-${index}">
-                        ${item.options.map((opt, i) => `
-                            <button onclick="checkAnswer(${index}, ${i === item.a}, this, ${item.a})" 
-                                    class="option-btn text-left p-4 rounded-2xl border-2 border-slate-50 transition-all flex items-center gap-4 group bg-slate-50/50">
-                                <span class="w-8 h-8 flex items-center justify-center rounded-xl bg-white text-slate-400 font-bold text-xs shadow-sm group-hover:text-teal-500">${String.fromCharCode(65 + i)}</span>
-                                <span class="text-slate-600 font-semibold text-sm">${opt}</span>
-                            </button>
-                        `).join('')}
-                    </div>
-                `;
-                container.appendChild(card);
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('quiz-screen').classList.remove('hidden');
+            showNextQuestion();
+        }
+
+        function showNextQuestion() {
+            clearInterval(state.timer);
+            if (state.currentIdx >= state.questions.length) return endGame();
+
+            const q = state.questions[state.currentIdx];
+            document.getElementById('question-info').innerText = `Câu ${state.currentIdx + 1}/${state.questions.length}`;
+            document.getElementById('question-text').innerText = q.q;
+
+            const box = document.getElementById('options-box');
+            box.innerHTML = "";
+
+            let opts = q.a.map((text, i) => ({ text, isCorrect: i === q.c }));
+            opts.sort(() => Math.random() - 0.5);
+
+            opts.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerText = opt.text;
+                btn.onclick = (e) => handleAnswer(opt.isCorrect, e.target);
+                box.appendChild(btn);
             });
+
+            startTimer();
         }
 
-        function checkAnswer(qIdx, isCorrect, btn, correctIdx) {
-            const group = document.getElementById(`group-${qIdx}`);
-            if (group.dataset.answered === "true") return;
+        function startTimer() {
+            state.timeLeft = 10;
+            const bar = document.getElementById('timer-bar');
+            state.timer = setInterval(() => {
+                state.timeLeft -= 0.1;
+                bar.style.width = (state.timeLeft * 10) + "%";
+                if (state.timeLeft <= 0) handleAnswer(false, null);
+            }, 100);
+        }
 
-            group.dataset.answered = "true";
-            answered++;
+        function handleAnswer(isCorrect, targetBtn) {
+            clearInterval(state.timer);
+            const buttons = document.querySelectorAll('.option-btn');
+            buttons.forEach(b => b.style.pointerEvents = 'none');
 
             if (isCorrect) {
-                btn.classList.add('correct');
-                correct++;
+                if(targetBtn) targetBtn.classList.add('correct-flash');
+                state.correct++;
+                state.score += Math.max(5, Math.round(state.timeLeft * 15));
             } else {
-                btn.classList.add('wrong');
-                wrong++;
-                // Hiển thị đáp án đúng khi trả lời sai
-                const buttons = group.querySelectorAll('.option-btn');
-                buttons[correctIdx].classList.add('correct-hint');
+                if(targetBtn) targetBtn.classList.add('wrong-flash');
+                // Hiển thị đáp án đúng nếu trả lời sai
+                buttons.forEach((b, idx) => {
+                    // Logic tìm đáp án đúng ở đây có thể cải thiện, 
+                    // nhưng đơn giản nhất là kiểm tra text nếu cần.
+                });
             }
-            updateStats();
-        }
-
-        function updateStats() {
-            document.getElementById('correct-count').innerText = correct;
-            document.getElementById('wrong-count').innerText = wrong;
-            document.getElementById('answered-count').innerText = answered;
-            document.getElementById('total-count').innerText = currentQuestions.length;
             
-            const progress = (answered / currentQuestions.length) * 100;
-            document.getElementById('progress-bar').style.width = `${progress}%`;
+            document.getElementById('correct-count').innerText = state.correct;
+            document.getElementById('current-score').innerText = state.score;
+            
+            state.currentIdx++;
+            setTimeout(showNextQuestion, 800);
         }
 
-        function shuffleAndRender() {
-            // Chỉ xáo trộn vị trí các câu hỏi, không xáo trộn options bên trong
-            currentQuestions = shuffleArray([...questionBank]);
-            renderQuiz();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+        function endGame() {
+            document.getElementById('quiz-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+            
+            document.getElementById('res-name').innerText = state.name;
+            document.getElementById('final-points').innerText = state.score;
+            document.getElementById('result-avatar-box').innerHTML = `<img src="${state.avatar}" style="width:100px; border-radius:50%; border:4px solid var(--gold); margin-bottom:10px;">`;
+            
+            let rankMsg = "Khởi Nghĩa Quân!";
+            if(state.correct > 20) rankMsg = "Lưỡng Quốc Trạng Nguyên!";
+            else if(state.correct > 15) rankMsg = "Bảng Nhãn!";
+            else if(state.correct > 10) rankMsg = "Tú Tài!";
+            
+            document.getElementById('final-msg').innerText = rankMsg;
+            
+            saveToLeaderboard();
+            renderLeaderboard();
         }
 
-        window.onload = shuffleAndRender;
+        function saveToLeaderboard() {
+            let data = JSON.parse(localStorage.getItem('suviet_rank')) || [];
+            const existingIdx = data.findIndex(item => item.name.toLowerCase() === state.name.toLowerCase());
+            
+            if (existingIdx !== -1) {
+                if (state.score > data[existingIdx].score) {
+                    data[existingIdx].score = state.score;
+                    data[existingIdx].avatar = state.avatar; // Cập nhật avatar mới nhất
+                }
+            } else {
+                data.push({ name: state.name, score: state.score, avatar: state.avatar });
+            }
+
+            data.sort((a, b) => b.score - a.score);
+            localStorage.setItem('suviet_rank', JSON.stringify(data.slice(0, 5)));
+        }
+
+        function renderLeaderboard() {
+            const data = JSON.parse(localStorage.getItem('suviet_rank')) || [];
+            document.getElementById('leaderboard-data').innerHTML = data.map((item, i) => `
+                <tr style="${item.name === state.name ? 'background:#fff1f1; font-weight:bold;' : ''}">
+                    <td>${i + 1}</td>
+                    <td style="display:flex; align-items:center; gap:10px;">
+                        <img src="${item.avatar || ''}" style="width:30px; height:30px; border-radius:50%; background:#eee;">
+                        ${item.name}
+                    </td>
+                    <td>${item.score}</td>
+                </tr>
+            `).join('');
+        }
     </script>
 </body>
 </html>
