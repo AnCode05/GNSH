@@ -3,423 +3,189 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sử Việt Tranh Tài - Premium Edition</title>
+    <title>Trắc nghiệm Văn minh Đông Nam Á & Việt Nam</title>
     <style>
-        :root {
-            --ancient-red: #8b0000;
-            --gold: #d4af37;
-            --paper: #f4e4bc;
-            --ink: #2b2b2b;
-            --success: #2d6a4f;
-            --error: #a4161a;
-        }
-
         body {
-            font-family: 'Segoe UI', Roboto, serif;
-            background: radial-gradient(circle, #3d0101 0%, #1a0000 100%);
-            color: var(--ink);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 800px;
+            margin: auto;
         }
-
-        .container {
-            background: var(--paper);
-            padding: 2.5rem;
-            border-radius: 15px;
-            box-shadow: 0 0 50px rgba(0,0,0,0.8), inset 0 0 100px rgba(139, 0, 0, 0.1);
-            width: 90%;
-            max-width: 700px;
+        h1 {
             text-align: center;
-            border: 8px double var(--ancient-red);
-            position: relative;
+            color: #2c3e50;
+            border-bottom: 2px solid #2c3e50;
+            padding-bottom: 10px;
         }
-
-        /* Profile Banner mới */
-        .player-profile {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 15px;
-            margin-bottom: 15px;
-            padding: 10px;
-            background: rgba(139, 0, 0, 0.05);
-            border-radius: 50px;
-        }
-
-        .player-avatar {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            border: 2px solid var(--gold);
-            background: white;
-        }
-
-        .player-display-name {
-            font-weight: bold;
-            color: var(--ancient-red);
-            font-size: 1.1rem;
-            text-transform: uppercase;
-        }
-
-        .container::before {
-            content: "❖";
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            color: var(--ancient-red);
-        }
-
-        .hidden { display: none; }
-
-        h1 { 
-            color: var(--ancient-red); 
-            margin-bottom: 0.5rem; 
-            font-family: 'Georgia', serif;
-            letter-spacing: 2px;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
-        }
-
-        input[type="text"] {
-            padding: 15px;
-            width: 80%;
-            border: 2px solid var(--ancient-red);
-            background: rgba(255,255,255,0.5);
-            border-radius: 5px;
+        .question-container {
+            background: #fff;
+            padding: 20px;
             margin-bottom: 20px;
-            font-size: 1.1rem;
-            text-align: center;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
-
-        button {
-            background-color: var(--ancient-red);
-            color: var(--gold);
-            border: 1px solid var(--gold);
-            padding: 15px 40px;
+        .question-text {
+            font-weight: bold;
+            margin-bottom: 15px;
+            display: block;
+        }
+        .options {
+            display: grid;
+            gap: 10px;
+        }
+        .option {
+            padding: 10px 15px;
+            border: 1px solid #ddd;
             border-radius: 5px;
             cursor: pointer;
-            font-size: 1.1rem;
-            font-weight: bold;
-            text-transform: uppercase;
             transition: all 0.3s;
         }
-
-        button:hover {
-            background-color: #5e0000;
-            box-shadow: 0 0 15px var(--gold);
-            transform: translateY(-2px);
+        .option:hover {
+            background-color: #f0f0f0;
         }
-
-        .timer-container {
-            width: 100%;
-            height: 8px;
-            background: #ccc;
-            border-radius: 4px;
-            margin: 15px 0;
+        .correct {
+            background-color: #d4edda !important;
+            border-color: #c3e6cb !important;
+            color: #155724;
         }
-
-        #timer-bar {
-            width: 100%;
-            height: 100%;
-            background: var(--ancient-red);
-            transition: width 0.1s linear;
+        .wrong {
+            background-color: #f8d7da !important;
+            border-color: #f5c6cb !important;
+            color: #721c24;
         }
-
-        .options-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-top: 25px;
-        }
-
-        .option-btn {
-            background-color: #fff;
-            color: var(--ink);
-            border: 1.5px solid #bba;
-            text-align: center;
-            padding: 12px;
-            font-size: 0.95rem;
-            min-height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            line-height: 1.4;
-        }
-
-        .option-btn:hover {
-            background-color: #fdf2d5;
-            border-color: var(--ancient-red);
-        }
-
-        .stats {
-            display: flex;
-            justify-content: space-around;
-            border-bottom: 2px solid var(--ancient-red);
-            padding-bottom: 10px;
-            margin-bottom: 15px;
+        .feedback {
+            margin-top: 10px;
+            font-style: italic;
             font-weight: bold;
+            display: none;
         }
-
-        table {
-            width: 100%;
-            margin-top: 20px;
-            border-collapse: collapse;
-            background: white;
-        }
-
-        th { background: var(--ancient-red); color: var(--gold); padding: 12px; }
-        td { padding: 10px; border: 1px solid #ddd; }
-
-        .correct-flash { background-color: var(--success) !important; color: white !important; }
-        .wrong-flash { background-color: var(--error) !important; color: white !important; }
-
-        /* Mobile Optimization */
-        @media (max-width: 600px) {
-            .options-grid { grid-template-columns: 1fr; }
-            .container { padding: 1.5rem; width: 95%; }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 0.9em;
+            color: #777;
         }
     </style>
 </head>
 <body>
 
-    <!-- MÀN HÌNH BẮT ĐẦU -->
-    <div class="container" id="start-screen">
-        <h1>SỬ VIỆT TRANH TÀI</h1>
-        <p><i>"Dân ta phải biết sử ta..."</i></p>
-        <hr style="border: 0.5px solid var(--ancient-red); width: 50%;">
-        <br>
-        <input type="text" id="player-name" placeholder="Nhập danh tính của bạn...">
-        <br>
-        <button onclick="checkAndInit()">KHAI CUỘC</button>
-    </div>
+    <h1>ÔN TẬP LỊCH SỬ & VĂN MINH</h1>
 
-    <!-- MÀN HÌNH TRÒ CHƠI -->
-    <div class="container hidden" id="quiz-screen">
-        <!-- Khu vực hiển thị Tên & Avatar -->
-        <div class="player-profile">
-            <img src="" id="display-avatar" class="player-avatar" alt="Avatar">
-            <span id="display-name" class="player-display-name">Anh Hùng</span>
-        </div>
+    <div id="quiz-content"></div>
 
-        <div class="stats">
-            <span>Đúng: <span id="correct-count" style="color:var(--success)">0</span></span>
-            <span>Điểm: <span id="current-score" style="color:var(--ancient-red)">0</span></span>
-        </div>
-
-        <div class="timer-container"><div id="timer-bar"></div></div>
-        <h4 id="question-info" style="margin:0; color: #777;">Câu 1/23</h4>
-        <p id="question-text" style="font-size: 1.2rem; font-weight: bold;"></p>
-        <div class="options-grid" id="options-box"></div>
-    </div>
-
-    <!-- MÀN HÌNH KẾT QUẢ -->
-    <div class="container hidden" id="result-screen">
-        <h1>BẢNG VÀNG</h1>
-        <div id="result-avatar-box"></div>
-        <h2 id="final-msg"></h2>
-        <p>Hào kiệt <strong id="res-name"></strong> đạt được:</p>
-        <p><strong id="final-points" style="font-size: 2.5rem; color: var(--ancient-red);">0</strong> điểm</p>
-        
-        <h3>TOP 5 CAO THỦ</h3>
-        <table>
-            <thead>
-                <tr>
-                    <th>Hạng</th>
-                    <th>Anh Hùng</th>
-                    <th>Điểm</th>
-                </tr>
-            </thead>
-            <tbody id="leaderboard-data"></tbody>
-        </table>
-        <br>
-        <button onclick="location.reload()">TÁI ĐẤU</button>
+    <div class="footer">
+        <p>Chúc bạn học tốt!</p>
     </div>
 
     <script>
-        const allQuestions = [
-            { q: "Hiện nay, 54 dân tộc ở Việt Nam được chia thành mấy nhóm ngữ hệ?", a: ["Năm nhóm ngữ hệ", "Hai nhóm ngữ hệ", "Ba nhóm ngữ hệ", "Bốn nhóm ngữ hệ"], c: 0 },
-            { q: "Sức mạnh nào góp phần quyết định giúp dân tộc Việt Nam giành thắng lợi lớn chống ngoại xâm?", a: ["Khối Đại đoàn kết dân tộc", "Nghệ thuật quân sự độc đáo", "Tinh thần đấu tranh anh dũng", "Truyền thống yêu nước"], c: 0 },
-            { q: "Triều đại nào mở đầu cho thời đại phong kiến độc lập, tự chủ của dân tộc Việt Nam?", a: ["Triều Ngô", "Triều Nguyễn", "Triều Tiền Lý", "Triều Lê"], c: 0 },
-            { q: "Thiết chế chính trị quân chủ trung ương tập quyền ở Việt Nam đạt đến đỉnh cao vào thời nào?", a: ["Thời Lê sơ", "Thời Lý", "Thời Trần", "Thời Nguyễn"], c: 0 },
-            { q: "Một trong những chính sách củng cố đại đoàn kết dân tộc của các triều đại phong kiến là:", a: ["Gả công chúa cho thủ lĩnh vùng biên giới", "Xóa bỏ mọi tô thuế", "Dùng quân sự buộc thuần phục", "Chia ruộng đất cho mọi tầng lớp"], c: 0 },
-            { q: "Vai trò của khối đại đoàn kết dân tộc trong sự nghiệp xây dựng và bảo vệ Tổ quốc hiện nay?", a: ["Là cơ sở để huy động sức mạnh toàn dân tộc", "Là cơ sở xóa bỏ mọi mâu thuẫn xã hội", "Là cơ sở tiếp thu văn hóa bên ngoài", "Là nền tảng liên minh với láng giềng"], c: 0 },
-            { q: "Khối đại đoàn kết dân tộc có vai trò như thế nào đối với đấu tranh chống ngoại xâm?", a: ["Là nhân tố quan trọng, quyết định thắng lợi", "Nhân tố duy nhất quyết định", "Không đóng góp nhiều", "Là nhân tố thứ yếu"], c: 0 },
-            { q: "Ba nguyên tắc của Đảng trong xây dựng khối đại đoàn kết dân tộc hiện nay là:", a: ["Đoàn kết, bình đẳng và tương trợ nhau cùng phát triển", "Đoàn kết, dân chủ và bình đẳng", "Bình đẳng, tự quyết và tương trợ", "Bình đẳng, chủ quyền và tự quyết"], c: 0 },
-            { q: "Ngữ hệ là gì?", a: ["Một nhóm ngôn ngữ có cùng nguồn gốc", "Ngôn ngữ chính của một nhóm dân tộc", "Ngôn ngữ riêng của một dân tộc", "Nhóm các dân tộc nói chung ngôn ngữ"], c: 0 },
-            { q: "“Thời Lê Trung Hưng, văn minh Đại Việt phát triển theo xu hướng..... và bước đầu tiếp xúc với văn minh....”", a: ["Dân gian hóa / phương Tây", "Cung đình hóa / phương Tây", "Dân gian hóa / phương Đông", "Dân gian hóa / Ấn Độ"], c: 0 },
-            { q: "Nhóm ngôn ngữ Việt - Mường thuộc ngữ hệ nào?", a: ["Nam Á", "Thái - Ka-đai", "Hán - Tạng", "Nam Đảo"], c: 0 },
-            { q: "Dân tộc nào chiếm đa số ở Việt Nam?", a: ["Dân tộc Kinh", "Dân tộc Tày", "Dân tộc Mường", "Dân tộc Lô Lô"], c: 0 },
-            { q: "“Tam giáo đồng nguyên” là sự kết hợp hài hòa giữa:", a: ["Nho giáo - Phật giáo - Đạo giáo", "Phật giáo - Nho giáo - Công giáo", "Phật giáo - Hin-du giáo - Đạo giáo", "Nho giáo - Phật giáo - Công giáo"], c: 0 },
-            { q: "Chủ trương của Đảng và Nhà nước về kinh tế trong chính sách dân tộc là:", a: ["Ưu tiên đầu tư phát triển kinh tế các vùng dân tộc và miền núi", "Phát triển kinh tế nhiều ngành", "Xây dựng cơ chế thị trường động", "Phát triển kinh tế thị trường định hướng XHCN"], c: 0 },
-            { q: "Nhà nước chủ trương phát triển kinh tế miền núi để khắc phục vấn đề:", a: ["Chênh lệch giữa các vùng, các dân tộc", "Lạc hậu về khoa học kỹ thuật", "Cơ sở hạ tầng không đồng bộ", "Thiếu lương thực, thực phẩm"], c: 0 },
-            { q: "Đồng bào dân tộc thiểu số phía Bắc thường canh tác ruộng bậc thang vì:", a: ["Sinh sống ở vùng địa hình cao, dốc", "Cư trú ở đồng bằng ven sông", "Chủ yếu trồng cây lương thực ngắn ngày", "Không biết làm lúa nước"], c: 0 },
-            { q: "Thành phần dân tộc theo dân số ở Việt Nam hiện nay được chia thành mấy nhóm?", a: ["Hai nhóm (Đa số và thiểu số)", "Bốn nhóm", "Năm nhóm", "Ba nhóm"], c: 0 },
-            { q: "Hệ tư tưởng tôn giáo nào giữ địa vị thống trị ở Việt Nam thế kỷ XV - XIX?", a: ["Nho giáo", "Đạo giáo", "Phật giáo", "Công giáo"], c: 0 },
-            { q: "Tập quán ở nhà sàn của đồng bào dân tộc thiểu số chủ yếu là để:", a: ["Thích nghi địa hình núi và phòng thú dữ", "Tiết kiệm nguyên vật liệu", "Do điều kiện kinh tế khó khăn", "Do quan niệm tâm linh"], c: 0 },
-            { q: "Tác phẩm được coi là bản Tuyên ngôn độc lập đầu tiên của dân tộc?", a: ["Nam quốc sơn hà", "Chiếu dời đô", "Hịch tướng sĩ", "Bình Ngô Đại cáo"], c: 0 },
-            { q: "Khái niệm 'dân tộc' trong tiếng Việt hiện nay được sử dụng theo nghĩa:", a: ["Dân tộc - quốc gia và dân tộc - tộc người", "Dân tộc đa số và thiểu số", "Dân tộc miền núi và đồng bằng", "Dân tộc - tộc người và ngữ hệ"], c: 0 },
-            { q: "Bộ luật Hình thư - bộ luật thành văn đầu tiên ban hành vào thời vua nào?", a: ["Lý Thái Tông", "Lý Thái Tổ", "Lý Thánh Tông", "Lý Nhân Tông"], c: 0 },
-            { q: "Bộ luật Hồng Đức được hoàn thiện dưới thời vua nào?", a: ["Lê Thánh Tông", "Lê Thái Tổ", "Lê Nhân Tông", "Lê Hiển Tông"], c: 0 },
-            { q: "Vị vua nào đã ban hành bộ luật Hoàng Việt luật lệ?", a: ["Vua Gia Long", "Vua Minh Mạng", "Vua Thiệu Trị", "Vua Tự Đức"], c: 0 }
+        const quizData = [
+            { q: "Câu 1: Văn minh Đông Nam Á thời kì cổ - trung đại chịu ảnh hưởng mạnh mẽ nhất từ nền văn minh nào sau đây?", a: ["Văn minh Lưỡng Hà", "Văn minh Hy Lạp", "Văn minh Ấn Độ", "Văn minh Ai Cập"], c: 2 },
+            { q: "Câu 2: Giai đoạn phát triển rực rỡ của các quốc gia phong kiến Đông Nam Á nằm trong khoảng thời gian nào?", a: ["Từ đầu Công nguyên đến thế kỷ VII", "Từ thế kỷ X đến thế kỷ XX", "Từ thế kỷ XVI đến thế kỷ XIX", "Từ thế kỷ VII đến cuối thế kỷ XV"], c: 3 },
+            { q: "Câu 3: Tôn giáo nào sau đây không phải là tôn giáo phổ biến tại Đông Nam Á thời kì cổ - trung đại?", a: ["Thần đạo (Shinto)", "Hồi giáo", "Hin-đu giáo", "Phật giáo"], c: 0 },
+            { q: "Câu 4: Cơ sở quan trọng nhất dẫn đến sự hình thành văn minh Văn Lang - Âu Lạc là gì?", a: ["Văn hóa Sa Huỳnh", "Văn hóa Đông Sơn", "Văn hóa Phùng Nguyên", "Văn hóa Hòa Bình"], c: 1 },
+            { q: "Câu 5: Nền văn minh Chăm-pa được hình thành trên cơ sở của nền văn hóa nào?", a: ["Văn hóa Sa Huỳnh", "Văn hóa Óc Eo", "Văn hóa Đông Sơn", "Văn hóa Đồng Nai"], c: 0 },
+            { q: "Câu 6: Thành tựu đặc trưng nhất của cư dân Văn Lang - Âu Lạc thể hiện trình độ đúc đồng điêu luyện là gì?", a: ["Hệ thống thủy lợi", "Tháp Chàm", "Trống đồng", "Chữ Phạn"], c: 2 },
+            { q: "Câu 7: Khái niệm 'Văn minh Đại Việt' dùng để chỉ giai đoạn lịch sử nào của Việt Nam?", a: ["Từ thế kỷ VII đến thế kỷ XV", "Từ thế kỷ X đến giữa thế kỷ XIX", "Trước Công nguyên đến thế kỷ X", "Từ năm 1945 đến nay"], c: 1 },
+            { q: "Câu 8: Hệ tư tưởng nào giữ vai trò chủ đạo trong tổ chức bộ máy nhà nước và giáo dục Đại Việt từ thời Lê sơ?", a: ["Thiên Chúa giáo", "Nho giáo", "Đạo giáo", "Phật giáo"], c: 1 },
+            { q: "Câu 9: Bộ luật thành văn đầu tiên của nước ta là bộ luật nào?", a: ["Quốc triều hình luật (thời Lê)", "Hoàng Việt luật lệ (thời Nguyễn)", "Hình thư (thời Lý)", "Hình luật (thời Trần)"], c: 2 },
+            { q: "Câu 10: Nội dung nào sau đây phản ánh đúng đời sống vật chất của cư dân các dân tộc thiểu số ở Việt Nam?", a: ["Canh tác lúa nước trên ruộng bậc thang hoặc nương rẫy", "Sống chủ yếu trong các ngôi nhà gạch trệt", "Chỉ sử dụng vải tơ tằm để may mặc", "Phương tiện di chuyển chính là tàu hỏa"], c: 0 },
+            { q: "Câu 11: Thành tựu nào dưới đây là sản phẩm của nền văn minh Chăm-pa?", a: ["Chùa Một Cột", "Thánh địa Mỹ Sơn", "Thành nhà Hồ", "Văn Miếu - Quốc Tử Giám"], c: 1 },
+            { q: "Câu 12: Hoạt động kinh tế chủ yếu của cư dân Phù Nam là gì?", a: ["Săn bắn và hái lượm", "Thủ công nghiệp và khai khoáng", "Nông nghiệp lúa nước và thương mại đường biển", "Chăn nuôi gia súc quy mô lớn"], c: 2 },
+            { q: "Câu 13: Những quốc gia sơ kỳ đầu tiên ở Đông Nam Á hình thành chủ yếu ở khu vực nào?", a: ["Lưu vực các dòng sông lớn và ven biển", "Các vùng núi cao và cao nguyên", "Sâu trong nội địa", "Các vùng bán hoang mạc"], c: 0 },
+            { q: "Câu 14: Điểm chung về tôn giáo của các quốc gia cổ trên đất nước Việt Nam?", a: ["Đều chỉ thờ duy nhất một vị thần", "Đều tiếp nhận Đạo giáo từ rất sớm", "Đều có tín ngưỡng thờ cúng tổ tiên và các vị thần tự nhiên", "Đều lấy Thiên Chúa giáo làm quốc giáo"], c: 2 },
+            { q: "Câu 15: Văn minh Đại Việt thời Lý - Trần phát triển theo hướng nào?", a: ["Chỉ chú trọng phát triển quân sự", "Kết hợp nhuần nhuyễn yếu tố bản địa và ảnh hưởng Phật giáo, Nho giáo", "Hoàn toàn rập khuôn mô hình phương Tây", "Chỉ phát triển các ngành khoa học tự nhiên"], c: 1 },
+            { q: "Câu 16: Một trong những đặc điểm nổi bật của kiến trúc Đại Việt thời kì độc lập tự chủ?", a: ["Chỉ xây bằng vật liệu đá nguyên khối", "Công trình mang phong cách Ai Cập", "Xuất hiện công trình Phật giáo quy mô như tháp, chùa", "Không có công trình kiến trúc dân gian"], c: 2 },
+            { q: "Câu 17: Ai thống nhất đất nước sau thời kì 12 sứ quân?", a: ["Lý Công Uẩn", "Lê Hoàn", "Đinh Bộ Lĩnh", "Ngô Quyền"], c: 2 },
+            { q: "Câu 18: Tác phẩm nào được coi là bản 'Tuyên ngôn độc lập' đầu tiên?", a: ["Bình Ngô Đại Cáo", "Nam quốc sơn hà", "Tuyên ngôn Độc lập (1945)", "Hịch tướng sĩ"], c: 1 },
+            { q: "Câu 19: Nghề thủ công truyền thống nào vẫn duy trì đến nay?", a: ["Làm gốm, dệt lụa", "Chế tạo vũ khí hạt nhân", "Sản xuất máy bay", "Luyện kim màu"], c: 0 },
+            { q: "Câu 20: Ý nghĩa quan trọng nhất của bảo tồn di sản văn hóa?", a: ["Thu nhiều tiền du lịch", "Phục vụ quân sự", "Giữ gìn bản sắc và giá trị tinh thần", "Để so sánh với quốc gia khác"], c: 2 },
+            { q: "Câu 21: Tín ngưỡng bản địa đặc trưng và lâu đời nhất của người Việt?", a: ["Thờ cúng tổ tiên", "Thờ thần Zeus", "Thờ các vị thần Hy Lạp", "Tôn thờ các vị thần Ấn Độ giáo"], c: 0 },
+            { q: "Câu 22: Đặc điểm chung của nhà ở truyền thống cư dân Việt cổ?", a: ["Nhà lầu gạch", "Nhà chung cư", "Nhà sàn mái cong hình thuyền hoặc mái tròn", "Nhà lều da thú"], c: 2 },
+            { q: "Câu 23: Trang phục phổ biến của nam giới Văn Lang - Âu Lạc?", a: ["Mặc com-lê", "Mặc áo dài khăn đóng", "Ở trần, đóng khố", "Mặc áo giáp sắt"], c: 2 },
+            { q: "Câu 24: Di sản Chăm-pa nào được UNESCO công nhận là Di sản Văn hóa Thế giới?", a: ["Cố đô Huế", "Thành nhà Hồ", "Thánh địa Mỹ Sơn", "Phố cổ Hội An"], c: 2 },
+            { q: "Câu 25: Chữ viết của người Chăm cổ dựa trên cơ sở loại chữ nào?", a: ["Chữ Phạn (Sanskrit)", "Chữ Hán", "Chữ Latinh", "Chữ Nôm"], c: 0 },
+            { q: "Câu 26: Tình hình tôn giáo ở Đại Việt thời Lý - Trần?", a: ["Nho giáo độc tôn", "Tam giáo đồng nguyên", "Chỉ có Phật giáo", "Thiên Chúa giáo là quốc giáo"], c: 1 },
+            { q: "Câu 27: Triều Nguyễn xây dựng công trình cung đình nào đồ sộ nhất?", a: ["Hoàng thành Thăng Long", "Kinh thành Huế", "Thành Gia Định", "Thành cổ Loa"], c: 1 },
+            { q: "Câu 28: Lễ hội truyền thống lớn nhất ở đồng bằng Bắc Bộ?", a: ["Lễ hội Tháp Bà Ponagar", "Lễ hội đua ghe Ngo", "Lễ hội chùa Hương", "Lễ hội Cầu ngư"], c: 2 },
+            { q: "Câu 29: Giá trị cốt lõi văn minh Đại Việt để lại?", a: ["Kỹ thuật xây nhà cao tầng", "Tinh thần yêu nước, tự cường và nhân ái", "Công thức món ăn Tây Âu", "Hệ thống máy móc hiện đại"], c: 1 },
+            { q: "Câu 30: Ý nghĩa duy trì trò chơi dân gian?", a: ["Giữ gìn giá trị văn hóa truyền thống", "Thay thế thể thao hiện đại", "Chỉ phục vụ khách du lịch", "Không có ý nghĩa gì"], c: 0 },
+            { q: "Câu 31: Khoa thi đầu tiên của nhà Lý tổ chức năm nào?", a: ["1010", "1075", "1225", "1428"], c: 1 },
+            { q: "Câu 32: Quốc Tử Giám được xây dựng dưới triều vua nào?", a: ["Lý Thái Tổ", "Lý Nhân Tông", "Lý Thánh Tông", "Trần Thánh Tông"], c: 2 },
+            { q: "Câu 33: Loại chữ viết người Việt tạo ra dựa trên chữ Hán?", a: ["Chữ Quốc ngữ", "Chữ Nôm", "Chữ Phạn", "Chữ Chăm cổ"], c: 1 },
+            { q: "Câu 34: Bình Ngô Đại Cáo ra đời sau thắng lợi của cuộc khởi nghĩa nào?", a: ["Hai Bà Trưng", "Lý Bí", "Lam Sơn", "Tây Sơn"], c: 2 },
+            { q: "Câu 35: Múa rối nước ra đời từ nền văn minh nào?", a: ["Văn minh Chăm-pa", "Văn minh Đại Việt", "Văn minh Phù Nam", "Văn minh Trung Hoa"], c: 1 },
+            { q: "Câu 36: Di sản phi vật thể vinh danh năm 2003?", a: ["Hát Xoan", "Đờn ca tài tử", "Nhã nhạc cung đình Huế", "Ca trù"], c: 2 },
+            { q: "Câu 37: Thầy thuốc tiêu biểu nhất lịch sử Đại Việt?", a: ["Chu Văn An", "Hải Thượng Lãn Ông", "Nguyễn Trãi", "Lê Quý Đôn"], c: 1 },
+            { q: "Câu 38: Ý nghĩa dựng bia Tiến sĩ tại Văn Miếu?", a: ["Trang trí", "Tôn vinh nhân tài và khuyến học", "Ghi chép quân sự", "Làm cột mốc địa giới"], c: 1 },
+            { q: "Câu 39: Tình hình văn học Đại Việt thế kỷ X - XIX?", a: ["Chỉ có văn học dân gian", "Phát triển song song chữ Hán và chữ Nôm", "Bị thay thế bởi văn học phương Tây", "Chỉ tập trung tôn giáo"], c: 1 },
+            { q: "Câu 40: Thách thức lớn nhất bảo tồn di sản hiện nay?", a: ["Quá nhiều người quan tâm", "Đô thị hóa và biến đổi khí hậu", "Không còn di sản nào", "Di sản không giá trị"], c: 1 },
+            { q: "Câu 41: Di sản văn hóa vật thể là?", a: ["Quan họ Bắc Ninh", "Hoàng thành Thăng Long", "Bài Chòi", "Thờ cúng Hùng Vương"], c: 1 },
+            { q: "Câu 42: Vương quốc Phù Nam hình thành chủ yếu ở khu vực nào?", a: ["Vùng núi phía Bắc", "Duyên hải miền Trung", "Khu vực Nam Bộ", "Vùng Tây Nguyên"], c: 2 },
+            { q: "Câu 43: Thương cảng tiêu biểu nhất của Phù Nam?", a: ["Vân Đồn", "Hội An", "Óc Eo", "Đà Nẵng"], c: 2 },
+            { q: "Câu 44: Điểm giống nhau về tự nhiên của 3 nền văn minh cổ Việt Nam?", a: ["Vùng núi cao", "Gắn với sông lớn và biển", "Bán hoang mạc", "Không có khoáng sản"], c: 1 },
+            { q: "Câu 45: Thành tựu khẩn hoang, mở mang bờ cõi của Đại Việt?", a: ["Xây thành lũy quân sự", "Xác lập chủ quyền vùng đất Nam Bộ", "Ngừng sản xuất đi biển", "Chế tạo tàu hơi nước"], c: 1 },
+            { q: "Câu 46: Ý nghĩa UNESCO công nhận di sản Việt Nam?", a: ["Thành nước công nghiệp", "Khẳng định giá trị văn hóa và trách nhiệm bảo tồn", "Không cần đầu tư ngân sách", "Ép nước khác dùng tiếng Việt"], c: 1 },
+            { q: "Câu 47: Cố đô Huế gắn liền với triều đại nào?", a: ["Lý", "Trần", "Lê sơ", "Nguyễn"], c: 3 },
+            { q: "Câu 48: Người Việt tiếp thu văn hóa bên ngoài để?", a: ["Thay thế văn hóa bản địa", "Làm phong phú bản sắc dân tộc", "Thành văn hóa phương Tây", "Xóa bỏ phong tục cũ"], c: 1 },
+            { q: "Câu 49: Trách nhiệm thế hệ trẻ với di sản?", a: ["Chỉ cần biết tên", "Trân trọng, bảo vệ và giới thiệu", "Thay đổi cấu trúc theo ý thích", "Không cần quan tâm"], c: 1 },
+            { q: "Câu 50: Nội dung đúng về tiến trình văn minh Việt Nam?", a: ["Dòng chảy liên tục, kế thừa và phát triển", "Không liên quan nhau", "Bắt đầu từ khi Pháp xâm lược", "Sao chép hoàn toàn từ bên ngoài"], c: 0 }
         ];
 
-        let state = {
-            name: "",
-            avatar: "",
-            currentIdx: 0,
-            score: 0,
-            correct: 0,
-            timer: null,
-            timeLeft: 10,
-            questions: []
-        };
+        const container = document.getElementById('quiz-content');
 
-        function checkAndInit() {
-            const nameInput = document.getElementById('player-name').value.trim();
-            if (!nameInput) return alert("Hào kiệt cho xin quý danh!");
-
-            // Tạo Avatar ngẫu nhiên dựa trên tên (đảm bảo mỗi tên có 1 avatar riêng hoặc dùng random số)
-            const randomSeed = Math.floor(Math.random() * 1000);
-            state.avatar = `https://api.dicebear.com/7.x/bottts/svg?seed=${nameInput + randomSeed}`;
-
-            let data = JSON.parse(localStorage.getItem('suviet_rank')) || [];
-            const existingEntry = data.find(item => item.name.toLowerCase() === nameInput.toLowerCase());
-
-            if (existingEntry) {
-                const proceed = confirm(`Danh tính "${nameInput}" đã có trên Bảng Vàng. Bạn có muốn thi tiếp để phá kỷ lục?`);
-                if (!proceed) return;
-            }
-
-            state.name = nameInput;
+        quizData.forEach((item, qIndex) => {
+            const qDiv = document.createElement('div');
+            qDiv.className = 'question-container';
             
-            // Hiển thị thông tin lên UI
-            document.getElementById('display-name').innerText = state.name;
-            document.getElementById('display-avatar').src = state.avatar;
-            
-            initGame();
-        }
+            const qText = document.createElement('span');
+            qText.className = 'question-text';
+            qText.innerText = item.q;
+            qDiv.appendChild(qText);
 
-        function initGame() {
-            state.questions = [...allQuestions].sort(() => Math.random() - 0.5);
-            state.currentIdx = 0;
-            state.score = 0;
-            state.correct = 0;
+            const optionsDiv = document.createElement('div');
+            optionsDiv.className = 'options';
 
-            document.getElementById('start-screen').classList.add('hidden');
-            document.getElementById('quiz-screen').classList.remove('hidden');
-            showNextQuestion();
-        }
+            const feedback = document.createElement('div');
+            feedback.className = 'feedback';
+            feedback.id = `fb-${qIndex}`;
 
-        function showNextQuestion() {
-            clearInterval(state.timer);
-            if (state.currentIdx >= state.questions.length) return endGame();
-
-            const q = state.questions[state.currentIdx];
-            document.getElementById('question-info').innerText = `Câu ${state.currentIdx + 1}/${state.questions.length}`;
-            document.getElementById('question-text').innerText = q.q;
-
-            const box = document.getElementById('options-box');
-            box.innerHTML = "";
-
-            let opts = q.a.map((text, i) => ({ text, isCorrect: i === q.c }));
-            opts.sort(() => Math.random() - 0.5);
-
-            opts.forEach(opt => {
-                const btn = document.createElement('button');
-                btn.className = 'option-btn';
-                btn.innerText = opt.text;
-                btn.onclick = (e) => handleAnswer(opt.isCorrect, e.target);
-                box.appendChild(btn);
+            item.a.forEach((opt, oIndex) => {
+                const optDiv = document.createElement('div');
+                optDiv.className = 'option';
+                optDiv.innerText = String.fromCharCode(65 + oIndex) + ". " + opt;
+                optDiv.onclick = function() {
+                    checkAnswer(qIndex, oIndex, item.c, optionsDiv, feedback);
+                };
+                optionsDiv.appendChild(optDiv);
             });
 
-            startTimer();
-        }
+            qDiv.appendChild(optionsDiv);
+            qDiv.appendChild(feedback);
+            container.appendChild(qDiv);
+        });
 
-        function startTimer() {
-            state.timeLeft = 10;
-            const bar = document.getElementById('timer-bar');
-            state.timer = setInterval(() => {
-                state.timeLeft -= 0.1;
-                bar.style.width = (state.timeLeft * 10) + "%";
-                if (state.timeLeft <= 0) handleAnswer(false, null);
-            }, 100);
-        }
-
-        function handleAnswer(isCorrect, targetBtn) {
-            clearInterval(state.timer);
-            const buttons = document.querySelectorAll('.option-btn');
-            buttons.forEach(b => b.style.pointerEvents = 'none');
-
-            if (isCorrect) {
-                if(targetBtn) targetBtn.classList.add('correct-flash');
-                state.correct++;
-                state.score += Math.max(5, Math.round(state.timeLeft * 15));
-            } else {
-                if(targetBtn) targetBtn.classList.add('wrong-flash');
-                // Hiển thị đáp án đúng nếu trả lời sai
-                buttons.forEach((b, idx) => {
-                    // Logic tìm đáp án đúng ở đây có thể cải thiện, 
-                    // nhưng đơn giản nhất là kiểm tra text nếu cần.
-                });
-            }
+        function checkAnswer(qIdx, selectedIdx, correctIdx, optionsContainer, feedback) {
+            const options = optionsContainer.children;
             
-            document.getElementById('correct-count').innerText = state.correct;
-            document.getElementById('current-score').innerText = state.score;
-            
-            state.currentIdx++;
-            setTimeout(showNextQuestion, 800);
-        }
-
-        function endGame() {
-            document.getElementById('quiz-screen').classList.add('hidden');
-            document.getElementById('result-screen').classList.remove('hidden');
-            
-            document.getElementById('res-name').innerText = state.name;
-            document.getElementById('final-points').innerText = state.score;
-            document.getElementById('result-avatar-box').innerHTML = `<img src="${state.avatar}" style="width:100px; border-radius:50%; border:4px solid var(--gold); margin-bottom:10px;">`;
-            
-            let rankMsg = "Khởi Nghĩa Quân!";
-            if(state.correct > 20) rankMsg = "Lưỡng Quốc Trạng Nguyên!";
-            else if(state.correct > 15) rankMsg = "Bảng Nhãn!";
-            else if(state.correct > 10) rankMsg = "Tú Tài!";
-            
-            document.getElementById('final-msg').innerText = rankMsg;
-            
-            saveToLeaderboard();
-            renderLeaderboard();
-        }
-
-        function saveToLeaderboard() {
-            let data = JSON.parse(localStorage.getItem('suviet_rank')) || [];
-            const existingIdx = data.findIndex(item => item.name.toLowerCase() === state.name.toLowerCase());
-            
-            if (existingIdx !== -1) {
-                if (state.score > data[existingIdx].score) {
-                    data[existingIdx].score = state.score;
-                    data[existingIdx].avatar = state.avatar; // Cập nhật avatar mới nhất
-                }
-            } else {
-                data.push({ name: state.name, score: state.score, avatar: state.avatar });
+            // Disable clicking again
+            for (let opt of options) {
+                opt.style.pointerEvents = 'none';
             }
 
-            data.sort((a, b) => b.score - a.score);
-            localStorage.setItem('suviet_rank', JSON.stringify(data.slice(0, 5)));
-        }
-
-        function renderLeaderboard() {
-            const data = JSON.parse(localStorage.getItem('suviet_rank')) || [];
-            document.getElementById('leaderboard-data').innerHTML = data.map((item, i) => `
-                <tr style="${item.name === state.name ? 'background:#fff1f1; font-weight:bold;' : ''}">
-                    <td>${i + 1}</td>
-                    <td style="display:flex; align-items:center; gap:10px;">
-                        <img src="${item.avatar || ''}" style="width:30px; height:30px; border-radius:50%; background:#eee;">
-                        ${item.name}
-                    </td>
-                    <td>${item.score}</td>
-                </tr>
-            `).join('');
+            if (selectedIdx === correctIdx) {
+                options[selectedIdx].classList.add('correct');
+                feedback.innerText = "Chính xác!";
+                feedback.style.color = "#155724";
+            } else {
+                options[selectedIdx].classList.add('wrong');
+                options[correctIdx].classList.add('correct');
+                feedback.innerText = "Sai rồi! Đáp án đúng là: " + String.fromCharCode(65 + correctIdx);
+                feedback.style.color = "#721c24";
+            }
+            feedback.style.display = 'block';
         }
     </script>
 </body>
