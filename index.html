@@ -1,192 +1,1051 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trắc nghiệm Văn minh Đông Nam Á & Việt Nam</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f7f6;
-            color: #333;
-            line-height: 1.6;
-            padding: 20px;
-            max-width: 800px;
-            margin: auto;
-        }
-        h1 {
-            text-align: center;
-            color: #2c3e50;
-            border-bottom: 2px solid #2c3e50;
-            padding-bottom: 10px;
-        }
-        .question-container {
-            background: #fff;
-            padding: 20px;
-            margin-bottom: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        .question-text {
-            font-weight: bold;
-            margin-bottom: 15px;
-            display: block;
-        }
-        .options {
-            display: grid;
-            gap: 10px;
-        }
-        .option {
-            padding: 10px 15px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        .option:hover {
-            background-color: #f0f0f0;
-        }
-        .correct {
-            background-color: #d4edda !important;
-            border-color: #c3e6cb !important;
-            color: #155724;
-        }
-        .wrong {
-            background-color: #f8d7da !important;
-            border-color: #f5c6cb !important;
-            color: #721c24;
-        }
-        .feedback {
-            margin-top: 10px;
-            font-style: italic;
-            font-weight: bold;
-            display: none;
-        }
-        .footer {
-            text-align: center;
-            margin-top: 30px;
-            font-size: 0.9em;
-            color: #777;
-        }
-    </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Quiz Lịch Sử Việt Nam</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Be Vietnam Pro',sans-serif;
+}
+
+body{
+    min-height:100vh;
+    background:
+    radial-gradient(circle at top left,#1e3a8a 0%,transparent 30%),
+    radial-gradient(circle at bottom right,#7c3aed 0%,transparent 30%),
+    #050816;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:25px;
+    color:white;
+}
+
+.quiz-container{
+    width:100%;
+    max-width:900px;
+    background:rgba(15,23,42,0.9);
+    backdrop-filter:blur(16px);
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:30px;
+    padding:35px;
+    box-shadow:
+    0 10px 40px rgba(0,0,0,0.45),
+    0 0 40px rgba(59,130,246,0.12);
+}
+
+.header{
+    margin-bottom:28px;
+}
+
+.title{
+    font-size:34px;
+    font-weight:700;
+    background:linear-gradient(90deg,#38bdf8,#a855f7);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    margin-bottom:10px;
+}
+
+.sub{
+    color:#94a3b8;
+    font-size:15px;
+}
+
+.stats{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:15px;
+    margin:25px 0;
+}
+
+.stat-box{
+    background:rgba(255,255,255,0.04);
+    border:1px solid rgba(255,255,255,0.08);
+    padding:18px;
+    border-radius:18px;
+    text-align:center;
+}
+
+.stat-label{
+    color:#94a3b8;
+    font-size:14px;
+    margin-bottom:8px;
+}
+
+.stat-value{
+    font-size:26px;
+    font-weight:700;
+}
+
+.correct-color{
+    color:#22c55e;
+}
+
+.wrong-color{
+    color:#ef4444;
+}
+
+.question-color{
+    color:#38bdf8;
+}
+
+.progress-container{
+    width:100%;
+    height:16px;
+    background:#172036;
+    border-radius:999px;
+    overflow:hidden;
+    margin-bottom:35px;
+}
+
+.progress-bar{
+    width:0%;
+    height:100%;
+    border-radius:999px;
+    background:linear-gradient(90deg,#38bdf8,#8b5cf6);
+    transition:0.35s;
+}
+
+.question-box{
+    background:rgba(255,255,255,0.04);
+    border:1px solid rgba(255,255,255,0.06);
+    border-radius:24px;
+    padding:28px;
+}
+
+.question-number{
+    color:#38bdf8;
+    font-weight:600;
+    margin-bottom:15px;
+}
+
+.question{
+    font-size:25px;
+    line-height:1.6;
+    font-weight:600;
+    margin-bottom:30px;
+}
+
+.answers{
+    display:grid;
+    gap:18px;
+}
+
+.answer{
+    padding:18px 20px;
+    border-radius:18px;
+    background:#131c31;
+    border:2px solid transparent;
+    cursor:pointer;
+    transition:0.25s;
+    font-size:17px;
+    line-height:1.5;
+}
+
+.answer:hover{
+    transform:translateY(-3px);
+    background:#1d2946;
+    border-color:#3b82f6;
+}
+
+.correct{
+    background:rgba(34,197,94,0.15)!important;
+    border-color:#22c55e!important;
+    color:#dcfce7;
+}
+
+.wrong{
+    background:rgba(239,68,68,0.15)!important;
+    border-color:#ef4444!important;
+    color:#fee2e2;
+}
+
+.result{
+    text-align:center;
+    padding:40px 10px;
+}
+
+.result h2{
+    font-size:40px;
+    margin-bottom:20px;
+    background:linear-gradient(90deg,#38bdf8,#a855f7);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+}
+
+.result p{
+    font-size:22px;
+    margin:14px 0;
+}
+
+.score{
+    font-size:60px;
+    font-weight:700;
+    margin:20px 0;
+    color:#38bdf8;
+}
+
+@media(max-width:768px){
+
+    .quiz-container{
+        padding:22px;
+    }
+
+    .stats{
+        grid-template-columns:1fr;
+    }
+
+    .question{
+        font-size:20px;
+    }
+
+    .answer{
+        font-size:15px;
+    }
+
+    .title{
+        font-size:28px;
+    }
+
+}
+
+</style>
 </head>
+
 <body>
 
-    <h1>ÔN TẬP LỊCH SỬ & VĂN MINH</h1>
+<div class="quiz-container">
 
-    <div id="quiz-content"></div>
-
-    <div class="footer">
-        <p>Chúc bạn học tốt!</p>
+    <div class="header">
+        <div class="title">Quiz Lịch Sử Việt Nam</div>
+        <div class="sub">55 câu trắc nghiệm • Giao diện hiện đại • Tự động xáo câu hỏi</div>
     </div>
 
-    <script>
-        const quizData = [
-            { q: "Câu 1: Văn minh Đông Nam Á thời kì cổ - trung đại chịu ảnh hưởng mạnh mẽ nhất từ nền văn minh nào sau đây?", a: ["Văn minh Lưỡng Hà", "Văn minh Hy Lạp", "Văn minh Ấn Độ", "Văn minh Ai Cập"], c: 2 },
-            { q: "Câu 2: Giai đoạn phát triển rực rỡ của các quốc gia phong kiến Đông Nam Á nằm trong khoảng thời gian nào?", a: ["Từ đầu Công nguyên đến thế kỷ VII", "Từ thế kỷ X đến thế kỷ XX", "Từ thế kỷ XVI đến thế kỷ XIX", "Từ thế kỷ VII đến cuối thế kỷ XV"], c: 3 },
-            { q: "Câu 3: Tôn giáo nào sau đây không phải là tôn giáo phổ biến tại Đông Nam Á thời kì cổ - trung đại?", a: ["Thần đạo (Shinto)", "Hồi giáo", "Hin-đu giáo", "Phật giáo"], c: 0 },
-            { q: "Câu 4: Cơ sở quan trọng nhất dẫn đến sự hình thành văn minh Văn Lang - Âu Lạc là gì?", a: ["Văn hóa Sa Huỳnh", "Văn hóa Đông Sơn", "Văn hóa Phùng Nguyên", "Văn hóa Hòa Bình"], c: 1 },
-            { q: "Câu 5: Nền văn minh Chăm-pa được hình thành trên cơ sở của nền văn hóa nào?", a: ["Văn hóa Sa Huỳnh", "Văn hóa Óc Eo", "Văn hóa Đông Sơn", "Văn hóa Đồng Nai"], c: 0 },
-            { q: "Câu 6: Thành tựu đặc trưng nhất của cư dân Văn Lang - Âu Lạc thể hiện trình độ đúc đồng điêu luyện là gì?", a: ["Hệ thống thủy lợi", "Tháp Chàm", "Trống đồng", "Chữ Phạn"], c: 2 },
-            { q: "Câu 7: Khái niệm 'Văn minh Đại Việt' dùng để chỉ giai đoạn lịch sử nào của Việt Nam?", a: ["Từ thế kỷ VII đến thế kỷ XV", "Từ thế kỷ X đến giữa thế kỷ XIX", "Trước Công nguyên đến thế kỷ X", "Từ năm 1945 đến nay"], c: 1 },
-            { q: "Câu 8: Hệ tư tưởng nào giữ vai trò chủ đạo trong tổ chức bộ máy nhà nước và giáo dục Đại Việt từ thời Lê sơ?", a: ["Thiên Chúa giáo", "Nho giáo", "Đạo giáo", "Phật giáo"], c: 1 },
-            { q: "Câu 9: Bộ luật thành văn đầu tiên của nước ta là bộ luật nào?", a: ["Quốc triều hình luật (thời Lê)", "Hoàng Việt luật lệ (thời Nguyễn)", "Hình thư (thời Lý)", "Hình luật (thời Trần)"], c: 2 },
-            { q: "Câu 10: Nội dung nào sau đây phản ánh đúng đời sống vật chất của cư dân các dân tộc thiểu số ở Việt Nam?", a: ["Canh tác lúa nước trên ruộng bậc thang hoặc nương rẫy", "Sống chủ yếu trong các ngôi nhà gạch trệt", "Chỉ sử dụng vải tơ tằm để may mặc", "Phương tiện di chuyển chính là tàu hỏa"], c: 0 },
-            { q: "Câu 11: Thành tựu nào dưới đây là sản phẩm của nền văn minh Chăm-pa?", a: ["Chùa Một Cột", "Thánh địa Mỹ Sơn", "Thành nhà Hồ", "Văn Miếu - Quốc Tử Giám"], c: 1 },
-            { q: "Câu 12: Hoạt động kinh tế chủ yếu của cư dân Phù Nam là gì?", a: ["Săn bắn và hái lượm", "Thủ công nghiệp và khai khoáng", "Nông nghiệp lúa nước và thương mại đường biển", "Chăn nuôi gia súc quy mô lớn"], c: 2 },
-            { q: "Câu 13: Những quốc gia sơ kỳ đầu tiên ở Đông Nam Á hình thành chủ yếu ở khu vực nào?", a: ["Lưu vực các dòng sông lớn và ven biển", "Các vùng núi cao và cao nguyên", "Sâu trong nội địa", "Các vùng bán hoang mạc"], c: 0 },
-            { q: "Câu 14: Điểm chung về tôn giáo của các quốc gia cổ trên đất nước Việt Nam?", a: ["Đều chỉ thờ duy nhất một vị thần", "Đều tiếp nhận Đạo giáo từ rất sớm", "Đều có tín ngưỡng thờ cúng tổ tiên và các vị thần tự nhiên", "Đều lấy Thiên Chúa giáo làm quốc giáo"], c: 2 },
-            { q: "Câu 15: Văn minh Đại Việt thời Lý - Trần phát triển theo hướng nào?", a: ["Chỉ chú trọng phát triển quân sự", "Kết hợp nhuần nhuyễn yếu tố bản địa và ảnh hưởng Phật giáo, Nho giáo", "Hoàn toàn rập khuôn mô hình phương Tây", "Chỉ phát triển các ngành khoa học tự nhiên"], c: 1 },
-            { q: "Câu 16: Một trong những đặc điểm nổi bật của kiến trúc Đại Việt thời kì độc lập tự chủ?", a: ["Chỉ xây bằng vật liệu đá nguyên khối", "Công trình mang phong cách Ai Cập", "Xuất hiện công trình Phật giáo quy mô như tháp, chùa", "Không có công trình kiến trúc dân gian"], c: 2 },
-            { q: "Câu 17: Ai thống nhất đất nước sau thời kì 12 sứ quân?", a: ["Lý Công Uẩn", "Lê Hoàn", "Đinh Bộ Lĩnh", "Ngô Quyền"], c: 2 },
-            { q: "Câu 18: Tác phẩm nào được coi là bản 'Tuyên ngôn độc lập' đầu tiên?", a: ["Bình Ngô Đại Cáo", "Nam quốc sơn hà", "Tuyên ngôn Độc lập (1945)", "Hịch tướng sĩ"], c: 1 },
-            { q: "Câu 19: Nghề thủ công truyền thống nào vẫn duy trì đến nay?", a: ["Làm gốm, dệt lụa", "Chế tạo vũ khí hạt nhân", "Sản xuất máy bay", "Luyện kim màu"], c: 0 },
-            { q: "Câu 20: Ý nghĩa quan trọng nhất của bảo tồn di sản văn hóa?", a: ["Thu nhiều tiền du lịch", "Phục vụ quân sự", "Giữ gìn bản sắc và giá trị tinh thần", "Để so sánh với quốc gia khác"], c: 2 },
-            { q: "Câu 21: Tín ngưỡng bản địa đặc trưng và lâu đời nhất của người Việt?", a: ["Thờ cúng tổ tiên", "Thờ thần Zeus", "Thờ các vị thần Hy Lạp", "Tôn thờ các vị thần Ấn Độ giáo"], c: 0 },
-            { q: "Câu 22: Đặc điểm chung của nhà ở truyền thống cư dân Việt cổ?", a: ["Nhà lầu gạch", "Nhà chung cư", "Nhà sàn mái cong hình thuyền hoặc mái tròn", "Nhà lều da thú"], c: 2 },
-            { q: "Câu 23: Trang phục phổ biến của nam giới Văn Lang - Âu Lạc?", a: ["Mặc com-lê", "Mặc áo dài khăn đóng", "Ở trần, đóng khố", "Mặc áo giáp sắt"], c: 2 },
-            { q: "Câu 24: Di sản Chăm-pa nào được UNESCO công nhận là Di sản Văn hóa Thế giới?", a: ["Cố đô Huế", "Thành nhà Hồ", "Thánh địa Mỹ Sơn", "Phố cổ Hội An"], c: 2 },
-            { q: "Câu 25: Chữ viết của người Chăm cổ dựa trên cơ sở loại chữ nào?", a: ["Chữ Phạn (Sanskrit)", "Chữ Hán", "Chữ Latinh", "Chữ Nôm"], c: 0 },
-            { q: "Câu 26: Tình hình tôn giáo ở Đại Việt thời Lý - Trần?", a: ["Nho giáo độc tôn", "Tam giáo đồng nguyên", "Chỉ có Phật giáo", "Thiên Chúa giáo là quốc giáo"], c: 1 },
-            { q: "Câu 27: Triều Nguyễn xây dựng công trình cung đình nào đồ sộ nhất?", a: ["Hoàng thành Thăng Long", "Kinh thành Huế", "Thành Gia Định", "Thành cổ Loa"], c: 1 },
-            { q: "Câu 28: Lễ hội truyền thống lớn nhất ở đồng bằng Bắc Bộ?", a: ["Lễ hội Tháp Bà Ponagar", "Lễ hội đua ghe Ngo", "Lễ hội chùa Hương", "Lễ hội Cầu ngư"], c: 2 },
-            { q: "Câu 29: Giá trị cốt lõi văn minh Đại Việt để lại?", a: ["Kỹ thuật xây nhà cao tầng", "Tinh thần yêu nước, tự cường và nhân ái", "Công thức món ăn Tây Âu", "Hệ thống máy móc hiện đại"], c: 1 },
-            { q: "Câu 30: Ý nghĩa duy trì trò chơi dân gian?", a: ["Giữ gìn giá trị văn hóa truyền thống", "Thay thế thể thao hiện đại", "Chỉ phục vụ khách du lịch", "Không có ý nghĩa gì"], c: 0 },
-            { q: "Câu 31: Khoa thi đầu tiên của nhà Lý tổ chức năm nào?", a: ["1010", "1075", "1225", "1428"], c: 1 },
-            { q: "Câu 32: Quốc Tử Giám được xây dựng dưới triều vua nào?", a: ["Lý Thái Tổ", "Lý Nhân Tông", "Lý Thánh Tông", "Trần Thánh Tông"], c: 2 },
-            { q: "Câu 33: Loại chữ viết người Việt tạo ra dựa trên chữ Hán?", a: ["Chữ Quốc ngữ", "Chữ Nôm", "Chữ Phạn", "Chữ Chăm cổ"], c: 1 },
-            { q: "Câu 34: Bình Ngô Đại Cáo ra đời sau thắng lợi của cuộc khởi nghĩa nào?", a: ["Hai Bà Trưng", "Lý Bí", "Lam Sơn", "Tây Sơn"], c: 2 },
-            { q: "Câu 35: Múa rối nước ra đời từ nền văn minh nào?", a: ["Văn minh Chăm-pa", "Văn minh Đại Việt", "Văn minh Phù Nam", "Văn minh Trung Hoa"], c: 1 },
-            { q: "Câu 36: Di sản phi vật thể vinh danh năm 2003?", a: ["Hát Xoan", "Đờn ca tài tử", "Nhã nhạc cung đình Huế", "Ca trù"], c: 2 },
-            { q: "Câu 37: Thầy thuốc tiêu biểu nhất lịch sử Đại Việt?", a: ["Chu Văn An", "Hải Thượng Lãn Ông", "Nguyễn Trãi", "Lê Quý Đôn"], c: 1 },
-            { q: "Câu 38: Ý nghĩa dựng bia Tiến sĩ tại Văn Miếu?", a: ["Trang trí", "Tôn vinh nhân tài và khuyến học", "Ghi chép quân sự", "Làm cột mốc địa giới"], c: 1 },
-            { q: "Câu 39: Tình hình văn học Đại Việt thế kỷ X - XIX?", a: ["Chỉ có văn học dân gian", "Phát triển song song chữ Hán và chữ Nôm", "Bị thay thế bởi văn học phương Tây", "Chỉ tập trung tôn giáo"], c: 1 },
-            { q: "Câu 40: Thách thức lớn nhất bảo tồn di sản hiện nay?", a: ["Quá nhiều người quan tâm", "Đô thị hóa và biến đổi khí hậu", "Không còn di sản nào", "Di sản không giá trị"], c: 1 },
-            { q: "Câu 41: Di sản văn hóa vật thể là?", a: ["Quan họ Bắc Ninh", "Hoàng thành Thăng Long", "Bài Chòi", "Thờ cúng Hùng Vương"], c: 1 },
-            { q: "Câu 42: Vương quốc Phù Nam hình thành chủ yếu ở khu vực nào?", a: ["Vùng núi phía Bắc", "Duyên hải miền Trung", "Khu vực Nam Bộ", "Vùng Tây Nguyên"], c: 2 },
-            { q: "Câu 43: Thương cảng tiêu biểu nhất của Phù Nam?", a: ["Vân Đồn", "Hội An", "Óc Eo", "Đà Nẵng"], c: 2 },
-            { q: "Câu 44: Điểm giống nhau về tự nhiên của 3 nền văn minh cổ Việt Nam?", a: ["Vùng núi cao", "Gắn với sông lớn và biển", "Bán hoang mạc", "Không có khoáng sản"], c: 1 },
-            { q: "Câu 45: Thành tựu khẩn hoang, mở mang bờ cõi của Đại Việt?", a: ["Xây thành lũy quân sự", "Xác lập chủ quyền vùng đất Nam Bộ", "Ngừng sản xuất đi biển", "Chế tạo tàu hơi nước"], c: 1 },
-            { q: "Câu 46: Ý nghĩa UNESCO công nhận di sản Việt Nam?", a: ["Thành nước công nghiệp", "Khẳng định giá trị văn hóa và trách nhiệm bảo tồn", "Không cần đầu tư ngân sách", "Ép nước khác dùng tiếng Việt"], c: 1 },
-            { q: "Câu 47: Cố đô Huế gắn liền với triều đại nào?", a: ["Lý", "Trần", "Lê sơ", "Nguyễn"], c: 3 },
-            { q: "Câu 48: Người Việt tiếp thu văn hóa bên ngoài để?", a: ["Thay thế văn hóa bản địa", "Làm phong phú bản sắc dân tộc", "Thành văn hóa phương Tây", "Xóa bỏ phong tục cũ"], c: 1 },
-            { q: "Câu 49: Trách nhiệm thế hệ trẻ với di sản?", a: ["Chỉ cần biết tên", "Trân trọng, bảo vệ và giới thiệu", "Thay đổi cấu trúc theo ý thích", "Không cần quan tâm"], c: 1 },
-            { q: "Câu 50: Nội dung đúng về tiến trình văn minh Việt Nam?", a: ["Dòng chảy liên tục, kế thừa và phát triển", "Không liên quan nhau", "Bắt đầu từ khi Pháp xâm lược", "Sao chép hoàn toàn từ bên ngoài"], c: 0 }
-        ];
+    <div class="stats">
 
-        const container = document.getElementById('quiz-content');
+        <div class="stat-box">
+            <div class="stat-label">Câu hiện tại</div>
+            <div class="stat-value question-color">
+                <span id="current">1</span>/<span id="total">55</span>
+            </div>
+        </div>
 
-        quizData.forEach((item, qIndex) => {
-            const qDiv = document.createElement('div');
-            qDiv.className = 'question-container';
-            
-            const qText = document.createElement('span');
-            qText.className = 'question-text';
-            qText.innerText = item.q;
-            qDiv.appendChild(qText);
+        <div class="stat-box">
+            <div class="stat-label">Số câu đúng</div>
+            <div class="stat-value correct-color" id="correct">0</div>
+        </div>
 
-            const optionsDiv = document.createElement('div');
-            optionsDiv.className = 'options';
+        <div class="stat-box">
+            <div class="stat-label">Số câu sai</div>
+            <div class="stat-value wrong-color" id="wrong">0</div>
+        </div>
 
-            const feedback = document.createElement('div');
-            feedback.className = 'feedback';
-            feedback.id = `fb-${qIndex}`;
+    </div>
 
-            item.a.forEach((opt, oIndex) => {
-                const optDiv = document.createElement('div');
-                optDiv.className = 'option';
-                optDiv.innerText = String.fromCharCode(65 + oIndex) + ". " + opt;
-                optDiv.onclick = function() {
-                    checkAnswer(qIndex, oIndex, item.c, optionsDiv, feedback);
-                };
-                optionsDiv.appendChild(optDiv);
-            });
+    <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
 
-            qDiv.appendChild(optionsDiv);
-            qDiv.appendChild(feedback);
-            container.appendChild(qDiv);
-        });
+    <div id="quizArea">
 
-        function checkAnswer(qIdx, selectedIdx, correctIdx, optionsContainer, feedback) {
-            const options = optionsContainer.children;
-            
-            // Disable clicking again
-            for (let opt of options) {
-                opt.style.pointerEvents = 'none';
-            }
+        <div class="question-box">
 
-            if (selectedIdx === correctIdx) {
-                options[selectedIdx].classList.add('correct');
-                feedback.innerText = "Chính xác!";
-                feedback.style.color = "#155724";
-            } else {
-                options[selectedIdx].classList.add('wrong');
-                options[correctIdx].classList.add('correct');
-                feedback.innerText = "Sai rồi! Đáp án đúng là: " + String.fromCharCode(65 + correctIdx);
-                feedback.style.color = "#721c24";
-            }
-            feedback.style.display = 'block';
+            <div class="question-number" id="questionNumber">
+                Câu 1
+            </div>
+
+            <div class="question" id="question">
+            </div>
+
+            <div class="answers" id="answers">
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+const questions = [
+
+{
+question:"Nhóm ngữ hệ Nam Á gồm những nhóm ngôn ngữ nào sau đây?",
+answers:[
+"Tày - Thái và Môn - Khơ-me",
+"Việt - Mường và Mã Lai - Đa Đảo",
+"Việt - Mường và Môn - Khơ-me",
+"Việt - Mường và Tày - Thái"
+],
+correct:2
+},
+
+{
+question:"Ngữ hệ là gì?",
+answers:[
+"Là ngôn ngữ chính của một nhóm dân tộc",
+"Là một nhóm dân tộc nói cùng ngôn ngữ",
+"Là một nhóm các ngôn ngữ có cùng nguồn gốc",
+"Là ngôn ngữ riêng của một dân tộc"
+],
+correct:2
+},
+
+{
+question:"54 dân tộc ở Việt Nam được chia thành mấy nhóm ngữ hệ?",
+answers:[
+"2 nhóm",
+"3 nhóm",
+"4 nhóm",
+"5 nhóm"
+],
+correct:3
+},
+
+{
+question:"Ở Việt Nam hiện nay có bao nhiêu nhóm ngôn ngữ?",
+answers:[
+"5 nhóm",
+"6 nhóm",
+"7 nhóm",
+"8 nhóm"
+],
+correct:3
+},
+
+{
+question:"Nhóm ngôn ngữ Việt - Mường thuộc ngữ hệ nào?",
+answers:[
+"Nam Á",
+"Nam Đảo",
+"Thái - Ka-dai",
+"Hán - Tạng"
+],
+correct:0
+},
+
+{
+question:"Dân tộc nào chiếm đa số ở Việt Nam?",
+answers:[
+"Kinh",
+"Lô Lô",
+"Mường",
+"Tày"
+],
+correct:0
+},
+
+{
+question:"Khái niệm dân tộc hiện nay được hiểu theo những nghĩa nào?",
+answers:[
+"Dân tộc - quốc gia và dân tộc - tộc người",
+"Dân tộc đa số và dân tộc thiểu số",
+"Dân tộc miền núi và đồng bằng",
+"Dân tộc và ngữ hệ"
+],
+correct:0
+},
+
+{
+question:"Thành phần dân tộc theo dân số được chia thành mấy nhóm?",
+answers:[
+"2 nhóm",
+"3 nhóm",
+"4 nhóm",
+"5 nhóm"
+],
+correct:0
+},
+
+{
+question:"Khối đại đoàn kết dân tộc hình thành từ khi nào?",
+answers:[
+"Thời Văn Lang - Âu Lạc",
+"Thời Bắc thuộc",
+"Thời phong kiến độc lập",
+"Kháng chiến chống Mỹ"
+],
+correct:0
+},
+
+{
+question:"Truyền thuyết minh chứng cho khối đại đoàn kết dân tộc là gì?",
+answers:[
+"Con Rồng cháu Tiên",
+"Bánh chưng bánh giầy",
+"Sơn Tinh Thủy Tinh",
+"Mỵ Châu Trọng Thủy"
+],
+correct:0
+},
+
+{
+question:"Nội dung nào không phản ánh đúng cơ sở hình thành khối đại đoàn kết dân tộc?",
+answers:[
+"Cơ chế chính sách nhà nước",
+"Làm thủy lợi",
+"Giao lưu buôn bán",
+"Đoàn kết chống ngoại xâm"
+],
+correct:0
+},
+
+{
+question:"Khối đại đoàn kết dân tộc có vai trò gì?",
+answers:[
+"Không đóng góp nhiều",
+"Là nhân tố quyết định thắng lợi",
+"Nhân tố thứ yếu",
+"Nhân tố duy nhất"
+],
+correct:1
+},
+
+{
+question:"Sức mạnh góp phần quyết định thắng lợi chống ngoại xâm là gì?",
+answers:[
+"Nghệ thuật quân sự",
+"Khối đại đoàn kết dân tộc",
+"Tinh thần chiến đấu",
+"Truyền thống yêu nước"
+],
+correct:1
+},
+
+{
+question:"Khối đại đoàn kết dân tộc phát huy cao độ khi nào?",
+answers:[
+"Khi đất nước bị ngoại xâm",
+"Kinh tế phát triển",
+"Hợp tác khu vực",
+"Hợp tác quốc tế"
+],
+correct:0
+},
+
+{
+question:"Các triều đại phong kiến thực hiện khối đoàn kết dân tộc như thế nào?",
+answers:[
+"Luôn quan tâm xây dựng",
+"Không quan tâm",
+"Kì thị dân tộc thiểu số",
+"Tách biệt dân tộc"
+],
+correct:0
+},
+
+{
+question:"Chính sách củng cố đoàn kết dân tộc thời phong kiến là gì?",
+answers:[
+"Gả công chúa cho thủ lĩnh vùng biên",
+"Chia ruộng toàn dân",
+"Xóa mọi loại thuế",
+"Dùng quân sự thường xuyên"
+],
+correct:0
+},
+
+{
+question:"Vai trò của khối đại đoàn kết hiện nay là gì?",
+answers:[
+"Huy động sức mạnh toàn dân",
+"Liên minh với láng giềng",
+"Xóa mọi mâu thuẫn",
+"Giao lưu văn hóa"
+],
+correct:0
+},
+
+{
+question:"Mặt trận dân tộc thống nhất đầu tiên tên là gì?",
+answers:[
+"Hội phản đế nhân dân",
+"Hội phản đế Đồng Minh",
+"Hội phản đế Việt Nam",
+"Hội phản đế Đông Dương"
+],
+correct:1
+},
+
+{
+question:"Khối đại đoàn kết hiện nay tập trung trong tổ chức nào?",
+answers:[
+"Hội đồng dân tộc",
+"Mặt trận Tổ quốc Việt Nam",
+"Hội đồng nhân dân",
+"Quốc hội"
+],
+correct:1
+},
+
+{
+question:"Ba nguyên tắc xây dựng khối đại đoàn kết dân tộc là gì?",
+answers:[
+"Bình đẳng, tự quyết, tương trợ",
+"Đoàn kết, dân chủ, bình đẳng",
+"Bình đẳng, chủ quyền, tự quyết",
+"Đoàn kết, bình đẳng, tương trợ"
+],
+correct:3
+},
+
+{
+question:"Chủ trương kinh tế đối với dân tộc là gì?",
+answers:[
+"Phát triển miền núi",
+"Phát triển đồng bằng",
+"Phát triển trọng điểm",
+"Phát triển VAC"
+],
+correct:0
+},
+
+{
+question:"Chủ trương kinh tế của Đảng và Nhà nước là gì?",
+answers:[
+"Quản lý kinh tế thị trường",
+"Phát triển nhiều ngành",
+"Ưu tiên vùng dân tộc miền núi",
+"Phát triển kinh tế thị trường"
+],
+correct:2
+},
+
+{
+question:"Mục tiêu phát triển kinh tế miền núi là gì?",
+answers:[
+"Khắc phục chênh lệch vùng miền",
+"Trở thành trung tâm kinh tế",
+"Hội nhập thế giới",
+"Tự cung tự cấp"
+],
+correct:0
+},
+
+{
+question:"Nhà nước phát triển miền núi để khắc phục điều gì?",
+answers:[
+"Chênh lệch vùng miền",
+"Thiếu lương thực",
+"Lạc hậu kỹ thuật",
+"Hạ tầng kém"
+],
+correct:0
+},
+
+{
+question:"Nội dung bao trùm chính sách văn hóa là gì?",
+answers:[
+"Tiếp thu tinh hoa bên ngoài",
+"Xây dựng nền văn hóa tiên tiến đậm đà bản sắc",
+"Không tiếp thu văn hóa ngoài",
+"Chỉ tiếp thu văn hóa đồng chủng"
+],
+correct:1
+},
+
+{
+question:"Chính sách dân tộc về an ninh quốc phòng là gì?",
+answers:[
+"Giải quyết quan hệ dân tộc",
+"Củng cố lãnh thổ",
+"Quan hệ láng giềng",
+"Tôn vinh giá trị truyền thống"
+],
+correct:0
+},
+
+{
+question:"Chính sách xã hội tập trung vào đối tượng nào?",
+answers:[
+"Vùng dân tộc thiểu số",
+"Vùng người Kinh",
+"Vùng trung du",
+"Vùng đồng bằng"
+],
+correct:0
+},
+
+{
+question:"Ý nào không đúng về chính sách xã hội dân tộc?",
+answers:[
+"Xuất phát từ đường lối chung",
+"Xuất phát từ vùng kinh tế trọng điểm",
+"Xuất phát từ kết cấu xã hội",
+"Xuất phát từ tập quán truyền thống"
+],
+correct:1
+},
+
+{
+question:"Ý nghĩa của chính sách dân tộc là gì?",
+answers:[
+"Nâng cao đời sống đồng bào",
+"Phát triển kinh tế nhanh",
+"Nâng cao vị thế quốc tế",
+"Tạo đa dạng văn hóa"
+],
+correct:0
+},
+
+{
+question:"Lễ Tịch điền thể hiện chính sách gì?",
+answers:[
+"Chú trọng nông nghiệp",
+"Hạn chế ngoại thương",
+"Phát triển thương mại",
+"Phát triển công nghiệp"
+],
+correct:0
+},
+
+{
+question:"Xây dựng đàn Xã Tắc mang ý nghĩa gì?",
+answers:[
+"Coi trọng nông nghiệp",
+"Coi trọng độc lập dân tộc",
+"Vũ khí chiến đấu",
+"Khuyến khích thương nghiệp"
+],
+correct:0
+},
+
+{
+question:"Thiết chế quân chủ tập quyền đạt đỉnh cao thời nào?",
+answers:[
+"Đinh - Tiền Lê",
+"Trần",
+"Lý",
+"Lê sơ"
+],
+correct:3
+},
+
+{
+question:"Năm 1428 thành lập triều đại nào?",
+answers:[
+"Lý",
+"Trần",
+"Hồ",
+"Lê"
+],
+correct:3
+},
+
+{
+question:"Bộ luật Hình thư được ban hành dưới triều nào?",
+answers:[
+"Lý",
+"Trần",
+"Lê",
+"Nguyễn"
+],
+correct:0
+},
+
+{
+question:"Ý nghĩa quan trọng nhất của Hình thư là gì?",
+answers:[
+"Khuyến khích nông nghiệp",
+"Vua nắm quyền",
+"Đặt cơ sở pháp lý thành văn",
+"Xóa bỏ hình phạt hà khắc"
+],
+correct:2
+},
+
+{
+question:"Tên chính thức của Bộ luật Hồng Đức là gì?",
+answers:[
+"Hình thư",
+"Quốc triều Hình luật",
+"Hoàng Việt luật lệ",
+"Hình luật sơ thảo"
+],
+correct:1
+},
+
+{
+question:"Bộ luật Hồng Đức hoàn thiện dưới thời vua nào?",
+answers:[
+"Lê Thái Tổ",
+"Lê Thánh Tông",
+"Lê Nhân Tông",
+"Lê Hiến Tông"
+],
+correct:1
+},
+
+{
+question:"Hoàng Việt luật lệ được ban hành dưới triều nào?",
+answers:[
+"Tây Sơn",
+"Lê Trung hưng",
+"Nguyễn",
+"Mạc"
+],
+correct:2
+},
+
+{
+question:"Ai ban hành Hoàng Việt luật lệ?",
+answers:[
+"Minh Mạng",
+"Gia Long",
+"Thiệu Trị",
+"Tự Đức"
+],
+correct:1
+},
+
+{
+question:"Tôn giáo giữ địa vị thống trị thế kỉ XV-XIX là gì?",
+answers:[
+"Phật giáo",
+"Công giáo",
+"Nho giáo",
+"Đạo giáo"
+],
+correct:2
+},
+
+{
+question:"Tam giáo đồng nguyên là sự kết hợp của:",
+answers:[
+"Nho - Phật - Đạo",
+"Nho - Phật - Công giáo",
+"Phật - Hinđu - Đạo",
+"Phật - Nho - Công giáo"
+],
+correct:0
+},
+
+{
+question:"Tác phẩm nào là bản tuyên ngôn độc lập đầu tiên?",
+answers:[
+"Chiếu dời đô",
+"Nam quốc sơn hà",
+"Bình Ngô đại cáo",
+"Hịch tướng sĩ"
+],
+correct:1
+},
+
+{
+question:"Trung tâm buôn bán sầm uất nhất thế kỉ XI-XV là:",
+answers:[
+"Phố Hiến",
+"Hội An",
+"Thanh Hà",
+"Thăng Long"
+],
+correct:3
+},
+
+{
+question:"Trung tâm buôn bán nổi tiếng ở Đàng Trong là:",
+answers:[
+"Thăng Long",
+"Hội An",
+"Phố Hiến",
+"Vân Đồn"
+],
+correct:1
+},
+
+{
+question:"Văn minh Đại Việt thời Lê Trung Hưng phát triển theo xu hướng nào?",
+answers:[
+"Dân gian hóa / Ấn Độ",
+"Dân gian hóa / phương Đông",
+"Dân gian hóa / phương Tây",
+"Cung đình hóa / phương Tây"
+],
+correct:2
+},
+
+{
+question:"Triều đại mở đầu thời phong kiến độc lập là:",
+answers:[
+"Tiền Lý",
+"Ngô",
+"Lê",
+"Nguyễn"
+],
+correct:1
+},
+
+{
+question:"Thiết chế chính trị thời Lý - Trần có đặc trưng gì?",
+answers:[
+"Tập quyền thân dân",
+"Quan liêu",
+"Dân chủ",
+"Độc tài"
+],
+correct:0
+},
+
+{
+question:"Dân tộc thiểu số ngày nay mặc giống người Kinh vì:",
+answers:[
+"Hòa hợp đoàn kết",
+"Đẹp hơn",
+"Đổi môi trường sống",
+"Thuận tiện lao động"
+],
+correct:3
+},
+
+{
+question:"Đồng bào miền núi canh tác ruộng bậc thang vì:",
+answers:[
+"Trồng ngô khoai sắn",
+"Không biết trồng lúa",
+"Ở đồng bằng ven sông",
+"Sống ở vùng dốc cao"
+],
+correct:3
+},
+
+{
+question:"Nhà sàn xuất phát từ nguyên nhân nào?",
+answers:[
+"Tiết kiệm vật liệu",
+"Kinh tế khó khăn",
+"Thích nghi địa hình và tránh thú dữ",
+"Tín ngưỡng"
+],
+correct:2
+},
+
+{
+question:"Người miền núi lịch sử chủ yếu di chuyển bằng gì?",
+answers:[
+"Voi và lạc đà",
+"Đi bộ và gùi",
+"Xe máy ô tô",
+"Nhà trệt"
+],
+correct:1
+},
+
+{
+question:"Một nội dung của khối đại đoàn kết hiện nay là:",
+answers:[
+"Phong phú văn hóa",
+"Hòa bình ổn định phát triển",
+"Thống nhất lãnh đạo",
+"Mở rộng quan hệ quốc tế"
+],
+correct:1
+},
+
+{
+question:"Một vai trò của khối đại đoàn kết hiện nay là:",
+answers:[
+"Bảo vệ độc lập chủ quyền",
+"Liên minh láng giềng",
+"Xóa mọi mâu thuẫn",
+"Mở rộng giao lưu"
+],
+correct:0
+},
+
+{
+question:"Nội dung bao trùm trong chính sách văn hóa dân tộc hiện nay là:",
+answers:[
+"Bảo tồn và phát huy bản sắc văn hóa",
+"Phát triển kinh tế",
+"Bảo tồn văn hóa là chính",
+"Hợp tác quốc tế"
+],
+correct:0
+},
+
+{
+question:"Ngôn ngữ chính thức của quốc gia Việt Nam là:",
+answers:[
+"Tiếng Anh",
+"Tiếng Việt",
+"Tiếng Pháp",
+"Tiếng Hán"
+],
+correct:1
+},
+
+{
+question:"Đặc điểm nổi bật của cộng đồng dân tộc Việt Nam là:",
+answers:[
+"Đoàn kết lâu đời",
+"Phân biệt dân tộc",
+"Khác biệt hoàn toàn",
+"Tách biệt vùng miền"
+],
+correct:0
+}
+
+];
+
+function shuffleArray(array){
+    for(let i=array.length-1;i>0;i--){
+        const j=Math.floor(Math.random()*(i+1));
+        [array[i],array[j]]=[array[j],array[i]];
+    }
+}
+
+questions.forEach(q=>{
+
+    const correctAnswer=q.answers[q.correct];
+
+    shuffleArray(q.answers);
+
+    q.correct=q.answers.indexOf(correctAnswer);
+
+});
+
+shuffleArray(questions);
+
+const question=document.getElementById("question");
+const answers=document.getElementById("answers");
+const current=document.getElementById("current");
+const correct=document.getElementById("correct");
+const wrong=document.getElementById("wrong");
+const progressBar=document.getElementById("progressBar");
+const quizArea=document.getElementById("quizArea");
+const questionNumber=document.getElementById("questionNumber");
+
+let currentQuestion=0;
+let correctCount=0;
+let wrongCount=0;
+
+function loadQuestion(){
+
+    const q=questions[currentQuestion];
+
+    current.innerText=currentQuestion+1;
+
+    questionNumber.innerText=`Câu ${currentQuestion+1}`;
+
+    question.innerText=q.question;
+
+    answers.innerHTML="";
+
+    q.answers.forEach((answer,index)=>{
+
+        const btn=document.createElement("div");
+
+        btn.classList.add("answer");
+
+        btn.innerText=answer;
+
+        btn.onclick=()=>selectAnswer(btn,index);
+
+        answers.appendChild(btn);
+
+    });
+
+    updateProgress();
+
+}
+
+function selectAnswer(element,index){
+
+    const q=questions[currentQuestion];
+
+    const allAnswers=document.querySelectorAll(".answer");
+
+    allAnswers.forEach(btn=>{
+        btn.style.pointerEvents="none";
+    });
+
+    if(index===q.correct){
+
+        element.classList.add("correct");
+
+        correctCount++;
+
+    }else{
+
+        element.classList.add("wrong");
+
+        allAnswers[q.correct].classList.add("correct");
+
+        wrongCount++;
+
+    }
+
+    correct.innerText=correctCount;
+
+    wrong.innerText=wrongCount;
+
+    setTimeout(()=>{
+
+        currentQuestion++;
+
+        if(currentQuestion<questions.length){
+
+            loadQuestion();
+
+        }else{
+
+            showResult();
+
         }
-    </script>
+
+    },1200);
+
+}
+
+function updateProgress(){
+
+    const percent=((currentQuestion)/questions.length)*100;
+
+    progressBar.style.width=percent+"%";
+
+}
+
+function showResult(){
+
+    progressBar.style.width="100%";
+
+    quizArea.innerHTML=`
+
+        <div class="result">
+
+            <h2>Hoàn Thành Quiz 🎉</h2>
+
+            <div class="score">
+                ${correctCount}/${questions.length}
+            </div>
+
+            <p>✅ Đúng: <b>${correctCount}</b></p>
+
+            <p>❌ Sai: <b>${wrongCount}</b></p>
+
+            <p>📚 Tổng câu: <b>${questions.length}</b></p>
+
+        </div>
+
+    `;
+
+}
+
+loadQuestion();
+
+</script>
+
 </body>
 </html>
