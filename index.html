@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
 <title>Quiz Lịch Sử Việt Nam</title>
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
@@ -19,72 +19,95 @@
 
 body{
     min-height:100vh;
+
     background:
-    radial-gradient(circle at top left,#1e3a8a 0%,transparent 30%),
-    radial-gradient(circle at bottom right,#7c3aed 0%,transparent 30%),
-    #050816;
+    radial-gradient(circle at top left,#2563eb 0%,transparent 25%),
+    radial-gradient(circle at bottom right,#9333ea 0%,transparent 25%),
+    #020617;
 
     display:flex;
     justify-content:center;
     align-items:center;
-    padding:25px;
+
+    padding:30px;
+
     color:white;
 }
 
 .quiz-container{
-    width:100%;
-    max-width:900px;
-    background:rgba(15,23,42,0.9);
-    backdrop-filter:blur(16px);
-    border:1px solid rgba(255,255,255,0.08);
-    border-radius:30px;
-    padding:35px;
-    box-shadow:
-    0 10px 40px rgba(0,0,0,0.45),
-    0 0 40px rgba(59,130,246,0.12);
-}
 
-.header{
-    margin-bottom:28px;
+    width:100%;
+    max-width:950px;
+
+    background:rgba(15,23,42,0.92);
+
+    border:1px solid rgba(255,255,255,0.08);
+
+    backdrop-filter:blur(16px);
+
+    border-radius:32px;
+
+    padding:35px;
+
+    box-shadow:
+    0 10px 40px rgba(0,0,0,0.4),
+    0 0 60px rgba(59,130,246,0.12);
+
 }
 
 .title{
-    font-size:34px;
+
+    font-size:38px;
     font-weight:700;
+
     background:linear-gradient(90deg,#38bdf8,#a855f7);
+
     -webkit-background-clip:text;
     -webkit-text-fill-color:transparent;
+
     margin-bottom:10px;
 }
 
-.sub{
+.desc{
     color:#94a3b8;
-    font-size:15px;
+    margin-bottom:30px;
+    line-height:1.7;
 }
 
 .stats{
+
     display:grid;
     grid-template-columns:repeat(3,1fr);
-    gap:15px;
-    margin:25px 0;
+
+    gap:18px;
+
+    margin-bottom:25px;
 }
 
-.stat-box{
+.stat{
+
     background:rgba(255,255,255,0.04);
-    border:1px solid rgba(255,255,255,0.08);
-    padding:18px;
-    border-radius:18px;
+
+    border:1px solid rgba(255,255,255,0.06);
+
+    border-radius:20px;
+
+    padding:20px;
+
     text-align:center;
 }
 
-.stat-label{
+.stat-title{
+
     color:#94a3b8;
     font-size:14px;
-    margin-bottom:8px;
+
+    margin-bottom:10px;
 }
 
 .stat-value{
-    font-size:26px;
+
+    font-size:30px;
     font-weight:700;
 }
 
@@ -100,114 +123,195 @@ body{
     color:#38bdf8;
 }
 
-.progress-container{
+.progress-box{
+
     width:100%;
     height:16px;
+
     background:#172036;
+
     border-radius:999px;
+
     overflow:hidden;
+
     margin-bottom:35px;
 }
 
 .progress-bar{
+
     width:0%;
     height:100%;
+
     border-radius:999px;
+
     background:linear-gradient(90deg,#38bdf8,#8b5cf6);
-    transition:0.35s;
+
+    transition:0.35s ease;
 }
 
 .question-box{
+
     background:rgba(255,255,255,0.04);
+
     border:1px solid rgba(255,255,255,0.06);
-    border-radius:24px;
-    padding:28px;
+
+    border-radius:28px;
+
+    padding:30px;
 }
 
 .question-number{
+
     color:#38bdf8;
+
     font-weight:600;
+
     margin-bottom:15px;
 }
 
 .question{
+
     font-size:25px;
-    line-height:1.6;
+
     font-weight:600;
+
+    line-height:1.6;
+
     margin-bottom:30px;
 }
 
 .answers{
+
     display:grid;
+
     gap:18px;
 }
 
 .answer{
-    padding:18px 20px;
-    border-radius:18px;
+
+    padding:18px 22px;
+
     background:#131c31;
+
     border:2px solid transparent;
+
+    border-radius:18px;
+
     cursor:pointer;
+
     transition:0.25s;
+
     font-size:17px;
-    line-height:1.5;
+
+    line-height:1.6;
+
+    user-select:none;
 }
 
 .answer:hover{
+
     transform:translateY(-3px);
+
     background:#1d2946;
+
     border-color:#3b82f6;
 }
 
+.answer.disabled{
+    pointer-events:none;
+}
+
 .correct{
+
     background:rgba(34,197,94,0.15)!important;
+
     border-color:#22c55e!important;
+
     color:#dcfce7;
 }
 
 .wrong{
+
     background:rgba(239,68,68,0.15)!important;
+
     border-color:#ef4444!important;
+
     color:#fee2e2;
 }
 
 .result{
+
     text-align:center;
+
     padding:40px 10px;
 }
 
 .result h2{
-    font-size:40px;
-    margin-bottom:20px;
+
+    font-size:42px;
+
     background:linear-gradient(90deg,#38bdf8,#a855f7);
+
     -webkit-background-clip:text;
     -webkit-text-fill-color:transparent;
+
+    margin-bottom:20px;
+}
+
+.result-score{
+
+    font-size:65px;
+
+    font-weight:700;
+
+    color:#38bdf8;
+
+    margin-bottom:20px;
 }
 
 .result p{
+
     font-size:22px;
-    margin:14px 0;
+
+    margin:12px 0;
 }
 
-.score{
-    font-size:60px;
-    font-weight:700;
-    margin:20px 0;
-    color:#38bdf8;
+.restart-btn{
+
+    margin-top:30px;
+
+    padding:16px 30px;
+
+    border:none;
+
+    border-radius:18px;
+
+    background:linear-gradient(90deg,#38bdf8,#8b5cf6);
+
+    color:white;
+
+    font-size:18px;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+    transition:0.25s;
+}
+
+.restart-btn:hover{
+
+    transform:translateY(-3px) scale(1.02);
 }
 
 @media(max-width:768px){
-
-    .quiz-container{
-        padding:22px;
-    }
 
     .stats{
         grid-template-columns:1fr;
     }
 
     .question{
-        font-size:20px;
+        font-size:21px;
     }
 
     .answer{
@@ -215,7 +319,7 @@ body{
     }
 
     .title{
-        font-size:28px;
+        font-size:30px;
     }
 
 }
@@ -227,33 +331,41 @@ body{
 
 <div class="quiz-container">
 
-    <div class="header">
-        <div class="title">Quiz Lịch Sử Việt Nam</div>
-        <div class="sub">55 câu trắc nghiệm • Giao diện hiện đại • Tự động xáo câu hỏi</div>
+    <div class="title">Quiz Lịch Sử Việt Nam</div>
+
+    <div class="desc">
+        Trắc nghiệm lịch sử Việt Nam • Tự động chuyển câu • Xáo câu hỏi & đáp án
     </div>
 
     <div class="stats">
 
-        <div class="stat-box">
-            <div class="stat-label">Câu hiện tại</div>
+        <div class="stat">
+            <div class="stat-title">Câu hiện tại</div>
+
             <div class="stat-value question-color">
-                <span id="current">1</span>/<span id="total">55</span>
+                <span id="current">1</span>/<span id="total">0</span>
             </div>
         </div>
 
-        <div class="stat-box">
-            <div class="stat-label">Số câu đúng</div>
-            <div class="stat-value correct-color" id="correct">0</div>
+        <div class="stat">
+            <div class="stat-title">Số câu đúng</div>
+
+            <div class="stat-value correct-color" id="correct">
+                0
+            </div>
         </div>
 
-        <div class="stat-box">
-            <div class="stat-label">Số câu sai</div>
-            <div class="stat-value wrong-color" id="wrong">0</div>
+        <div class="stat">
+            <div class="stat-title">Số câu sai</div>
+
+            <div class="stat-value wrong-color" id="wrong">
+                0
+            </div>
         </div>
 
     </div>
 
-    <div class="progress-container">
+    <div class="progress-box">
         <div class="progress-bar" id="progressBar"></div>
     </div>
 
@@ -265,11 +377,9 @@ body{
                 Câu 1
             </div>
 
-            <div class="question" id="question">
-            </div>
+            <div class="question" id="question"></div>
 
-            <div class="answers" id="answers">
-            </div>
+            <div class="answers" id="answers"></div>
 
         </div>
 
@@ -279,699 +389,689 @@ body{
 
 <script>
 
-const questions = [
+// ==========================
+// DỮ LIỆU CÂU HỎI
+// ==========================
 
+const originalQuestions = [
 {
-question:"Nhóm ngữ hệ Nam Á gồm những nhóm ngôn ngữ nào sau đây?",
+question:"Câu 1. Nhóm ngữ hệ Nam Á gồm những nhóm ngôn ngữ nào sau đây?",
 answers:[
-"Tày - Thái và Môn - Khơ-me",
-"Việt - Mường và Mã Lai - Đa Đảo",
-"Việt - Mường và Môn - Khơ-me",
-"Việt - Mường và Tày - Thái"
+"A. Tày - Thái và Môn - Khơ-me.",
+"B. Việt - Mường và Mã Lai - Đa Đảo.",
+"C. Việt - Mường và Môn - Khơ-me.",
+"D. Việt - Mường và Tày - Thái."
 ],
 correct:2
 },
-
 {
-question:"Ngữ hệ là gì?",
+question:"Câu 2. Ngày nay, ở Việt Nam các dân tộc thiểu số có xu hướng sử dụng trang phục giống người Kinh vì lí do nào sau đây?",
 answers:[
-"Là ngôn ngữ chính của một nhóm dân tộc",
-"Là một nhóm dân tộc nói cùng ngôn ngữ",
-"Là một nhóm các ngôn ngữ có cùng nguồn gốc",
-"Là ngôn ngữ riêng của một dân tộc"
+"A. Để hòa hợp, đoàn kết dân tộc.",
+"B. Đẹp hơn trang phục truyền thống.",
+"C. Do thay đổi môi trường sống.",
+"D. Thuận tiện trong lao động và đi lại."
+],
+correct:3
+},
+{
+question:"Câu 3. Nội dung nào sau đây không phản ánh đúng cơ sở hình thành khối đại đoàn kết dân tộc Việt Nam?",
+answers:[
+"A. Cơ chế chính sách, biện pháp cụ thể của nhà nước.",
+"B. Yêu cầu liên kết để làm thủy lợi, phục vụ sản xuất nông nghiệp.",
+"C. Nhu cầu mở rộng giao lưu, buôn bán với các nước láng giềng.",
+"D. Nhu cầu đoàn kết lực lượng để đấu tranh chống ngoại xâm."
 ],
 correct:2
 },
-
 {
-question:"54 dân tộc ở Việt Nam được chia thành mấy nhóm ngữ hệ?",
+question:"Câu 4. Nội dung bao trùm của chính sách dân tộc mà Nhà nước Việt Nam triển khai trên lĩnh vực văn hóa là:",
 answers:[
-"2 nhóm",
-"3 nhóm",
-"4 nhóm",
-"5 nhóm"
-],
-correct:3
-},
-
-{
-question:"Ở Việt Nam hiện nay có bao nhiêu nhóm ngôn ngữ?",
-answers:[
-"5 nhóm",
-"6 nhóm",
-"7 nhóm",
-"8 nhóm"
-],
-correct:3
-},
-
-{
-question:"Nhóm ngôn ngữ Việt - Mường thuộc ngữ hệ nào?",
-answers:[
-"Nam Á",
-"Nam Đảo",
-"Thái - Ka-dai",
-"Hán - Tạng"
-],
-correct:0
-},
-
-{
-question:"Dân tộc nào chiếm đa số ở Việt Nam?",
-answers:[
-"Kinh",
-"Lô Lô",
-"Mường",
-"Tày"
-],
-correct:0
-},
-
-{
-question:"Khái niệm dân tộc hiện nay được hiểu theo những nghĩa nào?",
-answers:[
-"Dân tộc - quốc gia và dân tộc - tộc người",
-"Dân tộc đa số và dân tộc thiểu số",
-"Dân tộc miền núi và đồng bằng",
-"Dân tộc và ngữ hệ"
-],
-correct:0
-},
-
-{
-question:"Thành phần dân tộc theo dân số được chia thành mấy nhóm?",
-answers:[
-"2 nhóm",
-"3 nhóm",
-"4 nhóm",
-"5 nhóm"
-],
-correct:0
-},
-
-{
-question:"Khối đại đoàn kết dân tộc hình thành từ khi nào?",
-answers:[
-"Thời Văn Lang - Âu Lạc",
-"Thời Bắc thuộc",
-"Thời phong kiến độc lập",
-"Kháng chiến chống Mỹ"
-],
-correct:0
-},
-
-{
-question:"Truyền thuyết minh chứng cho khối đại đoàn kết dân tộc là gì?",
-answers:[
-"Con Rồng cháu Tiên",
-"Bánh chưng bánh giầy",
-"Sơn Tinh Thủy Tinh",
-"Mỵ Châu Trọng Thủy"
-],
-correct:0
-},
-
-{
-question:"Nội dung nào không phản ánh đúng cơ sở hình thành khối đại đoàn kết dân tộc?",
-answers:[
-"Cơ chế chính sách nhà nước",
-"Làm thủy lợi",
-"Giao lưu buôn bán",
-"Đoàn kết chống ngoại xâm"
-],
-correct:0
-},
-
-{
-question:"Khối đại đoàn kết dân tộc có vai trò gì?",
-answers:[
-"Không đóng góp nhiều",
-"Là nhân tố quyết định thắng lợi",
-"Nhân tố thứ yếu",
-"Nhân tố duy nhất"
+"A. Tiếp thu có chọn lọc những tinh hoa văn hóa bên ngoài.",
+"B. Xây dựng nền văn hóa tiên tiến và đậm đà bản sắc dân tộc.",
+"C. Xây dựng nền văn hóa bản địa, không tiếp thu văn hóa bên ngoài.",
+"D. Chỉ tiếp thu văn hóa của các quốc gia đồng văn, đồng chủng."
 ],
 correct:1
 },
-
 {
-question:"Sức mạnh góp phần quyết định thắng lợi chống ngoại xâm là gì?",
+question:"Câu 5. Khối đại đoàn kết dân tộc ở Việt Nam được hình thành từ khi nào?",
 answers:[
-"Nghệ thuật quân sự",
-"Khối đại đoàn kết dân tộc",
-"Tinh thần chiến đấu",
-"Truyền thống yêu nước"
-],
-correct:1
-},
-
-{
-question:"Khối đại đoàn kết dân tộc phát huy cao độ khi nào?",
-answers:[
-"Khi đất nước bị ngoại xâm",
-"Kinh tế phát triển",
-"Hợp tác khu vực",
-"Hợp tác quốc tế"
+"A. Thời dựng nước Văn Lang - Âu Lạc.",
+"B. Quá trình đấu tranh chống Bắc thuộc.",
+"C. Thời kì phong kiến độc lập, tự chủ.",
+"D. Kháng chiến chống Mỹ, cứu nước."
 ],
 correct:0
 },
-
 {
-question:"Các triều đại phong kiến thực hiện khối đoàn kết dân tộc như thế nào?",
+question:"Câu 6. Chủ trương của Đảng về kinh tế đối với khối đại đoàn kết dân tộc là:",
 answers:[
-"Luôn quan tâm xây dựng",
-"Không quan tâm",
-"Kì thị dân tộc thiểu số",
-"Tách biệt dân tộc"
+"A. Phát triển kinh tế miền núi, vùng dân tộc thiểu số.",
+"B. Phát triển kinh tế đồng bằng, vùng đông dân cư.",
+"C. Phát triển vùng kinh tế trọng điểm.",
+"D. Phát triển kinh tế vườn - ao - chuồng."
 ],
 correct:0
 },
-
 {
-question:"Chính sách củng cố đoàn kết dân tộc thời phong kiến là gì?",
+question:"Câu 7. Việc nhà vua cử thần thực hiện nghi lễ Tịch điền và làm lễ tế để cầu mưa thuận gió hòa đã thể hiện chính sách nào của nhà nước phong kiến Đại Việt?",
 answers:[
-"Gả công chúa cho thủ lĩnh vùng biên",
-"Chia ruộng toàn dân",
-"Xóa mọi loại thuế",
-"Dùng quân sự thường xuyên"
+"A. Chú trọng phát triển nông nghiệp.",
+"B. Hạn chế sự phát triển ngoại thương.",
+"C. Chú trọng phát triển thương mại.",
+"D. Thúc đẩy thủ công nghiệp phát triển."
 ],
 correct:0
 },
-
 {
-question:"Vai trò của khối đại đoàn kết hiện nay là gì?",
+question:"Câu 8. Ngữ hệ là gì?",
 answers:[
-"Huy động sức mạnh toàn dân",
-"Liên minh với láng giềng",
-"Xóa mọi mâu thuẫn",
-"Giao lưu văn hóa"
-],
-correct:0
-},
-
-{
-question:"Mặt trận dân tộc thống nhất đầu tiên tên là gì?",
-answers:[
-"Hội phản đế nhân dân",
-"Hội phản đế Đồng Minh",
-"Hội phản đế Việt Nam",
-"Hội phản đế Đông Dương"
-],
-correct:1
-},
-
-{
-question:"Khối đại đoàn kết hiện nay tập trung trong tổ chức nào?",
-answers:[
-"Hội đồng dân tộc",
-"Mặt trận Tổ quốc Việt Nam",
-"Hội đồng nhân dân",
-"Quốc hội"
-],
-correct:1
-},
-
-{
-question:"Ba nguyên tắc xây dựng khối đại đoàn kết dân tộc là gì?",
-answers:[
-"Bình đẳng, tự quyết, tương trợ",
-"Đoàn kết, dân chủ, bình đẳng",
-"Bình đẳng, chủ quyền, tự quyết",
-"Đoàn kết, bình đẳng, tương trợ"
-],
-correct:3
-},
-
-{
-question:"Chủ trương kinh tế đối với dân tộc là gì?",
-answers:[
-"Phát triển miền núi",
-"Phát triển đồng bằng",
-"Phát triển trọng điểm",
-"Phát triển VAC"
-],
-correct:0
-},
-
-{
-question:"Chủ trương kinh tế của Đảng và Nhà nước là gì?",
-answers:[
-"Quản lý kinh tế thị trường",
-"Phát triển nhiều ngành",
-"Ưu tiên vùng dân tộc miền núi",
-"Phát triển kinh tế thị trường"
+"A. Là ngôn ngữ chính của một nhóm các dân tộc.",
+"B. Là một nhóm các dân tộc nói chung một ngôn ngữ.",
+"C. Là một nhóm các ngôn ngữ có cùng nguồn gốc với nhau.",
+"D. Là ngôn ngữ riêng của một dân tộc."
 ],
 correct:2
 },
-
 {
-question:"Mục tiêu phát triển kinh tế miền núi là gì?",
+question:"Câu 9. Hiện nay, 54 dân tộc ở Việt Nam được chia thành mấy nhóm ngữ hệ?",
 answers:[
-"Khắc phục chênh lệch vùng miền",
-"Trở thành trung tâm kinh tế",
-"Hội nhập thế giới",
-"Tự cung tự cấp"
-],
-correct:0
-},
-
-{
-question:"Nhà nước phát triển miền núi để khắc phục điều gì?",
-answers:[
-"Chênh lệch vùng miền",
-"Thiếu lương thực",
-"Lạc hậu kỹ thuật",
-"Hạ tầng kém"
-],
-correct:0
-},
-
-{
-question:"Nội dung bao trùm chính sách văn hóa là gì?",
-answers:[
-"Tiếp thu tinh hoa bên ngoài",
-"Xây dựng nền văn hóa tiên tiến đậm đà bản sắc",
-"Không tiếp thu văn hóa ngoài",
-"Chỉ tiếp thu văn hóa đồng chủng"
-],
-correct:1
-},
-
-{
-question:"Chính sách dân tộc về an ninh quốc phòng là gì?",
-answers:[
-"Giải quyết quan hệ dân tộc",
-"Củng cố lãnh thổ",
-"Quan hệ láng giềng",
-"Tôn vinh giá trị truyền thống"
-],
-correct:0
-},
-
-{
-question:"Chính sách xã hội tập trung vào đối tượng nào?",
-answers:[
-"Vùng dân tộc thiểu số",
-"Vùng người Kinh",
-"Vùng trung du",
-"Vùng đồng bằng"
-],
-correct:0
-},
-
-{
-question:"Ý nào không đúng về chính sách xã hội dân tộc?",
-answers:[
-"Xuất phát từ đường lối chung",
-"Xuất phát từ vùng kinh tế trọng điểm",
-"Xuất phát từ kết cấu xã hội",
-"Xuất phát từ tập quán truyền thống"
-],
-correct:1
-},
-
-{
-question:"Ý nghĩa của chính sách dân tộc là gì?",
-answers:[
-"Nâng cao đời sống đồng bào",
-"Phát triển kinh tế nhanh",
-"Nâng cao vị thế quốc tế",
-"Tạo đa dạng văn hóa"
-],
-correct:0
-},
-
-{
-question:"Lễ Tịch điền thể hiện chính sách gì?",
-answers:[
-"Chú trọng nông nghiệp",
-"Hạn chế ngoại thương",
-"Phát triển thương mại",
-"Phát triển công nghiệp"
-],
-correct:0
-},
-
-{
-question:"Xây dựng đàn Xã Tắc mang ý nghĩa gì?",
-answers:[
-"Coi trọng nông nghiệp",
-"Coi trọng độc lập dân tộc",
-"Vũ khí chiến đấu",
-"Khuyến khích thương nghiệp"
-],
-correct:0
-},
-
-{
-question:"Thiết chế quân chủ tập quyền đạt đỉnh cao thời nào?",
-answers:[
-"Đinh - Tiền Lê",
-"Trần",
-"Lý",
-"Lê sơ"
+"A. Hai nhóm ngữ hệ.",
+"B. Ba nhóm ngữ hệ.",
+"C. Bốn nhóm ngữ hệ.",
+"D. Năm nhóm ngữ hệ."
 ],
 correct:3
 },
-
 {
-question:"Năm 1428 thành lập triều đại nào?",
+question:"Câu 10. Khối đại đoàn kết dân tộc có vai trò như thế nào đối với công cuộc đấu tranh chống ngoại xâm của Việt Nam?",
 answers:[
-"Lý",
-"Trần",
-"Hồ",
-"Lê"
+"A. Không đóng góp nhiều cho sự nghiệp chống ngoại xâm.",
+"B. Là nhân tố quyết định đến sự thắng lợi.",
+"C. Là nhân tố thứ yếu, góp phần dẫn đến sự thành công.",
+"D. Nhân tố duy nhất quyết định đến sự thắng lợi."
+],
+correct:1
+},
+{
+question:"Câu 11. Bộ luật Hoàng Việt luật lệ được ban hành dưới triều đại nào?",
+answers:[
+"A. Nhà Tây Sơn.",
+"B. Nhà Lê Trung hưng.",
+"C. Nhà Nguyễn.",
+"D. Nhà Mạc."
+],
+correct:2
+},
+{
+question:"Câu 12. Đối với việc củng cố và tăng cường khối đại đoàn kết dân tộc Việt Nam, chính sách dân tộc của Đảng và Nhà nước đem lại ý nghĩa nào sau đây?",
+answers:[
+"A. Góp phần nâng cao đời sống của đồng bào các dân tộc.",
+"B. Thúc đẩy kinh tế quốc gia phát triển nhanh, bền vững.",
+"C. Góp phần nâng cao vị thế quốc tế của Việt Nam.",
+"D. Tạo nên sự đa dạng về văn hóa giữa các dân tộc."
+],
+correct:0
+},
+{
+question:"Câu 13. Nội dung nào sau đây phản ánh đúng vai trò của khối đại đoàn kết dân tộc trong sự nghiệp xây dựng và bảo vệ Tổ quốc hiện nay?",
+answers:[
+"A. Là cơ sở để huy động sức mạnh của toàn dân tộc.",
+"B. Là nền tảng để liên minh với các dân tộc láng giềng.",
+"C. Là cơ sở để xóa bỏ mọi mâu thuẫn trong xã hội.",
+"D. Là cơ sở để giao lưu và tiếp thu văn hóa bên ngoài."
+],
+correct:0
+},
+{
+question:"Câu 14. Thiết chế chính trị quân chủ trung ương tập quyền ở Việt Nam đạt đến đỉnh cao vào thời nào sau đây?",
+answers:[
+"A. Thời Đinh - Tiền Lê.",
+"B. Thời Trần.",
+"C. Thời Lý.",
+"D. Thời Lê sơ."
 ],
 correct:3
 },
-
 {
-question:"Bộ luật Hình thư được ban hành dưới triều nào?",
+question:"Câu 15. Sức mạnh nào góp phần quyết định giúp dân tộc Việt Nam giành được những thắng lợi lớn trong các cuộc chống ngoại xâm?",
 answers:[
-"Lý",
-"Trần",
-"Lê",
-"Nguyễn"
-],
-correct:0
-},
-
-{
-question:"Ý nghĩa quan trọng nhất của Hình thư là gì?",
-answers:[
-"Khuyến khích nông nghiệp",
-"Vua nắm quyền",
-"Đặt cơ sở pháp lý thành văn",
-"Xóa bỏ hình phạt hà khắc"
-],
-correct:2
-},
-
-{
-question:"Tên chính thức của Bộ luật Hồng Đức là gì?",
-answers:[
-"Hình thư",
-"Quốc triều Hình luật",
-"Hoàng Việt luật lệ",
-"Hình luật sơ thảo"
+"A. Nghệ thuật quân sự độc đáo.",
+"B. Khối Đại đoàn kết dân tộc.",
+"C. Tinh thần đấu tranh anh dũng.",
+"D. Truyền thống yêu nước."
 ],
 correct:1
 },
-
 {
-question:"Bộ luật Hồng Đức hoàn thiện dưới thời vua nào?",
+question:"Câu 16. Năm 1428, triều đại nào sau đây được thành lập, đưa Đại Việt trở thành một cường quốc trong khu vực Đông Nam Á?",
 answers:[
-"Lê Thái Tổ",
-"Lê Thánh Tông",
-"Lê Nhân Tông",
-"Lê Hiến Tông"
-],
-correct:1
-},
-
-{
-question:"Hoàng Việt luật lệ được ban hành dưới triều nào?",
-answers:[
-"Tây Sơn",
-"Lê Trung hưng",
-"Nguyễn",
-"Mạc"
-],
-correct:2
-},
-
-{
-question:"Ai ban hành Hoàng Việt luật lệ?",
-answers:[
-"Minh Mạng",
-"Gia Long",
-"Thiệu Trị",
-"Tự Đức"
-],
-correct:1
-},
-
-{
-question:"Tôn giáo giữ địa vị thống trị thế kỉ XV-XIX là gì?",
-answers:[
-"Phật giáo",
-"Công giáo",
-"Nho giáo",
-"Đạo giáo"
-],
-correct:2
-},
-
-{
-question:"Tam giáo đồng nguyên là sự kết hợp của:",
-answers:[
-"Nho - Phật - Đạo",
-"Nho - Phật - Công giáo",
-"Phật - Hinđu - Đạo",
-"Phật - Nho - Công giáo"
-],
-correct:0
-},
-
-{
-question:"Tác phẩm nào là bản tuyên ngôn độc lập đầu tiên?",
-answers:[
-"Chiếu dời đô",
-"Nam quốc sơn hà",
-"Bình Ngô đại cáo",
-"Hịch tướng sĩ"
-],
-correct:1
-},
-
-{
-question:"Trung tâm buôn bán sầm uất nhất thế kỉ XI-XV là:",
-answers:[
-"Phố Hiến",
-"Hội An",
-"Thanh Hà",
-"Thăng Long"
+"A. Triều Lý.",
+"B. Triều Trần.",
+"C. Triều Hồ.",
+"D. Triều Lê."
 ],
 correct:3
 },
-
 {
-question:"Trung tâm buôn bán nổi tiếng ở Đàng Trong là:",
+question:"Câu 17. Đồng bào dân tộc thiểu số ở một số tỉnh phía Bắc Việt Nam thường canh tác theo hình thức ruộng bậc thang, vì họ",
 answers:[
-"Thăng Long",
-"Hội An",
-"Phố Hiến",
-"Vân Đồn"
-],
-correct:1
-},
-
-{
-question:"Văn minh Đại Việt thời Lê Trung Hưng phát triển theo xu hướng nào?",
-answers:[
-"Dân gian hóa / Ấn Độ",
-"Dân gian hóa / phương Đông",
-"Dân gian hóa / phương Tây",
-"Cung đình hóa / phương Tây"
-],
-correct:2
-},
-
-{
-question:"Triều đại mở đầu thời phong kiến độc lập là:",
-answers:[
-"Tiền Lý",
-"Ngô",
-"Lê",
-"Nguyễn"
-],
-correct:1
-},
-
-{
-question:"Thiết chế chính trị thời Lý - Trần có đặc trưng gì?",
-answers:[
-"Tập quyền thân dân",
-"Quan liêu",
-"Dân chủ",
-"Độc tài"
-],
-correct:0
-},
-
-{
-question:"Dân tộc thiểu số ngày nay mặc giống người Kinh vì:",
-answers:[
-"Hòa hợp đoàn kết",
-"Đẹp hơn",
-"Đổi môi trường sống",
-"Thuận tiện lao động"
+"A. Chủ yếu trồng các cây: ngô, khoai, sắn.",
+"B. Không biết làm nông nghiệp trồng lúa nước.",
+"C. Cư trú ở các đồng bằng ven sông.",
+"D. Sinh sống ở vùng địa hình cao, dốc."
 ],
 correct:3
 },
-
 {
-question:"Đồng bào miền núi canh tác ruộng bậc thang vì:",
+question:"Câu 18. 'Tam giáo đồng nguyên' là sự kết hợp hài hòa giữa các tôn giáo nào sau đây?",
 answers:[
-"Trồng ngô khoai sắn",
-"Không biết trồng lúa",
-"Ở đồng bằng ven sông",
-"Sống ở vùng dốc cao"
+"A. Nho giáo - Phật giáo - Đạo giáo.",
+"B. Nho giáo - Phật giáo - Công giáo.",
+"C. Phật giáo - Hin-du giáo - Đạo giáo.",
+"D. Phật giáo - Nho giáo - Công giáo."
+],
+correct:0
+},
+{
+question:"Câu 19. Tác phẩm nào sau đây được coi là bản Tuyên ngôn độc lập đầu tiên của dân tộc Việt Nam?",
+answers:[
+"A. Chiếu dời đô.",
+"B. Nam quốc sơn Hà.",
+"C. Bình Ngô đại cáo.",
+"D. Hịch tướng sĩ."
+],
+correct:1
+},
+{
+question:"Câu 20. Thành phần dân tộc theo dân số ở Việt Nam hiện nay được chia thành mấy nhóm?",
+answers:[
+"A. Hai nhóm.",
+"B. Ba nhóm.",
+"C. Bốn nhóm.",
+"D. Năm nhóm."
+],
+correct:0
+},
+{
+question:"Câu 21. Tên gọi chính thức của Bộ luật Hồng Đức là gì?",
+answers:[
+"A. Hình thư.",
+"B. Quốc triều Hình luật.",
+"C. Hoàng Việt luật lệ.",
+"D. Hình luật sơ thảo."
+],
+correct:1
+},
+{
+question:"Câu 22. Bộ luật Hồng Đức được ban hành và hoàn thiện dưới thời vị vua nào?",
+answers:[
+"A. Lê Thái Tổ.",
+"B. Lê Thánh Tông.",
+"C. Lê Nhân Tông.",
+"D. Lê Hiến Tông."
+],
+correct:1
+},
+{
+question:"Câu 23. Hiện nay, ở Việt Nam có bao nhiêu nhóm ngôn ngữ?",
+answers:[
+"A. Năm nhóm ngôn ngữ.",
+"B. Sáu nhóm ngôn ngữ.",
+"C. Bảy nhóm ngôn ngữ.",
+"D. Tám nhóm ngôn ngữ."
 ],
 correct:3
 },
-
 {
-question:"Nhà sàn xuất phát từ nguyên nhân nào?",
+question:"Câu 24. Ở khu vực miền núi của Việt Nam, do địa hình phức tạp, độ dốc lớn, hẹp nên cư dân các dân tộc thiểu số chủ yếu",
 answers:[
-"Tiết kiệm vật liệu",
-"Kinh tế khó khăn",
-"Thích nghi địa hình và tránh thú dữ",
-"Tín ngưỡng"
+"A. Di chuyển bằng voi, lạc đà.",
+"B. Đi bộ và vận chuyển bằng gùi.",
+"C. Di chuyển bằng xe máy, ô tô.",
+"D. Làm nhà trệt bằng gạch kiên cố."
+],
+correct:1
+},
+{
+question:"Câu 25. Khối đại đoàn kết các dân tộc Việt Nam được phát huy cao độ khi:",
+answers:[
+"A. Đất nước bị thiên tai, dịch bệnh.",
+"B. Kinh tế phát triển mạnh mẽ.",
+"C. Có sự giao lưu hợp tác trong khu vực.",
+"D. Có sự giao lưu hợp tác trên thế giới."
+],
+correct:0
+},
+{
+question:"Câu 26. Ý nghĩa quan trọng nhất của việc ban hành bộ luật Hình thư là gì?",
+answers:[
+"A. Khuyến khích nhân dân sản xuất nông nghiệp.",
+"B. Giúp nhà vua nắm toàn bộ quyền hành trong tay.",
+"C. Đặt cơ sở pháp lý thành văn đầu tiên, giúp việc xử án rõ ràng hơn.",
+"D. Xóa bỏ hoàn toàn các hình phạt hà khắc từ thời trước."
 ],
 correct:2
 },
-
 {
-question:"Người miền núi lịch sử chủ yếu di chuyển bằng gì?",
+question:"Câu 27. Vị vua nào là người đã ban hành bộ luật Hoàng Việt luật lệ?",
 answers:[
-"Voi và lạc đà",
-"Đi bộ và gùi",
-"Xe máy ô tô",
-"Nhà trệt"
+"A. Vua Minh Mạng.",
+"B. Vua Gia Long.",
+"C. Vua Thiệu Trị.",
+"D. Vua Tự Đức."
 ],
 correct:1
 },
-
 {
-question:"Một nội dung của khối đại đoàn kết hiện nay là:",
+question:"Câu 28. Nhà nước chủ trương phát triển kinh tế miền núi, vùng dân tộc thiểu số để khắc phục vấn đề nào sau đây?",
 answers:[
-"Phong phú văn hóa",
-"Hòa bình ổn định phát triển",
-"Thống nhất lãnh đạo",
-"Mở rộng quan hệ quốc tế"
-],
-correct:1
-},
-
-{
-question:"Một vai trò của khối đại đoàn kết hiện nay là:",
-answers:[
-"Bảo vệ độc lập chủ quyền",
-"Liên minh láng giềng",
-"Xóa mọi mâu thuẫn",
-"Mở rộng giao lưu"
+"A. Chênh lệch giữa các vùng, các dân tộc.",
+"B. Tình trạng thiếu lương thực, thực phẩm.",
+"C. Tình trạng lạc hậu về khoa học kỹ thuật.",
+"D. Cơ sở hạ tầng phát triển không đồng bộ."
 ],
 correct:0
 },
-
 {
-question:"Nội dung bao trùm trong chính sách văn hóa dân tộc hiện nay là:",
+question:"Câu 29. Thời kì phong kiến tự chủ, khối đại đoàn kết dân tộc giữa người Kinh với các dân tộc thiểu số được các vương triều thực hiện như thế nào?",
 answers:[
-"Bảo tồn và phát huy bản sắc văn hóa",
-"Phát triển kinh tế",
-"Bảo tồn văn hóa là chính",
-"Hợp tác quốc tế"
+"A. Luôn được quan tâm, xây dựng.",
+"B. Không được quan tâm, xây dựng.",
+"C. Thực hiện chính sách kì thị với dân tộc thiểu số.",
+"D. Tách biệt giữa người Kinh với người dân tộc thiểu số."
 ],
 correct:0
 },
-
 {
-question:"Ngôn ngữ chính thức của quốc gia Việt Nam là:",
+question:"Câu 30. Mặt trận dân tộc thống nhất Việt Nam mới ra đời có tên gọi là gì?",
 answers:[
-"Tiếng Anh",
-"Tiếng Việt",
-"Tiếng Pháp",
-"Tiếng Hán"
+"A. Hội phản đế nhân dân.",
+"B. Hội phản đế Việt Nam.",
+"C. Hội phản đế Đồng Minh.",
+"D. Hội phản đế Đông Dương."
+],
+correct:3
+},
+{
+question:"Câu 31. Mục tiêu của Đảng và Nhà nước ta trong chính sách phát triển kinh tế miền núi, vùng dân tộc thiểu số là:",
+answers:[
+"A. Nhằm từng bước khắc phục chênh lệch giữa các vùng, các dân tộc.",
+"B. Nhằm đưa kinh tế miền núi trở thành trung tâm của kinh tế cả nước.",
+"C. Nhanh chóng hội nhập với nền kinh tế khu vực và thế giới.",
+"D. Đảm bảo được nhu cầu tự cung, tự cấp của đồng bào dân tộc thiểu số."
+],
+correct:0
+},
+{
+question:"Câu 32. Yếu tố nào không phải là cơ sở hình thành khối đoàn kết dân tộc Việt Nam?",
+answers:[
+"A. Yêu cầu trị thủy để phục vụ sản xuất nông nghiệp.",
+"B. Yêu cầu làm thủy lợi phục vụ sản xuất nông nghiệp.",
+"C. Yêu cầu tập hợp lực lượng chống giặc ngoại xâm.",
+"D. Nhu cầu mở rộng giao lưu buôn bán với nước ngoài."
+],
+correct:3
+},
+{
+question:"Câu 33. Một trong những nội dung của khối đại đoàn kết dân tộc trong sự nghiệp xây dựng và bảo vệ Tổ quốc hiện nay là",
+answers:[
+"A. Tạo nên sự phong phú về văn hóa giữa các vùng miền đất nước.",
+"B. Tạo môi trường hòa bình, ổn định để phát triển kinh tế, văn hóa.",
+"C. Thống nhất đường lối lãnh đạo của Đảng và Nhà nước Việt Nam.",
+"D. Tạo điều kiện mở rộng quan hệ với các quốc gia trên thế giới."
 ],
 correct:1
 },
-
 {
-question:"Đặc điểm nổi bật của cộng đồng dân tộc Việt Nam là:",
+question:"Câu 34. Trong chính sách dân tộc về kinh tế, Đảng và Nhà nước Việt Nam có chủ trương nào sau đây?",
 answers:[
-"Đoàn kết lâu đời",
-"Phân biệt dân tộc",
-"Khác biệt hoàn toàn",
-"Tách biệt vùng miền"
+"A. Xây dựng cơ chế quản lí kinh tế thị trường năng động, linh hoạt.",
+"B. Phát triển nền kinh tế nhiều ngành, quy mô, trình độ công nghệ.",
+"C. Ưu tiên đầu tư phát triển kinh tế các vùng dân tộc và miền núi.",
+"D. Phát triển nền kinh tế thị trường định hướng xã hội chủ nghĩa."
+],
+correct:2
+},
+{
+question:"Câu 35. Một trong những chính sách dân tộc của Đảng và Nhà nước Việt Nam trên lĩnh vực an ninh quốc phòng là:",
+answers:[
+"A. Giải quyết tốt quan hệ dân tộc trong mối liên hệ tộc người.",
+"B. Củng cố và mở rộng lãnh thổ trên đất liền và trên biển.",
+"C. Giữ gìn và củng cố mối quan hệ với các nước láng giềng.",
+"D. Tôn vinh những giá trị truyền thống của các dân tộc."
+],
+correct:1
+},
+{
+question:"Câu 36. Việc nhà Lý cho xây dựng đàn Xã Tắc ở Thăng Long mang ý nghĩa nào sau đây?",
+answers:[
+"A. Nhà nước coi trọng sản xuất nông nghiệp.",
+"B. Nhà nước coi trọng việc độc lập dân tộc.",
+"C. Có vũ khí tinh thần chiến đấu của quân dân ta.",
+"D. Khuyến khích nhân dân phát triển thương nghiệp."
+],
+correct:0
+},
+{
+question:"Câu 37. Nội dung nào sau đây phản ánh đúng vai trò của khối đại đoàn kết dân tộc trong sự nghiệp xây dựng và bảo vệ Tổ quốc hiện nay?",
+answers:[
+"A. Là nguồn sức mạnh để bảo vệ độc lập, chủ quyền của đất nước.",
+"B. Là nền tảng để tiến hành liên minh với các dân tộc láng giềng.",
+"C. Là cơ sở để xóa bỏ mọi mâu thuẫn trong xã hội Việt Nam.",
+"D. Là cơ sở để mở rộng giao lưu và tiếp thu văn hóa bên ngoài."
+],
+correct:0
+},
+{
+question:"Câu 38. Dân tộc nào chiếm đa số ở Việt Nam?",
+answers:[
+"A. Dân tộc Kinh.",
+"B. Dân tộc Lô Lô.",
+"C. Dân tộc Mường.",
+"D. Dân tộc Tày."
+],
+correct:0
+},
+{
+question:"Câu 39. Ba nguyên tắc của Đảng Cộng sản Việt Nam trong xây dựng và phát triển khối đại đoàn kết dân tộc hiện nay là",
+answers:[
+"A. Bình đẳng, tự quyết và tương trợ nhau cùng phát triển.",
+"B. Đoàn kết, dân chủ và bình đẳng giữa các dân tộc.",
+"C. Bình đẳng, chủ quyền và quyền tự quyết của mỗi dân tộc.",
+"D. Đoàn kết, bình đẳng và tương trợ nhau cùng phát triển."
+],
+correct:3
+},
+{
+question:"Câu 40. Trung tâm buôn bán sầm uất nhất của Đại Việt trong các thế kỉ XI - XV là",
+answers:[
+"A. Phố Hiến.",
+"B. Hội An.",
+"C. Thanh Hà.",
+"D. Thăng Long."
+],
+correct:3
+},
+{
+question:"Câu 41. Đồng bào các dân tộc thiểu số ở Việt Nam thường có tập quán ở nhà sàn xuất phát từ nguyên nhân chủ yếu nào sau đây?",
+answers:[
+"A. Để tiết kiệm nguyên vật liệu và diện tích đất canh tác.",
+"B. Do điều kiện kinh tế còn khó khăn, chưa có khả năng xây nhà kiên cố.",
+"C. Để thích nghi với điều kiện địa hình đồi núi và phòng tránh thú dữ.",
+"D. Do sự chi phối của các quan niệm tín ngưỡng và phong tục thờ cúng."
+],
+correct:2
+},
+{
+question:"Câu 42. Chủ trương của Đảng trong chính sách về xã hội là:",
+answers:[
+"A. Tập trung vùng đồng bào các dân tộc thiểu số.",
+"B. Tập trung vùng đồng bào dân tộc Kinh.",
+"C. Tập trung vùng đồng bào các dân tộc ở trung du.",
+"D. Tập trung vùng đồng bào các dân tộc ở đồng bằng."
+],
+correct:0
+},
+{
+question:"Câu 43. Chọn đáp án thích hợp điền vào chỗ trống (...) để hoàn thiện câu dưới đây: 'Thời Lê Trung Hưng, văn minh Đại Việt phát triển theo xu hướng.....và bước đầu tiếp xúc với văn minh...'",
+answers:[
+"A. Dân gian hóa/Ấn Độ.",
+"B. Dân gian hóa/phương Đông.",
+"C. Dân gian hóa/phương Tây.",
+"D. Cung đình hóa/phương Tây."
+],
+correct:2
+},
+{
+question:"Câu 44. Khối đại đoàn kết các dân tộc Việt Nam được phát huy cao độ khi:",
+answers:[
+"A. Đất nước bị giặc ngoại xâm.",
+"B. Kinh tế phát triển mạnh mẽ.",
+"C. Có sự giao lưu hợp tác trong khu vực.",
+"D. Có sự giao lưu hợp tác trên thế giới."
+],
+correct:0
+},
+{
+question:"Câu 45. Một trong những trung tâm buôn bán sầm uất, nhộn nhịp của cư dân Đại Việt ở Đàng Trong là",
+answers:[
+"A. Thăng Long.",
+"B. Hội An.",
+"C. Phố Hiến.",
+"D. Vân Đồn."
+],
+correct:1
+},
+{
+question:"Câu 46. Một trong những chính sách củng cố khối đại đoàn kết dân tộc của các triều đại phong kiến Việt Nam là",
+answers:[
+"A. Gả công chúa cho thủ lĩnh người dân tộc vùng biên giới.",
+"B. Chia ruộng đất trong cả nước cho mọi tầng lớp nhân dân.",
+"C. Xóa bỏ mọi tô thuế cho các dân tộc thiểu số ở miền núi.",
+"D. Luôn dùng quân sự buộc các tù trưởng miền núi thuần phục."
+],
+correct:0
+},
+{
+question:"Câu 47. Hệ tư tưởng tôn giáo nào sau đây giữ địa vị thống trị ở Việt Nam trong các thế kỉ XV – XIX?",
+answers:[
+"A. Phật giáo.",
+"B. Công giáo.",
+"C. Nho giáo.",
+"D. Đạo giáo."
+],
+correct:2
+},
+{
+question:"Câu 48. Triều đại nào mở đầu cho thời đại phong kiến độc lập, tự chủ của dân tộc Việt Nam?",
+answers:[
+"A. Triều Tiền Lý.",
+"B. Triều Ngô.",
+"C. Triều Lê.",
+"D. Triều Nguyễn."
+],
+correct:1
+},
+{
+question:"Câu 49. Ý nào sau đây không phản ánh đúng chính sách của Đảng và Nhà nước về xã hội ở vùng đồng bào dân tộc thiểu số?",
+answers:[
+"A. Xuất phát từ đường lối chung và đặc điểm riêng về trình độ phát triển kinh tế - xã hội.",
+"B. Xuất phát từ nhu cầu phát triển vùng kinh tế - xã hội trọng điểm của cả nước.",
+"C. Xuất phát từ đường lối chung và đặc điểm riêng về tổ chức và kết cấu xã hội.",
+"D. Xuất phát từ đường lối chung và đặc điểm riêng về tập quán, truyền thống các dân tộc."
+],
+correct:1
+},
+{
+question:"Câu 50. Truyền thuyết nào sau đây là minh chứng về khối đại đoàn kết dân tộc ngay từ thuở bình minh của lịch sử?",
+answers:[
+"A. Con Rồng cháu Tiên.",
+"B. Bánh chưng – Bánh Giầy.",
+"C. Sơn Tinh – Thủy Tinh.",
+"D. Mỵ Châu – Trọng Thủy."
+],
+correct:0
+},
+{
+question:"Câu 51. Thiết chế chính trị thời Lý – Trần có đặc trưng nào sau đây?",
+answers:[
+"A. Tập quyền thân dân.",
+"B. Quan liêu.",
+"C. Dân chủ.",
+"D. Phân quyền."
+],
+correct:0
+},
+{
+question:"Câu 52. Nhóm ngôn ngữ Việt - Mường thuộc ngữ hệ nào sau đây?",
+answers:[
+"A. Nam Á.",
+"B. Nam Đảo.",
+"C. Thái - Ka-dai.",
+"D. Hán - Tạng."
+],
+correct:0
+},
+{
+question:"Câu 53. Yêu cầu nào sau đây là nội dung bao trùm trong chính sách văn hóa dân tộc của Đảng và Nhà nước Việt Nam hiện nay?",
+answers:[
+"A. Đoàn kết, bình đẳng, tương trợ nhau cùng phát triển.",
+"B. Phát triển kinh tế là ưu tiên hàng đầu.",
+"C. Bảo tồn văn hóa dân tộc là nhiệm vụ chính.",
+"D. Tăng cường hợp tác quốc tế trong lĩnh vực văn hóa."
+],
+correct:0
+},
+{
+question:"Câu 54. Ngày nay, khối đại đoàn kết các dân tộc Việt Nam được tập trung trong tổ chức nào sau đây?",
+answers:[
+"A. Hội đồng dân tộc.",
+"B. Mặt trận Tổ quốc Việt Nam.",
+"C. Hội đồng nhân dân.",
+"D. Quốc hội."
+],
+correct:1
+},
+{
+question:"Câu 55. Khái niệm 'dân tộc' trong tiếng Việt hiện nay được sử dụng theo những nghĩa nào?",
+answers:[
+"A. Dân tộc - quốc gia và dân tộc - tộc người.",
+"B. Dân tộc đa số và dân tộc thiểu số.",
+"C. Dân tộc miền núi và dân tộc đồng bằng.",
+"D. Dân tộc - tộc người và dân tộc - ngữ hệ."
 ],
 correct:0
 }
-
 ];
 
+// ==========================
+// SAO CHÉP DỮ LIỆU
+// ==========================
+
+let questions = JSON.parse(JSON.stringify(originalQuestions));
+
+// ==========================
+// DOM
+// ==========================
+
+const questionEl = document.getElementById("question");
+const answersEl = document.getElementById("answers");
+
+const currentEl = document.getElementById("current");
+const totalEl = document.getElementById("total");
+
+const correctEl = document.getElementById("correct");
+const wrongEl = document.getElementById("wrong");
+
+const progressBar = document.getElementById("progressBar");
+
+const questionNumberEl = document.getElementById("questionNumber");
+
+const quizArea = document.getElementById("quizArea");
+
+// ==========================
+// BIẾN
+// ==========================
+
+let currentQuestion = 0;
+let correctCount = 0;
+let wrongCount = 0;
+let answered = false;
+
+// ==========================
+// XÁO MẢNG
+// ==========================
+
 function shuffleArray(array){
-    for(let i=array.length-1;i>0;i--){
-        const j=Math.floor(Math.random()*(i+1));
-        [array[i],array[j]]=[array[j],array[i]];
+
+    for(let i = array.length - 1; i > 0; i--){
+
+        const j = Math.floor(Math.random() * (i + 1));
+
+        [array[i], array[j]] = [array[j], array[i]];
     }
 }
 
-questions.forEach(q=>{
+// ==========================
+// CHUẨN HÓA CÂU HỎI
+// ==========================
 
-    const correctAnswer=q.answers[q.correct];
+function prepareQuestions(){
 
-    shuffleArray(q.answers);
+    questions.forEach(q => {
 
-    q.correct=q.answers.indexOf(correctAnswer);
+        const correctAnswer = q.answers[q.correct];
 
-});
+        shuffleArray(q.answers);
 
-shuffleArray(questions);
+        q.correct = q.answers.indexOf(correctAnswer);
 
-const question=document.getElementById("question");
-const answers=document.getElementById("answers");
-const current=document.getElementById("current");
-const correct=document.getElementById("correct");
-const wrong=document.getElementById("wrong");
-const progressBar=document.getElementById("progressBar");
-const quizArea=document.getElementById("quizArea");
-const questionNumber=document.getElementById("questionNumber");
+    });
 
-let currentQuestion=0;
-let correctCount=0;
-let wrongCount=0;
+    shuffleArray(questions);
+}
+
+// ==========================
+// LOAD QUESTION
+// ==========================
 
 function loadQuestion(){
 
-    const q=questions[currentQuestion];
+    answered = false;
 
-    current.innerText=currentQuestion+1;
+    const q = questions[currentQuestion];
 
-    questionNumber.innerText=`Câu ${currentQuestion+1}`;
+    currentEl.textContent = currentQuestion + 1;
 
-    question.innerText=q.question;
+    questionNumberEl.textContent = `Câu ${currentQuestion + 1}`;
 
-    answers.innerHTML="";
+    questionEl.textContent = q.question;
 
-    q.answers.forEach((answer,index)=>{
+    answersEl.innerHTML = "";
 
-        const btn=document.createElement("div");
+    q.answers.forEach((answer, index) => {
 
-        btn.classList.add("answer");
+        const btn = document.createElement("div");
 
-        btn.innerText=answer;
+        btn.className = "answer";
 
-        btn.onclick=()=>selectAnswer(btn,index);
+        btn.innerHTML = `
+            <strong>${String.fromCharCode(65 + index)}.</strong>
+            ${answer}
+        `;
 
-        answers.appendChild(btn);
+        btn.addEventListener("click", () => {
+            selectAnswer(btn, index);
+        });
+
+        answersEl.appendChild(btn);
 
     });
 
     updateProgress();
-
 }
 
-function selectAnswer(element,index){
+// ==========================
+// CHỌN ĐÁP ÁN
+// ==========================
 
-    const q=questions[currentQuestion];
+function selectAnswer(element, index){
 
-    const allAnswers=document.querySelectorAll(".answer");
+    if(answered) return;
 
-    allAnswers.forEach(btn=>{
-        btn.style.pointerEvents="none";
+    answered = true;
+
+    const q = questions[currentQuestion];
+
+    const allAnswers = document.querySelectorAll(".answer");
+
+    allAnswers.forEach(btn => {
+        btn.classList.add("disabled");
     });
 
-    if(index===q.correct){
+    if(index === q.correct){
 
         element.classList.add("correct");
 
@@ -984,64 +1084,117 @@ function selectAnswer(element,index){
         allAnswers[q.correct].classList.add("correct");
 
         wrongCount++;
-
     }
 
-    correct.innerText=correctCount;
+    correctEl.textContent = correctCount;
+    wrongEl.textContent = wrongCount;
 
-    wrong.innerText=wrongCount;
-
-    setTimeout(()=>{
+    setTimeout(() => {
 
         currentQuestion++;
 
-        if(currentQuestion<questions.length){
+        if(currentQuestion < questions.length){
 
             loadQuestion();
 
         }else{
 
             showResult();
-
         }
 
-    },1200);
-
+    }, 1300);
 }
+
+// ==========================
+// THANH TIẾN TRÌNH
+// ==========================
 
 function updateProgress(){
 
-    const percent=((currentQuestion)/questions.length)*100;
+    const percent = (currentQuestion / questions.length) * 100;
 
-    progressBar.style.width=percent+"%";
-
+    progressBar.style.width = `${percent}%`;
 }
+
+// ==========================
+// KẾT QUẢ
+// ==========================
 
 function showResult(){
 
-    progressBar.style.width="100%";
+    progressBar.style.width = "100%";
 
-    quizArea.innerHTML=`
+    const percent = Math.round(
+        (correctCount / questions.length) * 100
+    );
+
+    quizArea.innerHTML = `
 
         <div class="result">
 
             <h2>Hoàn Thành Quiz 🎉</h2>
 
-            <div class="score">
+            <div class="result-score">
                 ${correctCount}/${questions.length}
             </div>
 
-            <p>✅ Đúng: <b>${correctCount}</b></p>
+            <p>✅ Số câu đúng: <b>${correctCount}</b></p>
 
-            <p>❌ Sai: <b>${wrongCount}</b></p>
+            <p>❌ Số câu sai: <b>${wrongCount}</b></p>
 
-            <p>📚 Tổng câu: <b>${questions.length}</b></p>
+            <p>⭐ Chính xác: <b>${percent}%</b></p>
+
+            <button class="restart-btn" onclick="restartQuiz()">
+                Làm lại
+            </button>
 
         </div>
+    `;
+}
 
+// ==========================
+// RESET QUIZ
+// ==========================
+
+function restartQuiz(){
+
+    questions = JSON.parse(JSON.stringify(originalQuestions));
+
+    currentQuestion = 0;
+    correctCount = 0;
+    wrongCount = 0;
+    answered = false;
+
+    correctEl.textContent = 0;
+    wrongEl.textContent = 0;
+
+    prepareQuestions();
+
+    quizArea.innerHTML = `
+
+        <div class="question-box">
+
+            <div class="question-number" id="questionNumber">
+                Câu 1
+            </div>
+
+            <div class="question" id="question"></div>
+
+            <div class="answers" id="answers"></div>
+
+        </div>
     `;
 
+    window.location.reload();
 }
+
+// ==========================
+// START
+// ==========================
+
+totalEl.textContent = questions.length;
+
+prepareQuestions();
 
 loadQuestion();
 
