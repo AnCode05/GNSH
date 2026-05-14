@@ -1,1203 +1,957 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-
-<title>Quiz Lịch Sử Việt Nam</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-<style>
-
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:'Be Vietnam Pro',sans-serif;
-}
-
-body{
-    min-height:100vh;
-
-    background:
-    radial-gradient(circle at top left,#2563eb 0%,transparent 25%),
-    radial-gradient(circle at bottom right,#9333ea 0%,transparent 25%),
-    #020617;
-
-    display:flex;
-    justify-content:center;
-    align-items:center;
-
-    padding:30px;
-
-    color:white;
-}
-
-.quiz-container{
-
-    width:100%;
-    max-width:950px;
-
-    background:rgba(15,23,42,0.92);
-
-    border:1px solid rgba(255,255,255,0.08);
-
-    backdrop-filter:blur(16px);
-
-    border-radius:32px;
-
-    padding:35px;
-
-    box-shadow:
-    0 10px 40px rgba(0,0,0,0.4),
-    0 0 60px rgba(59,130,246,0.12);
-
-}
-
-.title{
-
-    font-size:38px;
-    font-weight:700;
-
-    background:linear-gradient(90deg,#38bdf8,#a855f7);
-
-    -webkit-background-clip:text;
-    -webkit-text-fill-color:transparent;
-
-    margin-bottom:10px;
-}
-
-.desc{
-    color:#94a3b8;
-    margin-bottom:30px;
-    line-height:1.7;
-}
-
-.stats{
-
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-
-    gap:18px;
-
-    margin-bottom:25px;
-}
-
-.stat{
-
-    background:rgba(255,255,255,0.04);
-
-    border:1px solid rgba(255,255,255,0.06);
-
-    border-radius:20px;
-
-    padding:20px;
-
-    text-align:center;
-}
-
-.stat-title{
-
-    color:#94a3b8;
-    font-size:14px;
-
-    margin-bottom:10px;
-}
-
-.stat-value{
-
-    font-size:30px;
-    font-weight:700;
-}
-
-.correct-color{
-    color:#22c55e;
-}
-
-.wrong-color{
-    color:#ef4444;
-}
-
-.question-color{
-    color:#38bdf8;
-}
-
-.progress-box{
-
-    width:100%;
-    height:16px;
-
-    background:#172036;
-
-    border-radius:999px;
-
-    overflow:hidden;
-
-    margin-bottom:35px;
-}
-
-.progress-bar{
-
-    width:0%;
-    height:100%;
-
-    border-radius:999px;
-
-    background:linear-gradient(90deg,#38bdf8,#8b5cf6);
-
-    transition:0.35s ease;
-}
-
-.question-box{
-
-    background:rgba(255,255,255,0.04);
-
-    border:1px solid rgba(255,255,255,0.06);
-
-    border-radius:28px;
-
-    padding:30px;
-}
-
-.question-number{
-
-    color:#38bdf8;
-
-    font-weight:600;
-
-    margin-bottom:15px;
-}
-
-.question{
-
-    font-size:25px;
-
-    font-weight:600;
-
-    line-height:1.6;
-
-    margin-bottom:30px;
-}
-
-.answers{
-
-    display:grid;
-
-    gap:18px;
-}
-
-.answer{
-
-    padding:18px 22px;
-
-    background:#131c31;
-
-    border:2px solid transparent;
-
-    border-radius:18px;
-
-    cursor:pointer;
-
-    transition:0.25s;
-
-    font-size:17px;
-
-    line-height:1.6;
-
-    user-select:none;
-}
-
-.answer:hover{
-
-    transform:translateY(-3px);
-
-    background:#1d2946;
-
-    border-color:#3b82f6;
-}
-
-.answer.disabled{
-    pointer-events:none;
-}
-
-.correct{
-
-    background:rgba(34,197,94,0.15)!important;
-
-    border-color:#22c55e!important;
-
-    color:#dcfce7;
-}
-
-.wrong{
-
-    background:rgba(239,68,68,0.15)!important;
-
-    border-color:#ef4444!important;
-
-    color:#fee2e2;
-}
-
-.result{
-
-    text-align:center;
-
-    padding:40px 10px;
-}
-
-.result h2{
-
-    font-size:42px;
-
-    background:linear-gradient(90deg,#38bdf8,#a855f7);
-
-    -webkit-background-clip:text;
-    -webkit-text-fill-color:transparent;
-
-    margin-bottom:20px;
-}
-
-.result-score{
-
-    font-size:65px;
-
-    font-weight:700;
-
-    color:#38bdf8;
-
-    margin-bottom:20px;
-}
-
-.result p{
-
-    font-size:22px;
-
-    margin:12px 0;
-}
-
-.restart-btn{
-
-    margin-top:30px;
-
-    padding:16px 30px;
-
-    border:none;
-
-    border-radius:18px;
-
-    background:linear-gradient(90deg,#38bdf8,#8b5cf6);
-
-    color:white;
-
-    font-size:18px;
-
-    font-weight:600;
-
-    cursor:pointer;
-
-    transition:0.25s;
-}
-
-.restart-btn:hover{
-
-    transform:translateY(-3px) scale(1.02);
-}
-
-@media(max-width:768px){
-
-    .stats{
-        grid-template-columns:1fr;
-    }
-
-    .question{
-        font-size:21px;
-    }
-
-    .answer{
-        font-size:15px;
-    }
-
-    .title{
-        font-size:30px;
-    }
-
-}
-
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ôn Tập Hóa Học 10 - HKII</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f9; display: flex; justify-content: center; padding: 20px; }
+        .container { background: white; width: 100%; max-width: 600px; padding: 30px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        h2 { color: #2c3e50; text-align: center; margin-bottom: 10px; }
+        
+        /* Progress Bar */
+        .progress-container { background: #e0e0e0; border-radius: 10px; height: 10px; margin: 20px 0; overflow: hidden; }
+        #progress-bar { background: #3498db; height: 100%; width: 0%; transition: width 0.3s; }
+        
+        .stats { display: flex; justify-content: space-between; margin-bottom: 20px; font-weight: bold; }
+        .correct-count { color: #27ae60; }
+        .wrong-count { color: #e74c3c; }
+
+        .question { font-size: 1.2rem; margin-bottom: 20px; color: #34495e; font-weight: 600; }
+        .answers { display: grid; gap: 10px; }
+        .btn-answer { 
+            padding: 12px 15px; border: 2px solid #ecf0f1; border-radius: 8px; background: white; 
+            cursor: pointer; text-align: left; transition: all 0.2s; font-size: 1rem;
+        }
+        .btn-answer:hover { background: #f8f9fa; border-color: #bdc3c7; }
+        .btn-answer.correct { background: #d4edda !important; border-color: #28a745 !important; color: #155724; }
+        .btn-answer.wrong { background: #f8d7da !important; border-color: #dc3545 !important; color: #721c24; }
+        
+        #next-btn { 
+            margin-top: 25px; width: 100%; padding: 12px; background: #2c3e50; color: white; 
+            border: none; border-radius: 8px; cursor: pointer; display: none; font-size: 1rem;
+        }
+        #result-screen { text-align: center; display: none; }
+        .restart-btn { padding: 10px 20px; background: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer; margin-top: 20px; }
+    </style>
 </head>
-
 <body>
 
-<div class="quiz-container">
-
-    <div class="title">Quiz Lịch Sử Việt Nam</div>
-
-    <div class="desc">
-        Trắc nghiệm lịch sử Việt Nam • Tự động chuyển câu • Xáo câu hỏi & đáp án
-    </div>
-
-    <div class="stats">
-
-        <div class="stat">
-            <div class="stat-title">Câu hiện tại</div>
-
-            <div class="stat-value question-color">
-                <span id="current">1</span>/<span id="total">0</span>
-            </div>
+<div class="container">
+    <div id="quiz-screen">
+        <h2>Trắc Nghiệm Hóa 10</h2>
+        <div class="progress-container"><div id="progress-bar"></div></div>
+        <div class="stats">
+            <span class="correct-count">Đúng: <span id="correct-score">0</span></span>
+            <span id="question-number">Câu 1/15</span>
+            <span class="wrong-count">Sai: <span id="wrong-score">0</span></span>
         </div>
 
-        <div class="stat">
-            <div class="stat-title">Số câu đúng</div>
-
-            <div class="stat-value correct-color" id="correct">
-                0
-            </div>
+        <div id="question-box">
+            <div class="question" id="question-text">Đang tải câu hỏi...</div>
+            <div class="answers" id="answer-options"></div>
         </div>
-
-        <div class="stat">
-            <div class="stat-title">Số câu sai</div>
-
-            <div class="stat-value wrong-color" id="wrong">
-                0
-            </div>
-        </div>
-
+        <button id="next-btn" onclick="nextQuestion()">Câu tiếp theo</button>
     </div>
 
-    <div class="progress-box">
-        <div class="progress-bar" id="progressBar"></div>
+    <div id="result-screen">
+        <h2>Kết Thúc!</h2>
+        <p style="font-size: 1.5rem;">Bạn đúng <span id="final-correct" class="correct-count">0</span> câu.</p>
+        <button class="restart-btn" onclick="location.reload()">Làm lại từ đầu</button>
     </div>
-
-    <div id="quizArea">
-
-        <div class="question-box">
-
-            <div class="question-number" id="questionNumber">
-                Câu 1
-            </div>
-
-            <div class="question" id="question"></div>
-
-            <div class="answers" id="answers"></div>
-
-        </div>
-
-    </div>
-
 </div>
 
 <script>
-
-// ==========================
-// DỮ LIỆU CÂU HỎI
-// ==========================
-
-const originalQuestions = [
-{
-question:"Câu 1. Nhóm ngữ hệ Nam Á gồm những nhóm ngôn ngữ nào sau đây?",
-answers:[
-"A. Tày - Thái và Môn - Khơ-me.",
-"B. Việt - Mường và Mã Lai - Đa Đảo.",
-"C. Việt - Mường và Môn - Khơ-me.",
-"D. Việt - Mường và Tày - Thái."
-],
-correct:2
-},
-{
-question:"Câu 2. Ngày nay, ở Việt Nam các dân tộc thiểu số có xu hướng sử dụng trang phục giống người Kinh vì lí do nào sau đây?",
-answers:[
-"A. Để hòa hợp, đoàn kết dân tộc.",
-"B. Đẹp hơn trang phục truyền thống.",
-"C. Do thay đổi môi trường sống.",
-"D. Thuận tiện trong lao động và đi lại."
-],
-correct:3
-},
-{
-question:"Câu 3. Nội dung nào sau đây không phản ánh đúng cơ sở hình thành khối đại đoàn kết dân tộc Việt Nam?",
-answers:[
-"A. Cơ chế chính sách, biện pháp cụ thể của nhà nước.",
-"B. Yêu cầu liên kết để làm thủy lợi, phục vụ sản xuất nông nghiệp.",
-"C. Nhu cầu mở rộng giao lưu, buôn bán với các nước láng giềng.",
-"D. Nhu cầu đoàn kết lực lượng để đấu tranh chống ngoại xâm."
-],
-correct:2
-},
-{
-question:"Câu 4. Nội dung bao trùm của chính sách dân tộc mà Nhà nước Việt Nam triển khai trên lĩnh vực văn hóa là:",
-answers:[
-"A. Tiếp thu có chọn lọc những tinh hoa văn hóa bên ngoài.",
-"B. Xây dựng nền văn hóa tiên tiến và đậm đà bản sắc dân tộc.",
-"C. Xây dựng nền văn hóa bản địa, không tiếp thu văn hóa bên ngoài.",
-"D. Chỉ tiếp thu văn hóa của các quốc gia đồng văn, đồng chủng."
-],
-correct:1
-},
-{
-question:"Câu 5. Khối đại đoàn kết dân tộc ở Việt Nam được hình thành từ khi nào?",
-answers:[
-"A. Thời dựng nước Văn Lang - Âu Lạc.",
-"B. Quá trình đấu tranh chống Bắc thuộc.",
-"C. Thời kì phong kiến độc lập, tự chủ.",
-"D. Kháng chiến chống Mỹ, cứu nước."
-],
-correct:0
-},
-{
-question:"Câu 6. Chủ trương của Đảng về kinh tế đối với khối đại đoàn kết dân tộc là:",
-answers:[
-"A. Phát triển kinh tế miền núi, vùng dân tộc thiểu số.",
-"B. Phát triển kinh tế đồng bằng, vùng đông dân cư.",
-"C. Phát triển vùng kinh tế trọng điểm.",
-"D. Phát triển kinh tế vườn - ao - chuồng."
-],
-correct:0
-},
-{
-question:"Câu 7. Việc nhà vua cử thần thực hiện nghi lễ Tịch điền và làm lễ tế để cầu mưa thuận gió hòa đã thể hiện chính sách nào của nhà nước phong kiến Đại Việt?",
-answers:[
-"A. Chú trọng phát triển nông nghiệp.",
-"B. Hạn chế sự phát triển ngoại thương.",
-"C. Chú trọng phát triển thương mại.",
-"D. Thúc đẩy thủ công nghiệp phát triển."
-],
-correct:0
-},
-{
-question:"Câu 8. Ngữ hệ là gì?",
-answers:[
-"A. Là ngôn ngữ chính của một nhóm các dân tộc.",
-"B. Là một nhóm các dân tộc nói chung một ngôn ngữ.",
-"C. Là một nhóm các ngôn ngữ có cùng nguồn gốc với nhau.",
-"D. Là ngôn ngữ riêng của một dân tộc."
-],
-correct:2
-},
-{
-question:"Câu 9. Hiện nay, 54 dân tộc ở Việt Nam được chia thành mấy nhóm ngữ hệ?",
-answers:[
-"A. Hai nhóm ngữ hệ.",
-"B. Ba nhóm ngữ hệ.",
-"C. Bốn nhóm ngữ hệ.",
-"D. Năm nhóm ngữ hệ."
-],
-correct:3
-},
-{
-question:"Câu 10. Khối đại đoàn kết dân tộc có vai trò như thế nào đối với công cuộc đấu tranh chống ngoại xâm của Việt Nam?",
-answers:[
-"A. Không đóng góp nhiều cho sự nghiệp chống ngoại xâm.",
-"B. Là nhân tố quyết định đến sự thắng lợi.",
-"C. Là nhân tố thứ yếu, góp phần dẫn đến sự thành công.",
-"D. Nhân tố duy nhất quyết định đến sự thắng lợi."
-],
-correct:1
-},
-{
-question:"Câu 11. Bộ luật Hoàng Việt luật lệ được ban hành dưới triều đại nào?",
-answers:[
-"A. Nhà Tây Sơn.",
-"B. Nhà Lê Trung hưng.",
-"C. Nhà Nguyễn.",
-"D. Nhà Mạc."
-],
-correct:2
-},
-{
-question:"Câu 12. Đối với việc củng cố và tăng cường khối đại đoàn kết dân tộc Việt Nam, chính sách dân tộc của Đảng và Nhà nước đem lại ý nghĩa nào sau đây?",
-answers:[
-"A. Góp phần nâng cao đời sống của đồng bào các dân tộc.",
-"B. Thúc đẩy kinh tế quốc gia phát triển nhanh, bền vững.",
-"C. Góp phần nâng cao vị thế quốc tế của Việt Nam.",
-"D. Tạo nên sự đa dạng về văn hóa giữa các dân tộc."
-],
-correct:0
-},
-{
-question:"Câu 13. Nội dung nào sau đây phản ánh đúng vai trò của khối đại đoàn kết dân tộc trong sự nghiệp xây dựng và bảo vệ Tổ quốc hiện nay?",
-answers:[
-"A. Là cơ sở để huy động sức mạnh của toàn dân tộc.",
-"B. Là nền tảng để liên minh với các dân tộc láng giềng.",
-"C. Là cơ sở để xóa bỏ mọi mâu thuẫn trong xã hội.",
-"D. Là cơ sở để giao lưu và tiếp thu văn hóa bên ngoài."
-],
-correct:0
-},
-{
-question:"Câu 14. Thiết chế chính trị quân chủ trung ương tập quyền ở Việt Nam đạt đến đỉnh cao vào thời nào sau đây?",
-answers:[
-"A. Thời Đinh - Tiền Lê.",
-"B. Thời Trần.",
-"C. Thời Lý.",
-"D. Thời Lê sơ."
-],
-correct:3
-},
-{
-question:"Câu 15. Sức mạnh nào góp phần quyết định giúp dân tộc Việt Nam giành được những thắng lợi lớn trong các cuộc chống ngoại xâm?",
-answers:[
-"A. Nghệ thuật quân sự độc đáo.",
-"B. Khối Đại đoàn kết dân tộc.",
-"C. Tinh thần đấu tranh anh dũng.",
-"D. Truyền thống yêu nước."
-],
-correct:1
-},
-{
-question:"Câu 16. Năm 1428, triều đại nào sau đây được thành lập, đưa Đại Việt trở thành một cường quốc trong khu vực Đông Nam Á?",
-answers:[
-"A. Triều Lý.",
-"B. Triều Trần.",
-"C. Triều Hồ.",
-"D. Triều Lê."
-],
-correct:3
-},
-{
-question:"Câu 17. Đồng bào dân tộc thiểu số ở một số tỉnh phía Bắc Việt Nam thường canh tác theo hình thức ruộng bậc thang, vì họ",
-answers:[
-"A. Chủ yếu trồng các cây: ngô, khoai, sắn.",
-"B. Không biết làm nông nghiệp trồng lúa nước.",
-"C. Cư trú ở các đồng bằng ven sông.",
-"D. Sinh sống ở vùng địa hình cao, dốc."
-],
-correct:3
-},
-{
-question:"Câu 18. 'Tam giáo đồng nguyên' là sự kết hợp hài hòa giữa các tôn giáo nào sau đây?",
-answers:[
-"A. Nho giáo - Phật giáo - Đạo giáo.",
-"B. Nho giáo - Phật giáo - Công giáo.",
-"C. Phật giáo - Hin-du giáo - Đạo giáo.",
-"D. Phật giáo - Nho giáo - Công giáo."
-],
-correct:0
-},
-{
-question:"Câu 19. Tác phẩm nào sau đây được coi là bản Tuyên ngôn độc lập đầu tiên của dân tộc Việt Nam?",
-answers:[
-"A. Chiếu dời đô.",
-"B. Nam quốc sơn Hà.",
-"C. Bình Ngô đại cáo.",
-"D. Hịch tướng sĩ."
-],
-correct:1
-},
-{
-question:"Câu 20. Thành phần dân tộc theo dân số ở Việt Nam hiện nay được chia thành mấy nhóm?",
-answers:[
-"A. Hai nhóm.",
-"B. Ba nhóm.",
-"C. Bốn nhóm.",
-"D. Năm nhóm."
-],
-correct:0
-},
-{
-question:"Câu 21. Tên gọi chính thức của Bộ luật Hồng Đức là gì?",
-answers:[
-"A. Hình thư.",
-"B. Quốc triều Hình luật.",
-"C. Hoàng Việt luật lệ.",
-"D. Hình luật sơ thảo."
-],
-correct:1
-},
-{
-question:"Câu 22. Bộ luật Hồng Đức được ban hành và hoàn thiện dưới thời vị vua nào?",
-answers:[
-"A. Lê Thái Tổ.",
-"B. Lê Thánh Tông.",
-"C. Lê Nhân Tông.",
-"D. Lê Hiến Tông."
-],
-correct:1
-},
-{
-question:"Câu 23. Hiện nay, ở Việt Nam có bao nhiêu nhóm ngôn ngữ?",
-answers:[
-"A. Năm nhóm ngôn ngữ.",
-"B. Sáu nhóm ngôn ngữ.",
-"C. Bảy nhóm ngôn ngữ.",
-"D. Tám nhóm ngôn ngữ."
-],
-correct:3
-},
-{
-question:"Câu 24. Ở khu vực miền núi của Việt Nam, do địa hình phức tạp, độ dốc lớn, hẹp nên cư dân các dân tộc thiểu số chủ yếu",
-answers:[
-"A. Di chuyển bằng voi, lạc đà.",
-"B. Đi bộ và vận chuyển bằng gùi.",
-"C. Di chuyển bằng xe máy, ô tô.",
-"D. Làm nhà trệt bằng gạch kiên cố."
-],
-correct:1
-},
-{
-question:"Câu 25. Khối đại đoàn kết các dân tộc Việt Nam được phát huy cao độ khi:",
-answers:[
-"A. Đất nước bị thiên tai, dịch bệnh.",
-"B. Kinh tế phát triển mạnh mẽ.",
-"C. Có sự giao lưu hợp tác trong khu vực.",
-"D. Có sự giao lưu hợp tác trên thế giới."
-],
-correct:0
-},
-{
-question:"Câu 26. Ý nghĩa quan trọng nhất của việc ban hành bộ luật Hình thư là gì?",
-answers:[
-"A. Khuyến khích nhân dân sản xuất nông nghiệp.",
-"B. Giúp nhà vua nắm toàn bộ quyền hành trong tay.",
-"C. Đặt cơ sở pháp lý thành văn đầu tiên, giúp việc xử án rõ ràng hơn.",
-"D. Xóa bỏ hoàn toàn các hình phạt hà khắc từ thời trước."
-],
-correct:2
-},
-{
-question:"Câu 27. Vị vua nào là người đã ban hành bộ luật Hoàng Việt luật lệ?",
-answers:[
-"A. Vua Minh Mạng.",
-"B. Vua Gia Long.",
-"C. Vua Thiệu Trị.",
-"D. Vua Tự Đức."
-],
-correct:1
-},
-{
-question:"Câu 28. Nhà nước chủ trương phát triển kinh tế miền núi, vùng dân tộc thiểu số để khắc phục vấn đề nào sau đây?",
-answers:[
-"A. Chênh lệch giữa các vùng, các dân tộc.",
-"B. Tình trạng thiếu lương thực, thực phẩm.",
-"C. Tình trạng lạc hậu về khoa học kỹ thuật.",
-"D. Cơ sở hạ tầng phát triển không đồng bộ."
-],
-correct:0
-},
-{
-question:"Câu 29. Thời kì phong kiến tự chủ, khối đại đoàn kết dân tộc giữa người Kinh với các dân tộc thiểu số được các vương triều thực hiện như thế nào?",
-answers:[
-"A. Luôn được quan tâm, xây dựng.",
-"B. Không được quan tâm, xây dựng.",
-"C. Thực hiện chính sách kì thị với dân tộc thiểu số.",
-"D. Tách biệt giữa người Kinh với người dân tộc thiểu số."
-],
-correct:0
-},
-{
-question:"Câu 30. Mặt trận dân tộc thống nhất Việt Nam mới ra đời có tên gọi là gì?",
-answers:[
-"A. Hội phản đế nhân dân.",
-"B. Hội phản đế Việt Nam.",
-"C. Hội phản đế Đồng Minh.",
-"D. Hội phản đế Đông Dương."
-],
-correct:3
-},
-{
-question:"Câu 31. Mục tiêu của Đảng và Nhà nước ta trong chính sách phát triển kinh tế miền núi, vùng dân tộc thiểu số là:",
-answers:[
-"A. Nhằm từng bước khắc phục chênh lệch giữa các vùng, các dân tộc.",
-"B. Nhằm đưa kinh tế miền núi trở thành trung tâm của kinh tế cả nước.",
-"C. Nhanh chóng hội nhập với nền kinh tế khu vực và thế giới.",
-"D. Đảm bảo được nhu cầu tự cung, tự cấp của đồng bào dân tộc thiểu số."
-],
-correct:0
-},
-{
-question:"Câu 32. Yếu tố nào không phải là cơ sở hình thành khối đoàn kết dân tộc Việt Nam?",
-answers:[
-"A. Yêu cầu trị thủy để phục vụ sản xuất nông nghiệp.",
-"B. Yêu cầu làm thủy lợi phục vụ sản xuất nông nghiệp.",
-"C. Yêu cầu tập hợp lực lượng chống giặc ngoại xâm.",
-"D. Nhu cầu mở rộng giao lưu buôn bán với nước ngoài."
-],
-correct:3
-},
-{
-question:"Câu 33. Một trong những nội dung của khối đại đoàn kết dân tộc trong sự nghiệp xây dựng và bảo vệ Tổ quốc hiện nay là",
-answers:[
-"A. Tạo nên sự phong phú về văn hóa giữa các vùng miền đất nước.",
-"B. Tạo môi trường hòa bình, ổn định để phát triển kinh tế, văn hóa.",
-"C. Thống nhất đường lối lãnh đạo của Đảng và Nhà nước Việt Nam.",
-"D. Tạo điều kiện mở rộng quan hệ với các quốc gia trên thế giới."
-],
-correct:1
-},
-{
-question:"Câu 34. Trong chính sách dân tộc về kinh tế, Đảng và Nhà nước Việt Nam có chủ trương nào sau đây?",
-answers:[
-"A. Xây dựng cơ chế quản lí kinh tế thị trường năng động, linh hoạt.",
-"B. Phát triển nền kinh tế nhiều ngành, quy mô, trình độ công nghệ.",
-"C. Ưu tiên đầu tư phát triển kinh tế các vùng dân tộc và miền núi.",
-"D. Phát triển nền kinh tế thị trường định hướng xã hội chủ nghĩa."
-],
-correct:2
-},
-{
-question:"Câu 35. Một trong những chính sách dân tộc của Đảng và Nhà nước Việt Nam trên lĩnh vực an ninh quốc phòng là:",
-answers:[
-"A. Giải quyết tốt quan hệ dân tộc trong mối liên hệ tộc người.",
-"B. Củng cố và mở rộng lãnh thổ trên đất liền và trên biển.",
-"C. Giữ gìn và củng cố mối quan hệ với các nước láng giềng.",
-"D. Tôn vinh những giá trị truyền thống của các dân tộc."
-],
-correct:1
-},
-{
-question:"Câu 36. Việc nhà Lý cho xây dựng đàn Xã Tắc ở Thăng Long mang ý nghĩa nào sau đây?",
-answers:[
-"A. Nhà nước coi trọng sản xuất nông nghiệp.",
-"B. Nhà nước coi trọng việc độc lập dân tộc.",
-"C. Có vũ khí tinh thần chiến đấu của quân dân ta.",
-"D. Khuyến khích nhân dân phát triển thương nghiệp."
-],
-correct:0
-},
-{
-question:"Câu 37. Nội dung nào sau đây phản ánh đúng vai trò của khối đại đoàn kết dân tộc trong sự nghiệp xây dựng và bảo vệ Tổ quốc hiện nay?",
-answers:[
-"A. Là nguồn sức mạnh để bảo vệ độc lập, chủ quyền của đất nước.",
-"B. Là nền tảng để tiến hành liên minh với các dân tộc láng giềng.",
-"C. Là cơ sở để xóa bỏ mọi mâu thuẫn trong xã hội Việt Nam.",
-"D. Là cơ sở để mở rộng giao lưu và tiếp thu văn hóa bên ngoài."
-],
-correct:0
-},
-{
-question:"Câu 38. Dân tộc nào chiếm đa số ở Việt Nam?",
-answers:[
-"A. Dân tộc Kinh.",
-"B. Dân tộc Lô Lô.",
-"C. Dân tộc Mường.",
-"D. Dân tộc Tày."
-],
-correct:0
-},
-{
-question:"Câu 39. Ba nguyên tắc của Đảng Cộng sản Việt Nam trong xây dựng và phát triển khối đại đoàn kết dân tộc hiện nay là",
-answers:[
-"A. Bình đẳng, tự quyết và tương trợ nhau cùng phát triển.",
-"B. Đoàn kết, dân chủ và bình đẳng giữa các dân tộc.",
-"C. Bình đẳng, chủ quyền và quyền tự quyết của mỗi dân tộc.",
-"D. Đoàn kết, bình đẳng và tương trợ nhau cùng phát triển."
-],
-correct:3
-},
-{
-question:"Câu 40. Trung tâm buôn bán sầm uất nhất của Đại Việt trong các thế kỉ XI - XV là",
-answers:[
-"A. Phố Hiến.",
-"B. Hội An.",
-"C. Thanh Hà.",
-"D. Thăng Long."
-],
-correct:3
-},
-{
-question:"Câu 41. Đồng bào các dân tộc thiểu số ở Việt Nam thường có tập quán ở nhà sàn xuất phát từ nguyên nhân chủ yếu nào sau đây?",
-answers:[
-"A. Để tiết kiệm nguyên vật liệu và diện tích đất canh tác.",
-"B. Do điều kiện kinh tế còn khó khăn, chưa có khả năng xây nhà kiên cố.",
-"C. Để thích nghi với điều kiện địa hình đồi núi và phòng tránh thú dữ.",
-"D. Do sự chi phối của các quan niệm tín ngưỡng và phong tục thờ cúng."
-],
-correct:2
-},
-{
-question:"Câu 42. Chủ trương của Đảng trong chính sách về xã hội là:",
-answers:[
-"A. Tập trung vùng đồng bào các dân tộc thiểu số.",
-"B. Tập trung vùng đồng bào dân tộc Kinh.",
-"C. Tập trung vùng đồng bào các dân tộc ở trung du.",
-"D. Tập trung vùng đồng bào các dân tộc ở đồng bằng."
-],
-correct:0
-},
-{
-question:"Câu 43. Chọn đáp án thích hợp điền vào chỗ trống (...) để hoàn thiện câu dưới đây: 'Thời Lê Trung Hưng, văn minh Đại Việt phát triển theo xu hướng.....và bước đầu tiếp xúc với văn minh...'",
-answers:[
-"A. Dân gian hóa/Ấn Độ.",
-"B. Dân gian hóa/phương Đông.",
-"C. Dân gian hóa/phương Tây.",
-"D. Cung đình hóa/phương Tây."
-],
-correct:2
-},
-{
-question:"Câu 44. Khối đại đoàn kết các dân tộc Việt Nam được phát huy cao độ khi:",
-answers:[
-"A. Đất nước bị giặc ngoại xâm.",
-"B. Kinh tế phát triển mạnh mẽ.",
-"C. Có sự giao lưu hợp tác trong khu vực.",
-"D. Có sự giao lưu hợp tác trên thế giới."
-],
-correct:0
-},
-{
-question:"Câu 45. Một trong những trung tâm buôn bán sầm uất, nhộn nhịp của cư dân Đại Việt ở Đàng Trong là",
-answers:[
-"A. Thăng Long.",
-"B. Hội An.",
-"C. Phố Hiến.",
-"D. Vân Đồn."
-],
-correct:1
-},
-{
-question:"Câu 46. Một trong những chính sách củng cố khối đại đoàn kết dân tộc của các triều đại phong kiến Việt Nam là",
-answers:[
-"A. Gả công chúa cho thủ lĩnh người dân tộc vùng biên giới.",
-"B. Chia ruộng đất trong cả nước cho mọi tầng lớp nhân dân.",
-"C. Xóa bỏ mọi tô thuế cho các dân tộc thiểu số ở miền núi.",
-"D. Luôn dùng quân sự buộc các tù trưởng miền núi thuần phục."
-],
-correct:0
-},
-{
-question:"Câu 47. Hệ tư tưởng tôn giáo nào sau đây giữ địa vị thống trị ở Việt Nam trong các thế kỉ XV – XIX?",
-answers:[
-"A. Phật giáo.",
-"B. Công giáo.",
-"C. Nho giáo.",
-"D. Đạo giáo."
-],
-correct:2
-},
-{
-question:"Câu 48. Triều đại nào mở đầu cho thời đại phong kiến độc lập, tự chủ của dân tộc Việt Nam?",
-answers:[
-"A. Triều Tiền Lý.",
-"B. Triều Ngô.",
-"C. Triều Lê.",
-"D. Triều Nguyễn."
-],
-correct:1
-},
-{
-question:"Câu 49. Ý nào sau đây không phản ánh đúng chính sách của Đảng và Nhà nước về xã hội ở vùng đồng bào dân tộc thiểu số?",
-answers:[
-"A. Xuất phát từ đường lối chung và đặc điểm riêng về trình độ phát triển kinh tế - xã hội.",
-"B. Xuất phát từ nhu cầu phát triển vùng kinh tế - xã hội trọng điểm của cả nước.",
-"C. Xuất phát từ đường lối chung và đặc điểm riêng về tổ chức và kết cấu xã hội.",
-"D. Xuất phát từ đường lối chung và đặc điểm riêng về tập quán, truyền thống các dân tộc."
-],
-correct:1
-},
-{
-question:"Câu 50. Truyền thuyết nào sau đây là minh chứng về khối đại đoàn kết dân tộc ngay từ thuở bình minh của lịch sử?",
-answers:[
-"A. Con Rồng cháu Tiên.",
-"B. Bánh chưng – Bánh Giầy.",
-"C. Sơn Tinh – Thủy Tinh.",
-"D. Mỵ Châu – Trọng Thủy."
-],
-correct:0
-},
-{
-question:"Câu 51. Thiết chế chính trị thời Lý – Trần có đặc trưng nào sau đây?",
-answers:[
-"A. Tập quyền thân dân.",
-"B. Quan liêu.",
-"C. Dân chủ.",
-"D. Phân quyền."
-],
-correct:0
-},
-{
-question:"Câu 52. Nhóm ngôn ngữ Việt - Mường thuộc ngữ hệ nào sau đây?",
-answers:[
-"A. Nam Á.",
-"B. Nam Đảo.",
-"C. Thái - Ka-dai.",
-"D. Hán - Tạng."
-],
-correct:0
-},
-{
-question:"Câu 53. Yêu cầu nào sau đây là nội dung bao trùm trong chính sách văn hóa dân tộc của Đảng và Nhà nước Việt Nam hiện nay?",
-answers:[
-"A. Đoàn kết, bình đẳng, tương trợ nhau cùng phát triển.",
-"B. Phát triển kinh tế là ưu tiên hàng đầu.",
-"C. Bảo tồn văn hóa dân tộc là nhiệm vụ chính.",
-"D. Tăng cường hợp tác quốc tế trong lĩnh vực văn hóa."
-],
-correct:0
-},
-{
-question:"Câu 54. Ngày nay, khối đại đoàn kết các dân tộc Việt Nam được tập trung trong tổ chức nào sau đây?",
-answers:[
-"A. Hội đồng dân tộc.",
-"B. Mặt trận Tổ quốc Việt Nam.",
-"C. Hội đồng nhân dân.",
-"D. Quốc hội."
-],
-correct:1
-},
-{
-question:"Câu 55. Khái niệm 'dân tộc' trong tiếng Việt hiện nay được sử dụng theo những nghĩa nào?",
-answers:[
-"A. Dân tộc - quốc gia và dân tộc - tộc người.",
-"B. Dân tộc đa số và dân tộc thiểu số.",
-"C. Dân tộc miền núi và dân tộc đồng bằng.",
-"D. Dân tộc - tộc người và dân tộc - ngữ hệ."
-],
-correct:0
-}
+    const quizData = [
+  {
+    "question": "Số oxi hóa của manganese trong ion permanganate (MnO₄⁻) là:",
+    "answers": [
+      "A. +2.",
+      "B. +3.",
+      "C. +7.",
+      "D. +6."
+    ],
+    "correct": 2
+  },
+  {
+    "question": "Trong phản ứng oxi hóa - khử:",
+    "answers": [
+      "A. Chất bị oxi hóa nhận electron và chất bị khử cho electron.",
+      "B. Quá trình oxi hóa và khử xảy ra đồng thời.",
+      "C. Chất chứa nguyên tố có số oxi hóa cực đại luôn là chất khử.",
+      "D. Quá trình nhận electron gọi là quá trình oxi hóa."
+    ],
+    "correct": 1
+  },
+  {
+    "question": "Để xác định được mức độ phản ứng nhanh hay chậm người ta sử dụng khái niệm nào sau đây?",
+    "answers": [
+      "A. Tốc độ phản ứng.",
+      "B. Cân bằng hóa học.",
+      "C. Phản ứng một chiều.",
+      "D. Phản ứng thuận nghịch."
+    ],
+    "correct": 0
+  },
+  {
+    "question": "Cho các phương trình nhiệt hóa học (1) C2H4(g) + H2(g) → C2H6(g) ΔrH°₂₉₈ = -137,0 kJ và (2) Fe2O3(s) + 2Al(s) → Al2O3(s) + 2Fe(s) ΔrH°₂₉₈ = -851,5 kJ. Nhận xét nào sau đây là đúng?",
+    "answers": [
+      "A. Cả hai phản ứng đều tỏa nhiệt.",
+      "B. Cả hai phản ứng đều thu nhiệt.",
+      "C. Phản ứng (1) tỏa nhiệt, phản ứng (2) thu nhiệt.",
+      "D. Phản ứng (1) thu nhiệt, phản ứng (2) tỏa nhiệt."
+    ],
+    "correct": 0
+  },
+  {
+    "question": "Cho phương trình: N2(g) + O2(g) → 2NO(g), ΔrH°₂₉₈ = 180,6 kJ. Nhiệt tạo thành chuẩn của NO(g) là:",
+    "answers": [
+      "A. +180,6 kJ/mol.",
+      "B. -180,6 kJ/mol.",
+      "C. +90,3 kJ/mol.",
+      "D. -90,3 kJ/mol."
+    ],
+    "correct": 2
+  },
+  {
+    "question": "Số electron ở lớp ngoài cùng của mỗi nguyên tử nguyên tố halogen là:",
+    "answers": [
+      "A. 5.",
+      "B. 2.",
+      "C. 7.",
+      "D. 8."
+    ],
+    "correct": 2
+  },
+  {
+    "question": "Số phát biểu đúng trong các câu: (a) Cl2 oxi hóa mạnh hơn Br2 và I2; (b) Tương tác van der Waals tăng từ F2 đến I2 làm tăng nhiệt độ sôi; (c) Nước bromine gồm Br2, H2O, HBr, HBrO; (d) Halogen chỉ có số oxi hóa -1 trong mọi hợp chất.",
+    "answers": [
+      "A. 1.",
+      "B. 2.",
+      "C. 3.",
+      "D. 4."
+    ],
+    "correct": 2
+  },
+  {
+    "question": "Cho phản ứng 2N2O5 → 4NO2 + O2. Ban đầu [N2O5] = 0,02M; sau 100s còn 0,0169M. Tốc độ trung bình của phản ứng trong 100s đầu là:",
+    "answers": [
+      "A. 1,55.10⁻⁵ (mol/(L.s)).",
+      "B. 1,55.10⁻⁵ (mol/(L.min)).",
+      "C. 1,35.10⁻⁵ (mol/(L.s)).",
+      "D. 1,35.10⁻⁵ (mol/(L.min))."
+    ],
+    "correct": 0
+  },
+  {
+    "question": "Chlorine vừa là chất oxi hóa, vừa là chất khử trong phản ứng hóa học nào sau đây?",
+    "answers": [
+      "A. H2 + Cl2 → 2HCl.",
+      "B. HCl + NaOH → NaCl + H2O.",
+      "C. 2KMnO4 + 16HCl → 2MnCl2 + 2KCl + 5Cl2 + 8H2O.",
+      "D. Cl2 + 2NaOH → NaCl + NaClO + H2O."
+    ],
+    "correct": 3
+  },
+  {
+    "question": "Hydrogen halide nào sau đây có nhiệt độ sôi cao nhất?",
+    "answers": [
+      "A. HF.",
+      "B. HCl.",
+      "C. HBr.",
+      "D. HI."
+    ],
+    "correct": 0
+  },
+  {
+    "question": "Đơn vị của nhiệt tạo thành chuẩn là:",
+    "answers": [
+      "A. kJ.",
+      "B. kJ/mol.",
+      "C. mol/kJ.",
+      "D. J."
+    ],
+    "correct": 1
+  },
+  {
+    "question": "Yếu tố nồng độ được áp dụng để làm thay đổi tốc độ trong quá trình nào sau đây?",
+    "answers": [
+      "A. Khi ủ bếp than, đậy nắp bếp lò làm cho phản ứng cháy chậm lại.",
+      "B. Phản ứng oxi hóa SO2 thành SO3 diễn ra nhanh hơn khi có mặt V2O5.",
+      "C. Bột nhôm phản ứng với HCl nhanh hơn so với dây nhôm.",
+      "D. Người ta chẻ nhỏ củi để bếp cháy mạnh hơn."
+    ],
+    "correct": 0
+  },
+  {
+    "question": "Phản ứng chuyển hóa P(đỏ) → P(trắng) có ΔrH°₂₉₈ = 17,6 kJ. Điều này chứng tỏ:",
+    "answers": [
+      "A. Phản ứng thu nhiệt, P đỏ bền hơn P trắng.",
+      "B. Phản ứng thu nhiệt, P trắng bền hơn P đỏ.",
+      "C. Phản ứng tỏa nhiệt, P đỏ bền hơn P trắng.",
+      "D. Phản ứng tỏa nhiệt, P trắng bền hơn P đỏ."
+    ],
+    "correct": 0
+  },
+  {
+    "question": "Khi nhiệt độ tăng thêm 10°C, tốc độ phản ứng tăng thêm 2 lần. Tốc độ phản ứng sẽ tăng bao nhiêu lần khi nâng nhiệt độ từ 20°C lên 50°C?",
+    "answers": [
+      "A. 2 lần.",
+      "B. 8 lần.",
+      "C. 16 lần.",
+      "D. 32 lần."
+    ],
+    "correct": 1
+  },
+  {
+    "question": "Trong sản xuất gang, người ta thường dùng khí nén nóng thổi vào lò cao để đốt cháy than cốc nhằm áp dụng yếu tố nào?",
+    "answers": [
+      "A. Tăng diện tích tiếp xúc.",
+      "B. Sử dụng chất xúc tác.",
+      "C. Tăng nồng độ và nhiệt độ.",
+      "D. Giảm áp suất hệ thống."
+    ],
+    "correct": 2
+  },
+  {
+    "question": "Dấu hiệu để nhận biết một phản ứng oxi hóa - khử là dựa trên sự thay đổi đại lượng nào sau đây của nguyên tử?",
+    "answers": [
+      "A. Số khối.",
+      "B. Số oxi hóa.",
+      "C. Số hiệu nguyên tử.",
+      "D. Số mol."
+    ],
+    "correct": 1
+  },
+  {
+    "question": "Phản ứng nào sau đây thuộc loại phản ứng oxi hóa - khử?",
+    "answers": [
+      "A. NaOH + HCl → NaCl + H2O.",
+      "B. CuO + H2SO4 → CuSO4 + H2O.",
+      "C. K2CO3 + 2HCl → 2KCl + CO2 + H2O.",
+      "D. 2KClO3 → 2KCl + 3O2."
+    ],
+    "correct": 3
+  },
+  {
+    "question": "Đại lượng đặc trưng cho độ biến thiên nồng độ của một chất phản ứng hoặc sản phẩm phản ứng trong một đơn vị thời gian gọi là:",
+    "answers": [
+      "A. Tốc độ phản ứng.",
+      "B. Cân bằng hóa học.",
+      "C. Tốc độ tức thời.",
+      "D. Quá trình hóa học."
+    ],
+    "correct": 0
+  },
+  {
+    "question": "Cho quỳ tím vào khí Chlorine thì quỳ tím:",
+    "answers": [
+      "A. Mất màu.",
+      "B. Màu đỏ.",
+      "C. Màu tím.",
+      "D. Màu xanh."
+    ],
+    "correct": 0
+  },
+  {
+    "question": "Biết phản ứng đốt cháy khí carbon monoxide (CO): CO(g) + 1/2O2(g) → CO2(g), ΔrH°₂₉₈ = -852,5 kJ. Nhiệt tạo thành của 1 mol O2 là:",
+    "answers": [
+      "A. -852,5 kJ.",
+      "B. -426,25 kJ.",
+      "C. 852,5 kJ.",
+      "D. 0 kJ."
+    ],
+    "correct": 3
+  },
+  {
+    "question": "Tính chất hóa học đặc trưng cho các đơn chất halogen là:",
+    "answers": [
+      "A. Tính khử.",
+      "B. Tính base.",
+      "C. Tính acid.",
+      "D. Tính oxi hóa."
+    ],
+    "correct": 3
+  },
+  {
+    "question": "Hoàn thiện phát biểu sau: 'Trong dãy hydrogen halide, từ HF đến HI, độ bền liên kết...'",
+    "answers": [
+      "A. Tăng dần.",
+      "B. Giảm dần.",
+      "C. Không đổi.",
+      "D. Tuần hoàn."
+    ],
+    "correct": 1
+  },
+  {
+    "question": "Khi đốt than trong lò, đậy nắp lò sẽ giữ than cháy được lâu hơn. Yếu tố ảnh hưởng đến tốc độ phản ứng được vận dụng là:",
+    "answers": [
+      "A. Nhiệt độ.",
+      "B. Nồng độ.",
+      "C. Chất xúc tác.",
+      "D. Diện tích bề mặt tiếp xúc."
+    ],
+    "correct": 1
+  },
+  {
+    "question": "Nhận xét nào sau đây về nhóm halogen là không đúng?",
+    "answers": [
+      "A. Tác dụng với kim loại tạo muối halide.",
+      "B. Tác dụng với hydrogen tạo khí hydrogen halide.",
+      "C. Dạng đơn chất là X2.",
+      "D. Tồn tại chủ yếu ở dạng đơn chất."
+    ],
+    "correct": 3
+  },
+  {
+    "question": "Nhỏ vài giọt dung dịch nào sau đây vào dung dịch AgNO3 thu được kết tủa màu vàng nhạt?",
+    "answers": [
+      "A. HCl.",
+      "B. NaBr.",
+      "C. NaCl.",
+      "D. HF."
+    ],
+    "correct": 1
+  },
+  {
+    "question": "Việc làm nào dưới đây thể hiện sự ảnh hưởng của diện tích bề mặt đến tốc độ phản ứng giữa CaCO3 và HCl?",
+    "answers": [
+      "A. Pha loãng dung dịch HCl.",
+      "B. Nghiền nhỏ đá vôi (CaCO3).",
+      "C. Sử dụng chất xúc tác.",
+      "D. Tăng nhiệt độ của phản ứng."
+    ],
+    "correct": 1
+  },
+  {
+    "question": "Xét phản ứng có hệ số nhiệt độ γ = 2. Nếu tăng nhiệt độ phản ứng từ 35°C lên 55°C thì tốc độ phản ứng tăng:",
+    "answers": [
+      "A. 2 lần.",
+      "B. 4 lần.",
+      "C. 8 lần.",
+      "D. 16 lần."
+    ],
+    "correct": 1
+  },
+  {
+    "question": "Lượng Cl2 cần dùng để oxi hóa muối halide trong nước biển thu được 160 kg Br2 là:",
+    "answers": [
+      "A. 71 kg.",
+      "B. 35,5 kg.",
+      "C. 142 kg.",
+      "D. 106,5 kg."
+    ],
+    "correct": 0
+  },
+  {
+    "question": "Cho các hợp chất sau: SO2, H2SO4, Na2SO4, Na2S, CaSO3. Số hợp chất trong đó sulfur có số oxi hóa +4 là:",
+    "answers": [
+      "A. 1.",
+      "B. 2.",
+      "C. 3.",
+      "D. 4."
+    ],
+    "correct": 1
+  },
+  {
+    "question": "Quá trình Fe³⁺ + 1e → Fe²⁺ là quá trình:",
+    "answers": [
+      "A. Oxi hóa.",
+      "B. Nhận proton.",
+      "C. Oxi hóa - khử.",
+      "D. Khử."
+    ],
+    "correct": 3
+  },
+  {
+    "question": "Tốc độ phản ứng không phụ thuộc yếu tố nào sau đây?",
+    "answers": [
+      "A. Thời gian xảy ra phản ứng.",
+      "B. Bề mặt tiếp xúc giữa các chất phản ứng.",
+      "C. Nồng độ các chất tham gia phản ứng.",
+      "D. Chất xúc tác."
+    ],
+    "correct": 0
+  },
+  {
+    "question": "Nhiệt lượng tỏa ra hay thu vào của phản ứng ở một điều kiện xác định được gọi là:",
+    "answers": [
+      "A. Biến thiên nhiệt lượng của phản ứng.",
+      "B. Biến thiên enthalpy của phản ứng.",
+      "C. Enthalpy của phản ứng.",
+      "D. Biến thiên năng lượng của phản ứng."
+    ],
+    "correct": 1
+  },
+  {
+    "question": "Khi tăng nhiệt độ, tốc độ phản ứng tăng vì:",
+    "answers": [
+      "A. Số va chạm hiệu quả tăng.",
+      "B. Số va chạm hiệu quả giảm.",
+      "C. Các chất ở xa nhau hơn.",
+      "D. Các chất ít di chuyển hơn."
+    ],
+    "correct": 0
+  },
+  {
+    "question": "Khi đun nóng, đơn chất halogen nào thăng hoa chuyển từ thể rắn sang thể hơi màu tím là:",
+    "answers": [
+      "A. F2.",
+      "B. I2.",
+      "C. Cl2.",
+      "D. Br2."
+    ],
+    "correct": 1
+  },
+  {
+    "question": "Acid HCl tác dụng với CuO tạo ra sản phẩm gồm những chất nào sau đây?",
+    "answers": [
+      "A. CuCl2, H2O.",
+      "B. CuCl2, H2.",
+      "C. Cu, H2O.",
+      "D. Cu, H2."
+    ],
+    "correct": 0
+  },
+  {
+    "question": "Khi tác dụng với các kim loại, các halogen thường:",
+    "answers": [
+      "A. Nhận 1 electron, tạo hợp chất ion.",
+      "B. Nhường 1 electron, tạo hợp chất CHT.",
+      "C. Nhường 1 electron, tạo hợp chất ion.",
+      "D. Góp chung 1 electron, tạo hợp chất CHT."
+    ],
+    "correct": 0
+  },
+  {
+    "question": "Trong dãy hydrohalic acid: HF, HCl, HBr, HI. Số chất tác dụng được với SiO2 là:",
+    "answers": [
+      "A. 1.",
+      "B. 2.",
+      "C. 3.",
+      "D. 4."
+    ],
+    "correct": 0
+  },
+  {
+    "question": "Khi tăng áp suất của các chất phản ứng, tốc độ của những phản ứng nào sau đây (có chất khí) sẽ bị thay đổi? (1) 2Al+Fe2O3; (2) 2H2+O2; (3) C+O2; (4) CaCO3+HCl",
+    "answers": [
+      "A. (1), (2), (4).",
+      "B. (1), (3).",
+      "C. (2), (3).",
+      "D. (2), (3), (4)."
+    ],
+    "correct": 2
+  },
+  {
+    "question": "Khi nhiệt độ tăng thêm 10°C, tốc độ phản ứng tăng lên 2 lần. Để tốc độ phản ứng đang ở 20°C tăng lên 32 lần thì cần thực hiện ở nhiệt độ bao nhiêu?",
+    "answers": [
+      "A. 40°C.",
+      "B. 50°C.",
+      "C. 60°C.",
+      "D. 70°C."
+    ],
+    "correct": 3
+  },
+  {
+    "question": "Chọn phát biểu sai: (a) Muối iodized phòng bướu cổ; (b) HBr dùng trong vô tuyến điện; (c) HF dùng khắc chữ lên thủy tinh; (d) Muối ăn là nguyên liệu sản xuất xút, chlorine.",
+    "answers": [
+      "A. 1.",
+      "B. 2.",
+      "C. 3.",
+      "D. 4."
+    ],
+    "correct": 2
+  },
+  {
+    "question": "Tính khử của các ion halide tăng dần theo thứ tự nào sau đây?",
+    "answers": [
+      "A. Cl⁻ < Br⁻ < I⁻.",
+      "B. Br⁻ < I⁻ < Cl⁻.",
+      "C. I⁻ < Cl⁻ < Br⁻.",
+      "D. Cl⁻ < I⁻ < Br⁻."
+    ],
+    "correct": 0
+  },
+  {
+    "question": "Cho phản ứng: C(s) + O2(g) → CO2(g). Yếu tố nào sau đây KHÔNG ảnh hưởng đến tốc độ phản ứng trên?",
+    "answers": [
+      "A. Áp suất O2.",
+      "B. Nhiệt độ.",
+      "C. Hàm lượng carbon.",
+      "D. Diện tích bề mặt carbon."
+    ],
+    "correct": 2
+  },
+  {
+    "question": "Tốc độ phản ứng được xác định bằng sự thay đổi lượng chất đầu hoặc sản phẩm trong một đơn vị:",
+    "answers": [
+      "A. Thể tích.",
+      "B. Thời gian.",
+      "C. Khối lượng.",
+      "D. Số mol."
+    ],
+    "correct": 1
+  },	
+  {
+    "question": "Thuốc tím chứa ion permanganate ($MnO_4^-$) có tính oxi hóa mạnh. Số oxi hóa của manganese trong ion permanganate là:",
+    "answers": [
+      "A. +2.",
+      "B. +3.",
+      "C. +7.",
+      "D. +6."
+    ],
+    "correct": 2
+  },
+  {
+    "question": "Trong phản ứng oxi hóa – khử:",
+    "answers": [
+      "A. chất bị oxi hóa nhận electron và chất bị khử cho electron.",
+      "B. quá trình oxi hóa và khử xảy ra đồng thời.",
+      "C. chất chứa nguyên tố có số oxi hóa cực đại luôn là chất khử.",
+      "D. quá trình nhận electron gọi là quá trình oxi hóa."
+    ],
+    "correct": 1
+  },
+  {
+    "question": "Để xác định được mức độ phản ứng nhanh hay chậm người ta sử dụng khái niệm nào sau đây?",
+    "answers": [
+      "A. Tốc độ phản ứng.",
+      "B. Cân bằng hóa học.",
+      "C. Phản ứng một chiều.",
+      "D. Phản ứng thuận nghịch."
+    ],
+    "correct": 0
+  },
+  {
+    "question": "Số electron ở lớp ngoài cùng của mỗi nguyên tử nguyên tố halogen là:",
+    "answers": [
+      "A. 5.",
+      "B. 2.",
+      "C. 7.",
+      "D. 8."
+    ],
+    "correct": 2
+  },
+  {
+    "question": "Chlorine vừa là chất oxi hóa, vừa là chất khử trong phản ứng hóa học nào sau đây?",
+    "answers": [
+      "A. $H_2 + Cl_2 \\xrightarrow{t^o} 2HCl$.",
+      "B. $HCl + NaOH \\rightarrow NaCl + H_2O$.",
+      "C. $2KMnO_4 + 16HCl \\xrightarrow{t^o} 2MnCl_2 + 2KCl + 5Cl_2 + 8H_2O$.",
+      "D. $Cl_2 + 2NaOH \\rightarrow NaCl + NaOCl + H_2O$."
+    ],
+    "correct": 3
+  },
+  {
+    "question": "Sulfur (S) có số oxi hóa +6 trong hợp chất nào sau đây?",
+    "answers": [
+      "A. $H_2S$.",
+      "B. $SO_2$.",
+      "C. S.",
+      "D. $Al_2(SO_4)_3$."
+    ],
+    "correct": 3
+  },
+  {
+    "question": "Nước muối sinh lý là dung dịch có nồng độ 0,9% của muối nào sau đây?",
+    "answers": [
+      "A. $NaNO_3$.",
+      "B. $Na_2CO_3$.",
+      "C. $NaCl$.",
+      "D. $Na_2SO_4$."
+    ],
+    "correct": 2
+  },
+  {
+    "question": "Trong dãy hydrogen halide, từ HCl đến HI, nhiệt độ sôi tăng dần chủ yếu do nguyên nhân nào sau đây?",
+    "answers": [
+      "A. Tương tác van der Waals tăng dần.",
+      "B. Phân tử khối tăng dần.",
+      "C. Độ bền liên kết giảm dần.",
+      "D. Độ phân cực liên kết giảm dần."
+    ],
+    "correct": 0
+  },
+  {
+    "question": "Halogen nào sau đây chỉ có số oxi hóa -1 trong các hợp chất?",
+    "answers": [
+      "A. Chlorine.",
+      "B. Bromine.",
+      "C. Iodine.",
+      "D. Fluorine."
+    ],
+    "correct": 3
+  },
+  {
+    "question": "Khi nhiệt độ tăng thêm $10^oC$, tốc độ phản ứng tăng thêm 2 lần. Tốc độ phản ứng sẽ tăng lên bao nhiêu lần khi nâng nhiệt độ từ $20^oC$ lên $50^oC$?",
+    "answers": [
+      "A. 2 lần.",
+      "B. 8 lần.",
+      "C. 16 lần.",
+      "D. 32 lần."
+    ],
+    "correct": 1
+  },
+  {
+    "question": "Trong cơ thể người, nguyên tố iodine tập trung ở tuyến nào dưới đây?",
+    "answers": [
+      "A. Tuyến giáp trạng.",
+      "B. Tuyến tụy.",
+      "C. Tuyến yên.",
+      "D. Tuyến thượng thận."
+    ],
+    "correct": 0
+  },
+  {
+    "question": "Halogen nào được dùng trong sản xuất nhựa Teflon?",
+    "answers": [
+      "A. Chlorine.",
+      "B. Iodine.",
+      "C. Fluorine.",
+      "D. Bromine."
+    ],
+    "correct": 2
+  },
+  {
+    "question": "Nguyên tố halogen được dùng trong sản xuất nhựa PVC là:",
+    "answers": [
+      "A. chlorine.",
+      "B. bromine.",
+      "C. phosphorus.",
+      "D. carbon."
+    ],
+    "correct": 0
+  },
+  {
+    "question": "Halogen được điều chế bằng cách điện phân có màng ngăn dung dịch muối ăn là:",
+    "answers": [
+      "A. fluorine.",
+      "B. chlorine.",
+      "C. bromine.",
+      "D. iodine."
+    ],
+    "correct": 1
+  },
+  {
+    "question": "Nguyên tố halogen dùng làm gia vị, cần thiết cho tuyến giáp và phòng ngừa khuyết tật trí tuệ là:",
+    "answers": [
+      "A. chlorine.",
+      "B. iodine.",
+      "C. bromine.",
+      "D. fluorine."
+    ],
+    "correct": 1
+  },
+  {
+    "question": "Hydrohalic acid thường được dùng để đánh sạch bề mặt kim loại trước khi sơn, hàn, mạ điện là:",
+    "answers": [
+      "A. HBr.",
+      "B. HF.",
+      "C. HI.",
+      "D. HCl."
+    ],
+    "correct": 3
+  },
+  {
+    "question": "Hydrohalic acid được dùng làm nguyên liệu để sản xuất hợp chất chống dính teflon là:",
+    "answers": [
+      "A. HF.",
+      "B. HCl.",
+      "C. HBr.",
+      "D. HI."
+    ],
+    "correct": 0
+  },
+  {
+    "question": "X là một loại muối chloride, là nguyên liệu quan trọng trong công nghiệp hóa chất để điều chế Cl2, H2, NaOH... X là:",
+    "answers": [
+      "A. ZnCl2",
+      "B. AlCl3",
+      "C. NaCl",
+      "D. KCl"
+    ],
+    "correct": 2
+  },
+  {
+    "question": "Phản ứng oxi hoá khử là phản ứng có sự thay đổi:",
+    "answers": [
+      "A. số oxi hoá.",
+      "B. liên kết.",
+      "C. chất ban đầu.",
+      "D. chất sản phẩm."
+    ],
+    "correct": 0
+  },
+  {
+    "question": "Khi cho NaCl tác dụng với H2SO4 đặc, xảy ra phản ứng:",
+    "answers": [
+      "A. oxi hoá khử.",
+      "B. trao đổi.",
+      "C. không phản ứng.",
+      "D. phản ứng thế."
+    ],
+    "correct": 1
+  },
+  {
+    "question": "Nhận định nào sau đây đúng về tốc độ phản ứng?",
+    "answers": [
+      "A. Khi tăng nhiệt độ phản ứng thì tốc độ phản ứng giảm.",
+      "B. Khi nồng độ chất phản ứng tăng thì tốc độ phản ứng giảm.",
+      "C. Khi nồng độ chất phản ứng tăng thì tốc độ phản ứng tăng.",
+      "D. Áp suất chất phản ứng không ảnh hưởng đến tốc độ phản ứng."
+    ],
+    "correct": 2
+  },
+  {
+    "question": "Nguyên tố nào sau đây không thuộc nhóm halogen?",
+    "answers": [
+      "A. Fluorine.",
+      "B. Chlorine.",
+      "C. Chromium.",
+      "D. Bromine."
+    ],
+    "correct": 2
+  },
+  {
+    "question": "Hydrohalic acid nào sau đây không được bảo quản trong lọ thủy tinh?",
+    "answers": [
+      "A. HCl.",
+      "B. HF.",
+      "C. HBr.",
+      "D. HI."
+    ],
+    "correct": 1
+  },
+  {
+    "question": "Đi từ fluorine đến iodine, độ âm điện của các nguyên tử các nguyên tố như thế nào?",
+    "answers": [
+      "A. Tăng dần.",
+      "B. Giảm dần.",
+      "C. Tăng sau đó giảm dần.",
+      "D. Không thay đổi."
+    ],
+    "correct": 1
+  },
+  {
+    "question": "Yếu tố nào sau đây không ảnh hưởng đến tốc độ phản ứng?",
+    "answers": [
+      "A. Nhiệt độ chất phản ứng.",
+      "B. Thể vật lí của chất phản ứng.",
+      "C. Nồng độ chất phản ứng.",
+      "D. Tỉ trọng chất phản ứng."
+    ],
+    "correct": 3
+  },
+  {
+    "question": "Trong những phản ứng hóa học dưới đây, phản ứng nào là phản ứng oxi hóa – khử?",
+    "answers": [
+      "A. AgNO3 + NaCl -> AgCl + NaNO3.",
+      "B. PCl3 + Cl2 -> PCl5.",
+      "C. NaOH + HCl -> NaCl + H2O.",
+      "D. CO2 + NaOH -> Na2CO3 + H2O."
+    ],
+    "correct": 1
+  },
+  {
+    "question": "Trong cơ thể người, nguyên tố iodine tập trung ở tuyến nào sau đây?",
+    "answers": [
+      "A. Tuyến thượng thận.",
+      "B. Tuyến tụy.",
+      "C. Tuyến yên.",
+      "D. Tuyến giáp trạng."
+    ],
+    "correct": 3
+  },
+  {
+    "question": "Phát biểu nào sau đây không đúng khi nói về nguyên tử các nguyên tố nhóm VIIA?",
+    "answers": [
+      "A. Có 7 electron hóa trị.",
+      "B. Theo chiều tăng dần điện tích hạt nhân nguyên tử thì độ âm điện giảm.",
+      "C. Theo chiều tăng dần điện tích hạt nhân nguyên tử thì khả năng hút cặp electron liên kết giảm.",
+      "D. Theo chiều tăng dần điện tích hạt nhân nguyên tử thì bán kính nguyên tử giảm."
+    ],
+    "correct": 3
+  },
+  {
+    "question": "Những phát biểu nào sau đây không đúng khi nói về ion halide X-?",
+    "answers": [
+      "A. Dùng dung dịch silver nitrate sẽ phân biệt được các ion F-, Cl-, Br-, I-.",
+      "B. Với sulfuric acid đặc, các ion Br-, I- thể hiện tính khử.",
+      "C. Tính khử của các ion halide tăng dần theo dãy Cl-, Br-, I-.",
+      "D. Ion Cl- kết hợp ion Ag+ tạo AgCl là chất không tan, màu vàng."
+    ],
+    "correct": 3
+  },
+  {
+    "question": "Khi nhiệt độ tăng thêm 10°C, tốc độ phản ứng hóa học tăng thêm 2 lần. Tốc độ phản ứng sẽ tăng lên bao nhiêu lần khi nâng nhiệt độ từ 20°C lên 50°C?",
+    "answers": [
+      "A. 2 lần.",
+      "B. 8 lần.",
+      "C. 16 lần.",
+      "D. 32 lần."
+    ],
+    "correct": 1
+  },
+  {
+    "question": "Liên kết trong phân tử hydrogen halide (HX) là:",
+    "answers": [
+      "A. ion.",
+      "B. cho - nhận.",
+      "C. cộng hóa trị phân cực.",
+      "D. cộng hóa trị không cực."
+    ],
+    "correct": 2
+  },
+  {
+    "question": "Chất nào sau đây được ứng dụng dùng để tráng phim ảnh?",
+    "answers": [
+      "A. NaBr.",
+      "B. AgCl.",
+      "C. AgBr.",
+      "D. HBr."
+    ],
+    "correct": 2
+  },
+  {
+    "question": "Chất nào sau đây chỉ có tính oxi hoá, không có tính khử?",
+    "answers": [
+      "A. F2.",
+      "B. Cl2.",
+      "C. Br2.",
+      "D. I2."
+    ],
+    "correct": 0
+  },
+  {
+    "question": "Phản ứng hoá học giữa hydrogen và chlorine xảy ra trong điều kiện nào sau đây?",
+    "answers": [
+      "A. Trong bóng tối, nhiệt độ thường.",
+      "B. Khi có ánh sáng.",
+      "C. Ở nhiệt độ thấp.",
+      "D. Trong bóng tối, nhiệt độ cao."
+    ],
+    "correct": 1
+  },
+  {
+    "question": "Phản ứng nào sau đây chứng tỏ HCl có tính khử?",
+    "answers": [
+      "A. NaOH + HCl -> NaCl + H2O.",
+      "B. MnO2 + HCl -> MnCl2 + Cl2 + H2O.",
+      "C. 2Fe + 3Cl2 -> FeCl3.",
+      "D. 2HCl + Fe -> FeCl2 + H2."
+    ],
+    "correct": 1
+  },
+  {
+    "question": "Nguyên tử halogen nào sau đây thể hiện số oxi hoá -1 trong tất cả các hợp chất?",
+    "answers": [
+      "A. fluorine.",
+      "B. Chlorine.",
+      "C. Bromine.",
+      "D. Iodine."
+    ],
+    "correct": 0
+  },
+  {
+    "question": "Hợp chất của halogen X được ứng dụng để tạo hợp chất chống dính trong xoong, chảo... X là:",
+    "answers": [
+      "A. Fluorine.",
+      "B. Iodine.",
+      "C. Bromine.",
+      "D. Chlorine."
+    ],
+    "correct": 0
+  },
+  {
+    "question": "Hydrogen halide có nhiệt độ sôi cao nhất là:",
+    "answers": [
+      "A. HI.",
+      "B. HCl.",
+      "C. HBr.",
+      "D. HF."
+    ],
+    "correct": 3
+  },
+  {
+    "question": "Tốc độ phản ứng không phụ thuộc yếu tố nào sau đây?",
+    "answers": [
+      "A. Thời gian xảy ra phản ứng.",
+      "B. Bề mặt tiếp xúc giữa các chất phản ứng.",
+      "C. Nồng độ các chất tham gia phản ứng.",
+      "D. Chất xúc tác."
+    ],
+    "correct": 0
+  }
 ];
 
-// ==========================
-// SAO CHÉP DỮ LIỆU
-// ==========================
+    let currentIdx = 0;
+    let scoreCorrect = 0;
+    let scoreWrong = 0;
+    let answered = false;
 
-let questions = JSON.parse(JSON.stringify(originalQuestions));
-
-// ==========================
-// DOM
-// ==========================
-
-const questionEl = document.getElementById("question");
-const answersEl = document.getElementById("answers");
-
-const currentEl = document.getElementById("current");
-const totalEl = document.getElementById("total");
-
-const correctEl = document.getElementById("correct");
-const wrongEl = document.getElementById("wrong");
-
-const progressBar = document.getElementById("progressBar");
-
-const questionNumberEl = document.getElementById("questionNumber");
-
-const quizArea = document.getElementById("quizArea");
-
-// ==========================
-// BIẾN
-// ==========================
-
-let currentQuestion = 0;
-let correctCount = 0;
-let wrongCount = 0;
-let answered = false;
-
-// ==========================
-// XÁO MẢNG
-// ==========================
-
-function shuffleArray(array){
-
-    for(let i = array.length - 1; i > 0; i--){
-
-        const j = Math.floor(Math.random() * (i + 1));
-
-        [array[i], array[j]] = [array[j], array[i]];
-    }
-}
-
-// ==========================
-// CHUẨN HÓA CÂU HỎI
-// ==========================
-
-function prepareQuestions(){
-
-    questions.forEach(q => {
-
-        const correctAnswer = q.answers[q.correct];
-
-        shuffleArray(q.answers);
-
-        q.correct = q.answers.indexOf(correctAnswer);
-
-    });
-
-    shuffleArray(questions);
-}
-
-// ==========================
-// LOAD QUESTION
-// ==========================
-
-function loadQuestion(){
-
-    answered = false;
-
-    const q = questions[currentQuestion];
-
-    currentEl.textContent = currentQuestion + 1;
-
-    questionNumberEl.textContent = `Câu ${currentQuestion + 1}`;
-
-    questionEl.textContent = q.question;
-
-    answersEl.innerHTML = "";
-
-    q.answers.forEach((answer, index) => {
-
-        const btn = document.createElement("div");
-
-        btn.className = "answer";
-
-        btn.innerHTML = `
-            <strong>${String.fromCharCode(65 + index)}.</strong>
-            ${answer}
-        `;
-
-        btn.addEventListener("click", () => {
-            selectAnswer(btn, index);
+    function loadQuestion() {
+        answered = false;
+        const q = quizData[currentIdx];
+        document.getElementById("question-text").innerText = q.question;
+        document.getElementById("question-number").innerText = `Câu ${currentIdx + 1}/${quizData.length}`;
+        document.getElementById("next-btn").style.display = "none";
+        
+        const optionsContainer = document.getElementById("answer-options");
+        optionsContainer.innerHTML = "";
+        
+        q.answers.forEach((ans, index) => {
+            const btn = document.createElement("button");
+            btn.className = "btn-answer";
+            btn.innerText = ans;
+            btn.onclick = () => checkAnswer(index, btn);
+            optionsContainer.appendChild(btn);
         });
 
-        answersEl.appendChild(btn);
-
-    });
-
-    updateProgress();
-}
-
-// ==========================
-// CHỌN ĐÁP ÁN
-// ==========================
-
-function selectAnswer(element, index){
-
-    if(answered) return;
-
-    answered = true;
-
-    const q = questions[currentQuestion];
-
-    const allAnswers = document.querySelectorAll(".answer");
-
-    allAnswers.forEach(btn => {
-        btn.classList.add("disabled");
-    });
-
-    if(index === q.correct){
-
-        element.classList.add("correct");
-
-        correctCount++;
-
-    }else{
-
-        element.classList.add("wrong");
-
-        allAnswers[q.correct].classList.add("correct");
-
-        wrongCount++;
+        updateProgress();
     }
 
-    correctEl.textContent = correctCount;
-    wrongEl.textContent = wrongCount;
+    function checkAnswer(selectedIdx, btn) {
+        if (answered) return;
+        answered = true;
+        const correctIdx = quizData[currentIdx].correct;
+        const buttons = document.getElementsByClassName("btn-answer");
 
-    setTimeout(() => {
+        if (selectedIdx === correctIdx) {
+            btn.classList.add("correct");
+            scoreCorrect++;
+            document.getElementById("correct-score").innerText = scoreCorrect;
+        } else {
+            btn.classList.add("wrong");
+            buttons[correctIdx].classList.add("correct"); // Hiện câu đúng khi trả lời sai
+            scoreWrong++;
+            document.getElementById("wrong-score").innerText = scoreWrong;
+        }
+        
+        document.getElementById("next-btn").style.display = "block";
+    }
 
-        currentQuestion++;
-
-        if(currentQuestion < questions.length){
-
+    function nextQuestion() {
+        currentIdx++;
+        if (currentIdx < quizData.length) {
             loadQuestion();
-
-        }else{
-
+        } else {
             showResult();
         }
+    }
 
-    }, 1300);
-}
+    function updateProgress() {
+        const percent = (currentIdx / quizData.length) * 100;
+        document.getElementById("progress-bar").style.width = percent + "%";
+    }
 
-// ==========================
-// THANH TIẾN TRÌNH
-// ==========================
+    function showResult() {
+        document.getElementById("quiz-screen").style.display = "none";
+        document.getElementById("result-screen").style.display = "block";
+        document.getElementById("final-correct").innerText = scoreCorrect;
+    }
 
-function updateProgress(){
-
-    const percent = (currentQuestion / questions.length) * 100;
-
-    progressBar.style.width = `${percent}%`;
-}
-
-// ==========================
-// KẾT QUẢ
-// ==========================
-
-function showResult(){
-
-    progressBar.style.width = "100%";
-
-    const percent = Math.round(
-        (correctCount / questions.length) * 100
-    );
-
-    quizArea.innerHTML = `
-
-        <div class="result">
-
-            <h2>Hoàn Thành Quiz 🎉</h2>
-
-            <div class="result-score">
-                ${correctCount}/${questions.length}
-            </div>
-
-            <p>✅ Số câu đúng: <b>${correctCount}</b></p>
-
-            <p>❌ Số câu sai: <b>${wrongCount}</b></p>
-
-            <p>⭐ Chính xác: <b>${percent}%</b></p>
-
-            <button class="restart-btn" onclick="restartQuiz()">
-                Làm lại
-            </button>
-
-        </div>
-    `;
-}
-
-// ==========================
-// RESET QUIZ
-// ==========================
-
-function restartQuiz(){
-
-    questions = JSON.parse(JSON.stringify(originalQuestions));
-
-    currentQuestion = 0;
-    correctCount = 0;
-    wrongCount = 0;
-    answered = false;
-
-    correctEl.textContent = 0;
-    wrongEl.textContent = 0;
-
-    prepareQuestions();
-
-    quizArea.innerHTML = `
-
-        <div class="question-box">
-
-            <div class="question-number" id="questionNumber">
-                Câu 1
-            </div>
-
-            <div class="question" id="question"></div>
-
-            <div class="answers" id="answers"></div>
-
-        </div>
-    `;
-
-    window.location.reload();
-}
-
-// ==========================
-// START
-// ==========================
-
-totalEl.textContent = questions.length;
-
-prepareQuestions();
-
-loadQuestion();
-
+    loadQuestion();
 </script>
 
 </body>
