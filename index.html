@@ -1,958 +1,557 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ôn Tập Hóa Học 10 - HKII</title>
-    <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f9; display: flex; justify-content: center; padding: 20px; }
-        .container { background: white; width: 100%; max-width: 600px; padding: 30px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
-        h2 { color: #2c3e50; text-align: center; margin-bottom: 10px; }
-        
-        /* Progress Bar */
-        .progress-container { background: #e0e0e0; border-radius: 10px; height: 10px; margin: 20px 0; overflow: hidden; }
-        #progress-bar { background: #3498db; height: 100%; width: 0%; transition: width 0.3s; }
-        
-        .stats { display: flex; justify-content: space-between; margin-bottom: 20px; font-weight: bold; }
-        .correct-count { color: #27ae60; }
-        .wrong-count { color: #e74c3c; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz Hóa Học - Từng câu</title>
+<style>
+:root {
+    --bg: #f4f7fc; --card-bg: #ffffff; --text: #1e2a3a; --text-muted: #5a6e85;
+    --border: #d0dae8; --primary: #2563eb; --primary-hover: #1d4ed8;
+    --success: #16a34a; --success-bg: #e6f7ec; --danger: #dc2626; --danger-bg: #fde8e8;
+    --hint-bg: #fef9e7; --hint-border: #f0d98c; --shadow: 0 4px 16px rgba(0,0,0,0.06);
+    --radius: 12px; --table-header: #eef2f9;
+}
+[data-theme="dark"] {
+    --bg: #0f172a; --card-bg: #1e293b; --text: #e2e8f0; --text-muted: #94a3b8;
+    --border: #334155; --primary: #3b82f6; --primary-hover: #60a5fa;
+    --success: #22c55e; --success-bg: #143d2a; --danger: #ef4444; --danger-bg: #4a1d1d;
+    --hint-bg: #2d2a1a; --hint-border: #6b5d1e; --shadow: 0 4px 16px rgba(0,0,0,0.4);
+    --table-header: #1a2537;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+    font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.6;
+    transition: background .3s, color .3s; padding: 16px;
+}
+.container { max-width: 900px; margin: 0 auto; }
 
-        .question { font-size: 1.2rem; margin-bottom: 20px; color: #34495e; font-weight: 600; }
-        .answers { display: grid; gap: 10px; }
-        .btn-answer { 
-            padding: 12px 15px; border: 2px solid #ecf0f1; border-radius: 8px; background: white; 
-            cursor: pointer; text-align: left; transition: all 0.2s; font-size: 1rem;
-        }
-        .btn-answer:hover { background: #f8f9fa; border-color: #bdc3c7; }
-        .btn-answer.correct { background: #d4edda !important; border-color: #28a745 !important; color: #155724; }
-        .btn-answer.wrong { background: #f8d7da !important; border-color: #dc3545 !important; color: #721c24; }
-        
-        #next-btn { 
-            margin-top: 25px; width: 100%; padding: 12px; background: #2c3e50; color: white; 
-            border: none; border-radius: 8px; cursor: pointer; display: none; font-size: 1rem;
-        }
-        #result-screen { text-align: center; display: none; }
-        .restart-btn { padding: 10px 20px; background: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer; margin-top: 20px; }
-    </style>
+/* Header */
+header {
+    display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center;
+    gap: 12px; padding: 16px 20px; background: var(--card-bg);
+    border-radius: var(--radius); box-shadow: var(--shadow);
+    margin-bottom: 20px; border: 1px solid var(--border);
+}
+header h1 { font-size: 1.3rem; font-weight: 700; }
+.status-bar { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; font-size: .9rem; }
+.status-item {
+    display: flex; align-items: center; gap: 6px; padding: 4px 12px;
+    border-radius: 20px; background: var(--bg); border: 1px solid var(--border);
+}
+.dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+.dot.green { background: var(--success); } .dot.red { background: var(--danger); }
+.dot.gray { background: var(--text-muted); }
+.theme-toggle {
+    background: var(--bg); border: 1px solid var(--border); color: var(--text);
+    padding: 8px 14px; border-radius: 20px; cursor: pointer; font-size: .9rem;
+    display: flex; align-items: center; gap: 6px; transition: all .2s;
+}
+.theme-toggle:hover { border-color: var(--primary); }
+
+/* Progress */
+.progress-wrap {
+    width: 100%; height: 8px; background: var(--border); border-radius: 4px;
+    margin-bottom: 20px; overflow: hidden;
+}
+.progress-fill {
+    height: 100%; background: linear-gradient(90deg, var(--primary), #7c3aed);
+    width: 0%; transition: width .3s; border-radius: 4px;
+}
+.progress-text { text-align: center; font-size: .85rem; color: var(--text-muted); margin-bottom: 14px; }
+
+/* Question Card */
+.question-card {
+    background: var(--card-bg); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 22px; box-shadow: var(--shadow);
+    margin-bottom: 18px; animation: fadeIn .3s ease;
+}
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+.q-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 14px; }
+.q-number { font-weight: 700; color: var(--primary); font-size: .95rem; white-space: nowrap; }
+.q-text { font-weight: 600; font-size: 1.05rem; flex: 1; }
+.hint-btn {
+    background: none; border: 1px solid var(--hint-border); color: var(--text-muted);
+    padding: 4px 10px; border-radius: 16px; cursor: pointer; font-size: .8rem;
+    white-space: nowrap; transition: all .2s;
+}
+.hint-btn:hover { background: var(--hint-bg); color: var(--text); }
+.hint-box {
+    display: none; background: var(--hint-bg); border: 1px solid var(--hint-border);
+    border-radius: 8px; padding: 10px 14px; margin: 10px 0 4px; font-size: .9rem;
+}
+.hint-box.show { display: block; }
+
+.options { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
+.option {
+    display: flex; align-items: flex-start; gap: 10px; padding: 12px 14px;
+    border: 1.5px solid var(--border); border-radius: 10px; cursor: pointer;
+    transition: all .2s; background: var(--bg);
+}
+.option:hover:not(.disabled) { border-color: var(--primary); }
+.option.selected { border-color: var(--primary); background: rgba(37,99,235,0.08); }
+.option.correct-answer { border-color: var(--success); background: var(--success-bg); }
+.option.wrong-answer { border-color: var(--danger); background: var(--danger-bg); }
+.option.disabled { cursor: default; }
+.opt-label { font-weight: 700; min-width: 22px; color: var(--primary); }
+.opt-text { flex: 1; }
+
+/* Feedback */
+.feedback-box {
+    margin-top: 16px; padding: 14px 16px; border-radius: 10px; font-size: .95rem;
+    display: none; animation: fadeIn .3s ease;
+}
+.feedback-box.show { display: block; }
+.feedback-box.correct { background: var(--success-bg); border: 1px solid var(--success); }
+.feedback-box.wrong { background: var(--danger-bg); border: 1px solid var(--danger); }
+.feedback-title { font-weight: 700; margin-bottom: 6px; font-size: 1rem; }
+.feedback-title.correct { color: var(--success); }
+.feedback-title.wrong { color: var(--danger); }
+.feedback-explain { color: var(--text); font-size: .92rem; }
+
+/* Buttons */
+.btn {
+    padding: 12px 28px; border: none; border-radius: 10px; font-size: 1rem;
+    font-weight: 600; cursor: pointer; transition: all .2s;
+}
+.btn-primary { background: var(--primary); color: #fff; }
+.btn-primary:hover { background: var(--primary-hover); }
+.btn-primary:disabled { opacity: .5; cursor: not-allowed; }
+.btn-outline { background: transparent; border: 1.5px solid var(--border); color: var(--text); }
+.btn-outline:hover { border-color: var(--primary); color: var(--primary); }
+.actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 20px; justify-content: center; }
+
+/* True/False Table */
+.tf-section {
+    background: var(--card-bg); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 22px; box-shadow: var(--shadow);
+    margin-top: 24px;
+}
+.tf-section h2 { font-size: 1.2rem; margin-bottom: 8px; }
+.tf-section p.intro { color: var(--text-muted); font-size: .9rem; margin-bottom: 14px; }
+.tf-table { width: 100%; border-collapse: collapse; font-size: .95rem; }
+.tf-table th, .tf-table td { border: 1px solid var(--border); padding: 10px 12px; text-align: left; vertical-align: top; }
+.tf-table th { background: var(--table-header); font-weight: 700; text-align: center; }
+.tf-table td:first-child { width: 60%; }
+.tf-table td:nth-child(2), .tf-table td:nth-child(3) { text-align: center; width: 20%; }
+.tf-table input[type="radio"] { accent-color: var(--primary); transform: scale(1.2); cursor: pointer; }
+.tf-table tr.correct-row { background: var(--success-bg); }
+.tf-table tr.wrong-row { background: var(--danger-bg); }
+.tf-feedback { font-size: .85rem; margin-top: 4px; font-weight: 600; }
+.tf-feedback.correct { color: var(--success); }
+.tf-feedback.wrong { color: var(--danger); }
+
+/* Result banner */
+.result-banner {
+    display: none; text-align: center; padding: 18px; border-radius: var(--radius);
+    margin-bottom: 20px; font-size: 1.05rem; font-weight: 600;
+    border: 1px solid var(--border); background: var(--card-bg);
+}
+.result-banner.show { display: block; }
+
+.hidden { display: none !important; }
+
+@media (max-width: 640px) {
+    header { flex-direction: column; align-items: stretch; }
+    .status-bar { justify-content: center; }
+    .tf-table { font-size: .82rem; }
+    .tf-table th, .tf-table td { padding: 8px 5px; }
+}
+</style>
 </head>
-<body>
-
+<body data-theme="light">
 <div class="container">
-    <div id="quiz-screen">
-        <h2>Trắc Nghiệm Hóa 10</h2>
-        <div class="progress-container"><div id="progress-bar"></div></div>
-        <div class="stats">
-            <span class="correct-count">Đúng: <span id="correct-score">0</span></span>
-            <span id="question-number">Câu 1/15</span>
-            <span class="wrong-count">Sai: <span id="wrong-score">0</span></span>
+    <header>
+        <h1>🧪 Quiz Hóa Học</h1>
+        <div class="status-bar">
+            <div class="status-item"><span class="dot green"></span> Đúng: <strong id="correctCount">0</strong></div>
+            <div class="status-item"><span class="dot red"></span> Sai: <strong id="wrongCount">0</strong></div>
+            <div class="status-item"><span class="dot gray"></span> Đã làm: <strong id="doneCount">0</strong></div>
+            <button class="theme-toggle" id="themeToggle">🌙 Tối</button>
         </div>
+    </header>
 
-        <div id="question-box">
-            <div class="question" id="question-text">Đang tải câu hỏi...</div>
-            <div class="answers" id="answer-options"></div>
+    <div class="progress-wrap"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="progress-text" id="progressText">Câu 1 / 50</div>
+
+    <div class="result-banner" id="resultBanner"></div>
+
+    <!-- Phần trắc nghiệm từng câu -->
+    <div id="singleQuestionContainer"></div>
+
+    <!-- Phần Đúng/Sai (hiển thị sau khi xong 50 câu) -->
+    <div class="tf-section hidden" id="tfSection">
+        <h2>📋 Phần II: Trắc nghiệm Đúng/Sai</h2>
+        <p class="intro">Chọn <strong>Đúng</strong> hoặc <strong>Sai</strong> cho mỗi phát biểu. Kết quả hiển thị sau khi bấm "Nộp bài".</p>
+        <table class="tf-table">
+            <thead><tr><th>Câu hỏi / Phát biểu</th><th>Đúng</th><th>Sai</th></tr></thead>
+            <tbody id="tfBody"></tbody>
+        </table>
+        <div class="actions">
+            <button class="btn btn-primary" id="submitTF">✅ Nộp bài Đúng/Sai</button>
         </div>
-        <button id="next-btn" onclick="nextQuestion()">Câu tiếp theo</button>
     </div>
 
-    <div id="result-screen">
-        <h2>Kết Thúc!</h2>
-        <p style="font-size: 1.5rem;">Bạn đúng <span id="final-correct" class="correct-count">0</span> câu.</p>
-        <button class="restart-btn" onclick="location.reload()">Làm lại từ đầu</button>
+    <div class="actions" id="mainActions">
+        <button class="btn btn-outline" id="resetBtn">🔄 Làm lại (xáo trộn)</button>
     </div>
 </div>
 
 <script>
-    const quizData = [
-  {
-    "question": "Số oxi hóa của manganese trong ion permanganate (MnO₄⁻) là:",
-    "answers": [
-      "A. +2.",
-      "B. +3.",
-      "C. +7.",
-      "D. +6."
-    ],
-    "correct": 2
-  },
-  {
-    "question": "Trong phản ứng oxi hóa - khử:",
-    "answers": [
-      "A. Chất bị oxi hóa nhận electron và chất bị khử cho electron.",
-      "B. Quá trình oxi hóa và khử xảy ra đồng thời.",
-      "C. Chất chứa nguyên tố có số oxi hóa cực đại luôn là chất khử.",
-      "D. Quá trình nhận electron gọi là quá trình oxi hóa."
-    ],
-    "correct": 1
-  },
-  {
-    "question": "Để xác định được mức độ phản ứng nhanh hay chậm người ta sử dụng khái niệm nào sau đây?",
-    "answers": [
-      "A. Tốc độ phản ứng.",
-      "B. Cân bằng hóa học.",
-      "C. Phản ứng một chiều.",
-      "D. Phản ứng thuận nghịch."
-    ],
-    "correct": 0
-  },
-  {
-    "question": "Cho các phương trình nhiệt hóa học (1) C2H4(g) + H2(g) → C2H6(g) ΔrH°₂₉₈ = -137,0 kJ và (2) Fe2O3(s) + 2Al(s) → Al2O3(s) + 2Fe(s) ΔrH°₂₉₈ = -851,5 kJ. Nhận xét nào sau đây là đúng?",
-    "answers": [
-      "A. Cả hai phản ứng đều tỏa nhiệt.",
-      "B. Cả hai phản ứng đều thu nhiệt.",
-      "C. Phản ứng (1) tỏa nhiệt, phản ứng (2) thu nhiệt.",
-      "D. Phản ứng (1) thu nhiệt, phản ứng (2) tỏa nhiệt."
-    ],
-    "correct": 0
-  },
-  {
-    "question": "Cho phương trình: N2(g) + O2(g) → 2NO(g), ΔrH°₂₉₈ = 180,6 kJ. Nhiệt tạo thành chuẩn của NO(g) là:",
-    "answers": [
-      "A. +180,6 kJ/mol.",
-      "B. -180,6 kJ/mol.",
-      "C. +90,3 kJ/mol.",
-      "D. -90,3 kJ/mol."
-    ],
-    "correct": 2
-  },
-  {
-    "question": "Số electron ở lớp ngoài cùng của mỗi nguyên tử nguyên tố halogen là:",
-    "answers": [
-      "A. 5.",
-      "B. 2.",
-      "C. 7.",
-      "D. 8."
-    ],
-    "correct": 2
-  },
-  {
-    "question": "Số phát biểu đúng trong các câu: (a) Cl2 oxi hóa mạnh hơn Br2 và I2; (b) Tương tác van der Waals tăng từ F2 đến I2 làm tăng nhiệt độ sôi; (c) Nước bromine gồm Br2, H2O, HBr, HBrO; (d) Halogen chỉ có số oxi hóa -1 trong mọi hợp chất.",
-    "answers": [
-      "A. 1.",
-      "B. 2.",
-      "C. 3.",
-      "D. 4."
-    ],
-    "correct": 2
-  },
-  {
-    "question": "Cho phản ứng 2N2O5 → 4NO2 + O2. Ban đầu [N2O5] = 0,02M; sau 100s còn 0,0169M. Tốc độ trung bình của phản ứng trong 100s đầu là:",
-    "answers": [
-      "A. 1,55.10⁻⁵ (mol/(L.s)).",
-      "B. 1,55.10⁻⁵ (mol/(L.min)).",
-      "C. 1,35.10⁻⁵ (mol/(L.s)).",
-      "D. 1,35.10⁻⁵ (mol/(L.min))."
-    ],
-    "correct": 0
-  },
-  {
-    "question": "Chlorine vừa là chất oxi hóa, vừa là chất khử trong phản ứng hóa học nào sau đây?",
-    "answers": [
-      "A. H2 + Cl2 → 2HCl.",
-      "B. HCl + NaOH → NaCl + H2O.",
-      "C. 2KMnO4 + 16HCl → 2MnCl2 + 2KCl + 5Cl2 + 8H2O.",
-      "D. Cl2 + 2NaOH → NaCl + NaClO + H2O."
-    ],
-    "correct": 3
-  },
-  {
-    "question": "Hydrogen halide nào sau đây có nhiệt độ sôi cao nhất?",
-    "answers": [
-      "A. HF.",
-      "B. HCl.",
-      "C. HBr.",
-      "D. HI."
-    ],
-    "correct": 0
-  },
-  {
-    "question": "Đơn vị của nhiệt tạo thành chuẩn là:",
-    "answers": [
-      "A. kJ.",
-      "B. kJ/mol.",
-      "C. mol/kJ.",
-      "D. J."
-    ],
-    "correct": 1
-  },
-  {
-    "question": "Yếu tố nồng độ được áp dụng để làm thay đổi tốc độ trong quá trình nào sau đây?",
-    "answers": [
-      "A. Khi ủ bếp than, đậy nắp bếp lò làm cho phản ứng cháy chậm lại.",
-      "B. Phản ứng oxi hóa SO2 thành SO3 diễn ra nhanh hơn khi có mặt V2O5.",
-      "C. Bột nhôm phản ứng với HCl nhanh hơn so với dây nhôm.",
-      "D. Người ta chẻ nhỏ củi để bếp cháy mạnh hơn."
-    ],
-    "correct": 0
-  },
-  {
-    "question": "Phản ứng chuyển hóa P(đỏ) → P(trắng) có ΔrH°₂₉₈ = 17,6 kJ. Điều này chứng tỏ:",
-    "answers": [
-      "A. Phản ứng thu nhiệt, P đỏ bền hơn P trắng.",
-      "B. Phản ứng thu nhiệt, P trắng bền hơn P đỏ.",
-      "C. Phản ứng tỏa nhiệt, P đỏ bền hơn P trắng.",
-      "D. Phản ứng tỏa nhiệt, P trắng bền hơn P đỏ."
-    ],
-    "correct": 0
-  },
-  {
-    "question": "Khi nhiệt độ tăng thêm 10°C, tốc độ phản ứng tăng thêm 2 lần. Tốc độ phản ứng sẽ tăng bao nhiêu lần khi nâng nhiệt độ từ 20°C lên 50°C?",
-    "answers": [
-      "A. 2 lần.",
-      "B. 8 lần.",
-      "C. 16 lần.",
-      "D. 32 lần."
-    ],
-    "correct": 1
-  },
-  {
-    "question": "Trong sản xuất gang, người ta thường dùng khí nén nóng thổi vào lò cao để đốt cháy than cốc nhằm áp dụng yếu tố nào?",
-    "answers": [
-      "A. Tăng diện tích tiếp xúc.",
-      "B. Sử dụng chất xúc tác.",
-      "C. Tăng nồng độ và nhiệt độ.",
-      "D. Giảm áp suất hệ thống."
-    ],
-    "correct": 2
-  },
-  {
-    "question": "Dấu hiệu để nhận biết một phản ứng oxi hóa - khử là dựa trên sự thay đổi đại lượng nào sau đây của nguyên tử?",
-    "answers": [
-      "A. Số khối.",
-      "B. Số oxi hóa.",
-      "C. Số hiệu nguyên tử.",
-      "D. Số mol."
-    ],
-    "correct": 1
-  },
-  {
-    "question": "Phản ứng nào sau đây thuộc loại phản ứng oxi hóa - khử?",
-    "answers": [
-      "A. NaOH + HCl → NaCl + H2O.",
-      "B. CuO + H2SO4 → CuSO4 + H2O.",
-      "C. K2CO3 + 2HCl → 2KCl + CO2 + H2O.",
-      "D. 2KClO3 → 2KCl + 3O2."
-    ],
-    "correct": 3
-  },
-  {
-    "question": "Đại lượng đặc trưng cho độ biến thiên nồng độ của một chất phản ứng hoặc sản phẩm phản ứng trong một đơn vị thời gian gọi là:",
-    "answers": [
-      "A. Tốc độ phản ứng.",
-      "B. Cân bằng hóa học.",
-      "C. Tốc độ tức thời.",
-      "D. Quá trình hóa học."
-    ],
-    "correct": 0
-  },
-  {
-    "question": "Cho quỳ tím vào khí Chlorine thì quỳ tím:",
-    "answers": [
-      "A. Mất màu.",
-      "B. Màu đỏ.",
-      "C. Màu tím.",
-      "D. Màu xanh."
-    ],
-    "correct": 0
-  },
-  {
-    "question": "Biết phản ứng đốt cháy khí carbon monoxide (CO): CO(g) + 1/2O2(g) → CO2(g), ΔrH°₂₉₈ = -852,5 kJ. Nhiệt tạo thành của 1 mol O2 là:",
-    "answers": [
-      "A. -852,5 kJ.",
-      "B. -426,25 kJ.",
-      "C. 852,5 kJ.",
-      "D. 0 kJ."
-    ],
-    "correct": 3
-  },
-  {
-    "question": "Tính chất hóa học đặc trưng cho các đơn chất halogen là:",
-    "answers": [
-      "A. Tính khử.",
-      "B. Tính base.",
-      "C. Tính acid.",
-      "D. Tính oxi hóa."
-    ],
-    "correct": 3
-  },
-  {
-    "question": "Hoàn thiện phát biểu sau: 'Trong dãy hydrogen halide, từ HF đến HI, độ bền liên kết...'",
-    "answers": [
-      "A. Tăng dần.",
-      "B. Giảm dần.",
-      "C. Không đổi.",
-      "D. Tuần hoàn."
-    ],
-    "correct": 1
-  },
-  {
-    "question": "Khi đốt than trong lò, đậy nắp lò sẽ giữ than cháy được lâu hơn. Yếu tố ảnh hưởng đến tốc độ phản ứng được vận dụng là:",
-    "answers": [
-      "A. Nhiệt độ.",
-      "B. Nồng độ.",
-      "C. Chất xúc tác.",
-      "D. Diện tích bề mặt tiếp xúc."
-    ],
-    "correct": 1
-  },
-  {
-    "question": "Nhận xét nào sau đây về nhóm halogen là không đúng?",
-    "answers": [
-      "A. Tác dụng với kim loại tạo muối halide.",
-      "B. Tác dụng với hydrogen tạo khí hydrogen halide.",
-      "C. Dạng đơn chất là X2.",
-      "D. Tồn tại chủ yếu ở dạng đơn chất."
-    ],
-    "correct": 3
-  },
-  {
-    "question": "Nhỏ vài giọt dung dịch nào sau đây vào dung dịch AgNO3 thu được kết tủa màu vàng nhạt?",
-    "answers": [
-      "A. HCl.",
-      "B. NaBr.",
-      "C. NaCl.",
-      "D. HF."
-    ],
-    "correct": 1
-  },
-  {
-    "question": "Việc làm nào dưới đây thể hiện sự ảnh hưởng của diện tích bề mặt đến tốc độ phản ứng giữa CaCO3 và HCl?",
-    "answers": [
-      "A. Pha loãng dung dịch HCl.",
-      "B. Nghiền nhỏ đá vôi (CaCO3).",
-      "C. Sử dụng chất xúc tác.",
-      "D. Tăng nhiệt độ của phản ứng."
-    ],
-    "correct": 1
-  },
-  {
-    "question": "Xét phản ứng có hệ số nhiệt độ γ = 2. Nếu tăng nhiệt độ phản ứng từ 35°C lên 55°C thì tốc độ phản ứng tăng:",
-    "answers": [
-      "A. 2 lần.",
-      "B. 4 lần.",
-      "C. 8 lần.",
-      "D. 16 lần."
-    ],
-    "correct": 1
-  },
-  {
-    "question": "Lượng Cl2 cần dùng để oxi hóa muối halide trong nước biển thu được 160 kg Br2 là:",
-    "answers": [
-      "A. 71 kg.",
-      "B. 35,5 kg.",
-      "C. 142 kg.",
-      "D. 106,5 kg."
-    ],
-    "correct": 0
-  },
-  {
-    "question": "Cho các hợp chất sau: SO2, H2SO4, Na2SO4, Na2S, CaSO3. Số hợp chất trong đó sulfur có số oxi hóa +4 là:",
-    "answers": [
-      "A. 1.",
-      "B. 2.",
-      "C. 3.",
-      "D. 4."
-    ],
-    "correct": 1
-  },
-  {
-    "question": "Quá trình Fe³⁺ + 1e → Fe²⁺ là quá trình:",
-    "answers": [
-      "A. Oxi hóa.",
-      "B. Nhận proton.",
-      "C. Oxi hóa - khử.",
-      "D. Khử."
-    ],
-    "correct": 3
-  },
-  {
-    "question": "Tốc độ phản ứng không phụ thuộc yếu tố nào sau đây?",
-    "answers": [
-      "A. Thời gian xảy ra phản ứng.",
-      "B. Bề mặt tiếp xúc giữa các chất phản ứng.",
-      "C. Nồng độ các chất tham gia phản ứng.",
-      "D. Chất xúc tác."
-    ],
-    "correct": 0
-  },
-  {
-    "question": "Nhiệt lượng tỏa ra hay thu vào của phản ứng ở một điều kiện xác định được gọi là:",
-    "answers": [
-      "A. Biến thiên nhiệt lượng của phản ứng.",
-      "B. Biến thiên enthalpy của phản ứng.",
-      "C. Enthalpy của phản ứng.",
-      "D. Biến thiên năng lượng của phản ứng."
-    ],
-    "correct": 1
-  },
-  {
-    "question": "Khi tăng nhiệt độ, tốc độ phản ứng tăng vì:",
-    "answers": [
-      "A. Số va chạm hiệu quả tăng.",
-      "B. Số va chạm hiệu quả giảm.",
-      "C. Các chất ở xa nhau hơn.",
-      "D. Các chất ít di chuyển hơn."
-    ],
-    "correct": 0
-  },
-  {
-    "question": "Khi đun nóng, đơn chất halogen nào thăng hoa chuyển từ thể rắn sang thể hơi màu tím là:",
-    "answers": [
-      "A. F2.",
-      "B. I2.",
-      "C. Cl2.",
-      "D. Br2."
-    ],
-    "correct": 1
-  },
-  {
-    "question": "Acid HCl tác dụng với CuO tạo ra sản phẩm gồm những chất nào sau đây?",
-    "answers": [
-      "A. CuCl2, H2O.",
-      "B. CuCl2, H2.",
-      "C. Cu, H2O.",
-      "D. Cu, H2."
-    ],
-    "correct": 0
-  },
-  {
-    "question": "Khi tác dụng với các kim loại, các halogen thường:",
-    "answers": [
-      "A. Nhận 1 electron, tạo hợp chất ion.",
-      "B. Nhường 1 electron, tạo hợp chất CHT.",
-      "C. Nhường 1 electron, tạo hợp chất ion.",
-      "D. Góp chung 1 electron, tạo hợp chất CHT."
-    ],
-    "correct": 0
-  },
-  {
-    "question": "Trong dãy hydrohalic acid: HF, HCl, HBr, HI. Số chất tác dụng được với SiO2 là:",
-    "answers": [
-      "A. 1.",
-      "B. 2.",
-      "C. 3.",
-      "D. 4."
-    ],
-    "correct": 0
-  },
-  {
-    "question": "Khi tăng áp suất của các chất phản ứng, tốc độ của những phản ứng nào sau đây (có chất khí) sẽ bị thay đổi? (1) 2Al+Fe2O3; (2) 2H2+O2; (3) C+O2; (4) CaCO3+HCl",
-    "answers": [
-      "A. (1), (2), (4).",
-      "B. (1), (3).",
-      "C. (2), (3).",
-      "D. (2), (3), (4)."
-    ],
-    "correct": 2
-  },
-  {
-    "question": "Khi nhiệt độ tăng thêm 10°C, tốc độ phản ứng tăng lên 2 lần. Để tốc độ phản ứng đang ở 20°C tăng lên 32 lần thì cần thực hiện ở nhiệt độ bao nhiêu?",
-    "answers": [
-      "A. 40°C.",
-      "B. 50°C.",
-      "C. 60°C.",
-      "D. 70°C."
-    ],
-    "correct": 3
-  },
-  {
-    "question": "Chọn phát biểu sai: (a) Muối iodized phòng bướu cổ; (b) HBr dùng trong vô tuyến điện; (c) HF dùng khắc chữ lên thủy tinh; (d) Muối ăn là nguyên liệu sản xuất xút, chlorine.",
-    "answers": [
-      "A. 1.",
-      "B. 2.",
-      "C. 3.",
-      "D. 4."
-    ],
-    "correct": 2
-  },
-  {
-    "question": "Tính khử của các ion halide tăng dần theo thứ tự nào sau đây?",
-    "answers": [
-      "A. Cl⁻ < Br⁻ < I⁻.",
-      "B. Br⁻ < I⁻ < Cl⁻.",
-      "C. I⁻ < Cl⁻ < Br⁻.",
-      "D. Cl⁻ < I⁻ < Br⁻."
-    ],
-    "correct": 0
-  },
-  {
-    "question": "Cho phản ứng: C(s) + O2(g) → CO2(g). Yếu tố nào sau đây KHÔNG ảnh hưởng đến tốc độ phản ứng trên?",
-    "answers": [
-      "A. Áp suất O2.",
-      "B. Nhiệt độ.",
-      "C. Hàm lượng carbon.",
-      "D. Diện tích bề mặt carbon."
-    ],
-    "correct": 2
-  },
-  {
-    "question": "Tốc độ phản ứng được xác định bằng sự thay đổi lượng chất đầu hoặc sản phẩm trong một đơn vị:",
-    "answers": [
-      "A. Thể tích.",
-      "B. Thời gian.",
-      "C. Khối lượng.",
-      "D. Số mol."
-    ],
-    "correct": 1
-  },	
-  {
-    "question": "Thuốc tím chứa ion permanganate ($MnO_4^-$) có tính oxi hóa mạnh. Số oxi hóa của manganese trong ion permanganate là:",
-    "answers": [
-      "A. +2.",
-      "B. +3.",
-      "C. +7.",
-      "D. +6."
-    ],
-    "correct": 2
-  },
-  {
-    "question": "Trong phản ứng oxi hóa – khử:",
-    "answers": [
-      "A. chất bị oxi hóa nhận electron và chất bị khử cho electron.",
-      "B. quá trình oxi hóa và khử xảy ra đồng thời.",
-      "C. chất chứa nguyên tố có số oxi hóa cực đại luôn là chất khử.",
-      "D. quá trình nhận electron gọi là quá trình oxi hóa."
-    ],
-    "correct": 1
-  },
-  {
-    "question": "Để xác định được mức độ phản ứng nhanh hay chậm người ta sử dụng khái niệm nào sau đây?",
-    "answers": [
-      "A. Tốc độ phản ứng.",
-      "B. Cân bằng hóa học.",
-      "C. Phản ứng một chiều.",
-      "D. Phản ứng thuận nghịch."
-    ],
-    "correct": 0
-  },
-  {
-    "question": "Số electron ở lớp ngoài cùng của mỗi nguyên tử nguyên tố halogen là:",
-    "answers": [
-      "A. 5.",
-      "B. 2.",
-      "C. 7.",
-      "D. 8."
-    ],
-    "correct": 2
-  },
-  {
-    "question": "Chlorine vừa là chất oxi hóa, vừa là chất khử trong phản ứng hóa học nào sau đây?",
-    "answers": [
-      "A. $H_2 + Cl_2 \\xrightarrow{t^o} 2HCl$.",
-      "B. $HCl + NaOH \\rightarrow NaCl + H_2O$.",
-      "C. $2KMnO_4 + 16HCl \\xrightarrow{t^o} 2MnCl_2 + 2KCl + 5Cl_2 + 8H_2O$.",
-      "D. $Cl_2 + 2NaOH \\rightarrow NaCl + NaOCl + H_2O$."
-    ],
-    "correct": 3
-  },
-  {
-    "question": "Sulfur (S) có số oxi hóa +6 trong hợp chất nào sau đây?",
-    "answers": [
-      "A. $H_2S$.",
-      "B. $SO_2$.",
-      "C. S.",
-      "D. $Al_2(SO_4)_3$."
-    ],
-    "correct": 3
-  },
-  {
-    "question": "Nước muối sinh lý là dung dịch có nồng độ 0,9% của muối nào sau đây?",
-    "answers": [
-      "A. $NaNO_3$.",
-      "B. $Na_2CO_3$.",
-      "C. $NaCl$.",
-      "D. $Na_2SO_4$."
-    ],
-    "correct": 2
-  },
-  {
-    "question": "Trong dãy hydrogen halide, từ HCl đến HI, nhiệt độ sôi tăng dần chủ yếu do nguyên nhân nào sau đây?",
-    "answers": [
-      "A. Tương tác van der Waals tăng dần.",
-      "B. Phân tử khối tăng dần.",
-      "C. Độ bền liên kết giảm dần.",
-      "D. Độ phân cực liên kết giảm dần."
-    ],
-    "correct": 0
-  },
-  {
-    "question": "Halogen nào sau đây chỉ có số oxi hóa -1 trong các hợp chất?",
-    "answers": [
-      "A. Chlorine.",
-      "B. Bromine.",
-      "C. Iodine.",
-      "D. Fluorine."
-    ],
-    "correct": 3
-  },
-  {
-    "question": "Khi nhiệt độ tăng thêm $10^oC$, tốc độ phản ứng tăng thêm 2 lần. Tốc độ phản ứng sẽ tăng lên bao nhiêu lần khi nâng nhiệt độ từ $20^oC$ lên $50^oC$?",
-    "answers": [
-      "A. 2 lần.",
-      "B. 8 lần.",
-      "C. 16 lần.",
-      "D. 32 lần."
-    ],
-    "correct": 1
-  },
-  {
-    "question": "Trong cơ thể người, nguyên tố iodine tập trung ở tuyến nào dưới đây?",
-    "answers": [
-      "A. Tuyến giáp trạng.",
-      "B. Tuyến tụy.",
-      "C. Tuyến yên.",
-      "D. Tuyến thượng thận."
-    ],
-    "correct": 0
-  },
-  {
-    "question": "Halogen nào được dùng trong sản xuất nhựa Teflon?",
-    "answers": [
-      "A. Chlorine.",
-      "B. Iodine.",
-      "C. Fluorine.",
-      "D. Bromine."
-    ],
-    "correct": 2
-  },
-  {
-    "question": "Nguyên tố halogen được dùng trong sản xuất nhựa PVC là:",
-    "answers": [
-      "A. chlorine.",
-      "B. bromine.",
-      "C. phosphorus.",
-      "D. carbon."
-    ],
-    "correct": 0
-  },
-  {
-    "question": "Halogen được điều chế bằng cách điện phân có màng ngăn dung dịch muối ăn là:",
-    "answers": [
-      "A. fluorine.",
-      "B. chlorine.",
-      "C. bromine.",
-      "D. iodine."
-    ],
-    "correct": 1
-  },
-  {
-    "question": "Nguyên tố halogen dùng làm gia vị, cần thiết cho tuyến giáp và phòng ngừa khuyết tật trí tuệ là:",
-    "answers": [
-      "A. chlorine.",
-      "B. iodine.",
-      "C. bromine.",
-      "D. fluorine."
-    ],
-    "correct": 1
-  },
-  {
-    "question": "Hydrohalic acid thường được dùng để đánh sạch bề mặt kim loại trước khi sơn, hàn, mạ điện là:",
-    "answers": [
-      "A. HBr.",
-      "B. HF.",
-      "C. HI.",
-      "D. HCl."
-    ],
-    "correct": 3
-  },
-  {
-    "question": "Hydrohalic acid được dùng làm nguyên liệu để sản xuất hợp chất chống dính teflon là:",
-    "answers": [
-      "A. HF.",
-      "B. HCl.",
-      "C. HBr.",
-      "D. HI."
-    ],
-    "correct": 0
-  },
-  {
-    "question": "X là một loại muối chloride, là nguyên liệu quan trọng trong công nghiệp hóa chất để điều chế Cl2, H2, NaOH... X là:",
-    "answers": [
-      "A. ZnCl2",
-      "B. AlCl3",
-      "C. NaCl",
-      "D. KCl"
-    ],
-    "correct": 2
-  },
-  {
-    "question": "Phản ứng oxi hoá khử là phản ứng có sự thay đổi:",
-    "answers": [
-      "A. số oxi hoá.",
-      "B. liên kết.",
-      "C. chất ban đầu.",
-      "D. chất sản phẩm."
-    ],
-    "correct": 0
-  },
-  {
-    "question": "Khi cho NaCl tác dụng với H2SO4 đặc, xảy ra phản ứng:",
-    "answers": [
-      "A. oxi hoá khử.",
-      "B. trao đổi.",
-      "C. không phản ứng.",
-      "D. phản ứng thế."
-    ],
-    "correct": 1
-  },
-  {
-    "question": "Nhận định nào sau đây đúng về tốc độ phản ứng?",
-    "answers": [
-      "A. Khi tăng nhiệt độ phản ứng thì tốc độ phản ứng giảm.",
-      "B. Khi nồng độ chất phản ứng tăng thì tốc độ phản ứng giảm.",
-      "C. Khi nồng độ chất phản ứng tăng thì tốc độ phản ứng tăng.",
-      "D. Áp suất chất phản ứng không ảnh hưởng đến tốc độ phản ứng."
-    ],
-    "correct": 2
-  },
-  {
-    "question": "Nguyên tố nào sau đây không thuộc nhóm halogen?",
-    "answers": [
-      "A. Fluorine.",
-      "B. Chlorine.",
-      "C. Chromium.",
-      "D. Bromine."
-    ],
-    "correct": 2
-  },
-  {
-    "question": "Hydrohalic acid nào sau đây không được bảo quản trong lọ thủy tinh?",
-    "answers": [
-      "A. HCl.",
-      "B. HF.",
-      "C. HBr.",
-      "D. HI."
-    ],
-    "correct": 1
-  },
-  {
-    "question": "Đi từ fluorine đến iodine, độ âm điện của các nguyên tử các nguyên tố như thế nào?",
-    "answers": [
-      "A. Tăng dần.",
-      "B. Giảm dần.",
-      "C. Tăng sau đó giảm dần.",
-      "D. Không thay đổi."
-    ],
-    "correct": 1
-  },
-  {
-    "question": "Yếu tố nào sau đây không ảnh hưởng đến tốc độ phản ứng?",
-    "answers": [
-      "A. Nhiệt độ chất phản ứng.",
-      "B. Thể vật lí của chất phản ứng.",
-      "C. Nồng độ chất phản ứng.",
-      "D. Tỉ trọng chất phản ứng."
-    ],
-    "correct": 3
-  },
-  {
-    "question": "Trong những phản ứng hóa học dưới đây, phản ứng nào là phản ứng oxi hóa – khử?",
-    "answers": [
-      "A. AgNO3 + NaCl -> AgCl + NaNO3.",
-      "B. PCl3 + Cl2 -> PCl5.",
-      "C. NaOH + HCl -> NaCl + H2O.",
-      "D. CO2 + NaOH -> Na2CO3 + H2O."
-    ],
-    "correct": 1
-  },
-  {
-    "question": "Trong cơ thể người, nguyên tố iodine tập trung ở tuyến nào sau đây?",
-    "answers": [
-      "A. Tuyến thượng thận.",
-      "B. Tuyến tụy.",
-      "C. Tuyến yên.",
-      "D. Tuyến giáp trạng."
-    ],
-    "correct": 3
-  },
-  {
-    "question": "Phát biểu nào sau đây không đúng khi nói về nguyên tử các nguyên tố nhóm VIIA?",
-    "answers": [
-      "A. Có 7 electron hóa trị.",
-      "B. Theo chiều tăng dần điện tích hạt nhân nguyên tử thì độ âm điện giảm.",
-      "C. Theo chiều tăng dần điện tích hạt nhân nguyên tử thì khả năng hút cặp electron liên kết giảm.",
-      "D. Theo chiều tăng dần điện tích hạt nhân nguyên tử thì bán kính nguyên tử giảm."
-    ],
-    "correct": 3
-  },
-  {
-    "question": "Những phát biểu nào sau đây không đúng khi nói về ion halide X-?",
-    "answers": [
-      "A. Dùng dung dịch silver nitrate sẽ phân biệt được các ion F-, Cl-, Br-, I-.",
-      "B. Với sulfuric acid đặc, các ion Br-, I- thể hiện tính khử.",
-      "C. Tính khử của các ion halide tăng dần theo dãy Cl-, Br-, I-.",
-      "D. Ion Cl- kết hợp ion Ag+ tạo AgCl là chất không tan, màu vàng."
-    ],
-    "correct": 3
-  },
-  {
-    "question": "Khi nhiệt độ tăng thêm 10°C, tốc độ phản ứng hóa học tăng thêm 2 lần. Tốc độ phản ứng sẽ tăng lên bao nhiêu lần khi nâng nhiệt độ từ 20°C lên 50°C?",
-    "answers": [
-      "A. 2 lần.",
-      "B. 8 lần.",
-      "C. 16 lần.",
-      "D. 32 lần."
-    ],
-    "correct": 1
-  },
-  {
-    "question": "Liên kết trong phân tử hydrogen halide (HX) là:",
-    "answers": [
-      "A. ion.",
-      "B. cho - nhận.",
-      "C. cộng hóa trị phân cực.",
-      "D. cộng hóa trị không cực."
-    ],
-    "correct": 2
-  },
-  {
-    "question": "Chất nào sau đây được ứng dụng dùng để tráng phim ảnh?",
-    "answers": [
-      "A. NaBr.",
-      "B. AgCl.",
-      "C. AgBr.",
-      "D. HBr."
-    ],
-    "correct": 2
-  },
-  {
-    "question": "Chất nào sau đây chỉ có tính oxi hoá, không có tính khử?",
-    "answers": [
-      "A. F2.",
-      "B. Cl2.",
-      "C. Br2.",
-      "D. I2."
-    ],
-    "correct": 0
-  },
-  {
-    "question": "Phản ứng hoá học giữa hydrogen và chlorine xảy ra trong điều kiện nào sau đây?",
-    "answers": [
-      "A. Trong bóng tối, nhiệt độ thường.",
-      "B. Khi có ánh sáng.",
-      "C. Ở nhiệt độ thấp.",
-      "D. Trong bóng tối, nhiệt độ cao."
-    ],
-    "correct": 1
-  },
-  {
-    "question": "Phản ứng nào sau đây chứng tỏ HCl có tính khử?",
-    "answers": [
-      "A. NaOH + HCl -> NaCl + H2O.",
-      "B. MnO2 + HCl -> MnCl2 + Cl2 + H2O.",
-      "C. 2Fe + 3Cl2 -> FeCl3.",
-      "D. 2HCl + Fe -> FeCl2 + H2."
-    ],
-    "correct": 1
-  },
-  {
-    "question": "Nguyên tử halogen nào sau đây thể hiện số oxi hoá -1 trong tất cả các hợp chất?",
-    "answers": [
-      "A. fluorine.",
-      "B. Chlorine.",
-      "C. Bromine.",
-      "D. Iodine."
-    ],
-    "correct": 0
-  },
-  {
-    "question": "Hợp chất của halogen X được ứng dụng để tạo hợp chất chống dính trong xoong, chảo... X là:",
-    "answers": [
-      "A. Fluorine.",
-      "B. Iodine.",
-      "C. Bromine.",
-      "D. Chlorine."
-    ],
-    "correct": 0
-  },
-  {
-    "question": "Hydrogen halide có nhiệt độ sôi cao nhất là:",
-    "answers": [
-      "A. HI.",
-      "B. HCl.",
-      "C. HBr.",
-      "D. HF."
-    ],
-    "correct": 3
-  },
-  {
-    "question": "Tốc độ phản ứng không phụ thuộc yếu tố nào sau đây?",
-    "answers": [
-      "A. Thời gian xảy ra phản ứng.",
-      "B. Bề mặt tiếp xúc giữa các chất phản ứng.",
-      "C. Nồng độ các chất tham gia phản ứng.",
-      "D. Chất xúc tác."
-    ],
-    "correct": 0
-  }
+// ==================== DỮ LIỆU 50 CÂU TRẮC NGHIỆM ====================
+const questionsData = [
+{id:1,text:"Mối quan hệ giữa tốc độ phản ứng thuận (v_t) và tốc độ phản ứng nghịch (v_n) ở trạng thái cân bằng được biểu diễn như thế nào?",options:["v_t = 2v_n","v_t = v_n ≠ 0","v_t = 0,5v_n","v_t = v_n = 0 (hoặc v_t = v_n)"],correct:1,hint:"Ở trạng thái cân bằng, tốc độ phản ứng thuận bằng tốc độ phản ứng nghịch nhưng cả hai vẫn tiếp tục diễn ra, không dừng lại."},
+{id:2,text:"Điền từ hoặc cụm từ thích hợp vào dấu “...” trong câu sau: “Cân bằng hóa học là trạng thái của phản ứng thuận nghịch khi tốc độ phản ứng thuận ... tốc độ phản ứng nghịch”.",options:["lớn hơn","bằng","nhỏ hơn","khác"],correct:1,hint:"Cân bằng hóa học đạt được khi tốc độ phản ứng thuận bằng tốc độ phản ứng nghịch."},
+{id:3,text:"Yếu tố nào sau đây không làm dịch chuyển cân bằng của hệ phản ứng?",options:["Nhiệt độ","Áp suất","Nồng độ","Chất xúc tác"],correct:3,hint:"Chất xúc tác làm tăng tốc độ cả phản ứng thuận và nghịch như nhau, không làm dịch chuyển cân bằng."},
+{id:4,text:"Các yếu tố ảnh hưởng đến cân bằng hoá học là:",options:["nồng độ, nhiệt độ và chất xúc tác","nồng độ, áp suất và diện tích bề mặt","nồng độ, nhiệt độ và áp suất","áp suất, nhiệt độ và chất xúc tác"],correct:2,hint:"Ba yếu tố ảnh hưởng đến cân bằng hóa học là nồng độ, nhiệt độ và áp suất (theo nguyên lý Le Chatelier)."},
+{id:5,text:"Trong khí quyển Trái Đất, nguyên tố nitrogen tồn tại chủ yếu dưới dạng nào?",options:["NO","N₂","N₂O","NH₃"],correct:1,hint:"Nitrogen trong khí quyển chủ yếu tồn tại dưới dạng phân tử N₂ (khí nitơ)."},
+{id:6,text:"Trong khí quyển trái đất, nitrogen chiếm bao nhiêu phần trăm thể tích khí quyển?",options:["15%","78,1%","80%","21%"],correct:1,hint:"Nitrogen chiếm khoảng 78,1% thể tích không khí, oxygen chiếm khoảng 21%."},
+{id:7,text:"Oxide được điều chế trực tiếp từ phản ứng của nitrogen với oxygen là",options:["NO₂","NO","N₂O","N₂O₅"],correct:1,hint:"Ở nhiệt độ cao (tia lửa điện), N₂ phản ứng với O₂ tạo thành NO."},
+{id:8,text:"Khi có sấm chớp, khí quyển sinh ra khí",options:["CO","NO","SO₂","CO₂"],correct:1,hint:"Sấm chớp cung cấp năng lượng để N₂ phản ứng với O₂ tạo NO."},
+{id:9,text:"Khi rút xăng, dầu ra khỏi các bồn chứa, người ta thường bơm khí nitrogen để thay thế hoàn toàn hoặc một phần không khí làm giảm nồng độ oxygen để giảm nguy cơ cháy nổ. Tính chất nào sau đây của nitrogen được sử dụng trong trường hợp trên?",options:["Nitrogen chiếm 78,1% thể tích không khí","Nitrogen có tính oxi hóa mạnh ở điều kiện thường","Nitrogen tác dụng được với oxygen ở nhiệt độ thường","Nitrogen trơ về mặt hóa học ở nhiệt độ thường"],correct:3,hint:"Nitrogen trơ ở nhiệt độ thường nên được dùng để tạo môi trường trơ, giảm nguy cơ cháy nổ."},
+{id:10,text:"Cho cân bằng hoá học: H₂(g) + I₂(g) ⇌ 2HI(g); ΔᵣH°₂₉₈ > 0. Cân bằng không bị chuyển dịch khi",options:["tăng nhiệt độ của hệ","giảm nồng độ HI","tăng nồng độ H₂","giảm áp suất chung của hệ"],correct:3,hint:"Phản ứng có số mol khí hai vế bằng nhau (1+1=2), nên áp suất không ảnh hưởng đến cân bằng."},
+{id:11,text:"Trong những điều kiện khẳng định dưới đây, điều nào không phù hợp với một hệ hoá học đang ở trạng thái cân bằng?",options:["Phản ứng thuận và nghịch vẫn tiếp tục diễn ra","Nồng độ của các sản phẩm và chất phản ứng không đổi","Tốc độ phản ứng thuận và phản ứng nghịch bằng nhau","Nồng độ của các sản phẩm và chất phản ứng bằng nhau"],correct:3,hint:"Ở cân bằng, nồng độ các chất không đổi nhưng không nhất thiết phải bằng nhau."},
+{id:12,text:"Trong các phát biểu sau, phát biểu nào đúng khi một hệ ở trạng thái cân bằng?",options:["Phản ứng thuận đã dừng","Phản ứng nghịch đã dừng","Nồng độ chất tham gia và sản phẩm bằng nhau","Nồng độ của các chất trong hệ không đổi"],correct:3,hint:"Ở trạng thái cân bằng, nồng độ các chất không thay đổi theo thời gian."},
+{id:13,text:"Cho cân bằng (trong bình kín): CO(g) + H₂O(g) ⇌ CO₂(g) + H₂(g); ΔᵣH°₂₉₈ < 0. Các yếu tố: (1) tăng nhiệt độ; (2) thêm hơi nước; (3) thêm H₂; (4) tăng áp suất chung; (5) dùng xúc tác. Dãy gồm các yếu tố đều làm thay đổi cân bằng là",options:["(1), (4), (5)","(1), (2), (3)","(2), (3), (4)","(1), (2), (4)"],correct:1,hint:"Xúc tác (5) không dịch chuyển cân bằng; áp suất (4) không ảnh hưởng vì số mol khí hai vế bằng nhau. Vậy (1),(2),(3)."},
+{id:14,text:"Cho phản ứng thuận nghịch: 2SO₂(g) + O₂(g) ⇌ 2SO₃(g). Biểu thức hằng số cân bằng là",options:["K_c = [SO₃]² / ([SO₂]² · [O₂])","K_c = [SO₃] / ([SO₂] · [O₂])","K_c = ([SO₂]² · [O₂]) / [SO₃]²","K_c = ([SO₂] · [O₂]) / [SO₃]"],correct:0,hint:"K_c = [SO₃]² / ([SO₂]² · [O₂])."},
+{id:15,text:"Khi tăng áp suất, cân bằng nào chuyển dịch theo chiều thuận? (1) 2SO₂(g)+O₂(g)⇌2SO₃(g); (2) NH₄Cl(s)⇌NH₃(g)+HCl(g); (3) 2H₂O₂(aq)⇌2H₂O(l)+O₂(g); (4) 3O₂(g)⇌2O₃(g)",options:["(1) và (4)","(1) và (2)","(2) và (3)","Chỉ có (4)"],correct:0,hint:"Tăng áp suất dịch chuyển về phía ít phân tử khí hơn. (1): 3→2; (4): 3→2 → thuận."},
+{id:16,text:"Ở một nhiệt độ nhất định, phản ứng N₂ + 3H₂ ⇌ 2NH₃ đạt cân bằng khi [N₂]=0,01M, [H₂]=2,0M, [NH₃]=0,4M. Hằng số cân bằng là",options:["2,6","2,2","0,21","2,0"],correct:3,hint:"K_c = (0,4)² / (0,01 · 2³) = 0,16 / 0,08 = 2,0."},
+{id:17,text:"Môi trường acid là môi trường có",options:["[H⁺] < [OH⁻]","[H⁺] > [OH⁻]","[H⁺] = [OH⁻]","[H⁺] < 1,0·10⁻⁷"],correct:1,hint:"Trong môi trường acid, [H⁺] > [OH⁻]."},
+{id:18,text:"Trong các dung dịch cùng nồng độ 0,1M, dung dịch nào có pH nhỏ nhất?",options:["NaOH","HCl","H₂SO₄","Ba(OH)₂"],correct:2,hint:"H₂SO₄ phân li cho 2 H⁺ → pH nhỏ nhất."},
+{id:19,text:"Cho 10,0 mL NaOH 0,1M vào 15,0 mL HCl 0,1M. Dung dịch tạo thành làm",options:["phenolphthalein không màu chuyển đỏ","giấy quỳ tím hóa đỏ","giấy quỳ tím hóa xanh","giấy quỳ tím không chuyển màu"],correct:1,hint:"n(NaOH)=0,001; n(HCl)=0,0015 → HCl dư → quỳ hóa đỏ."},
+{id:20,text:"Chất nào sau đây thuộc loại chất điện li mạnh?",options:["HNO₃","Mg(OH)₂","H₂S","HClO"],correct:0,hint:"HNO₃ là acid mạnh → điện li mạnh."},
+{id:21,text:"Chất nào sau đây thuộc loại chất điện li mạnh?",options:["H₃PO₄","Na₃PO₄","H₂CO₃","Fe(OH)₃"],correct:1,hint:"Na₃PO₄ là muối tan, phân li hoàn toàn → điện li mạnh."},
+{id:22,text:"Nước đóng vai trò base theo Brønsted–Lowry trong phản ứng nào?",options:["CO₃²⁻ + H₂O ⇌ HCO₃⁻ + OH⁻","S²⁻ + H₂O ⇌ HS⁻ + OH⁻","HCO₃⁻ + H₂O ⇌ CO₃²⁻ + H₃O⁺","CH₃COO⁻ + H₂O ⇌ CH₃COOH + OH⁻"],correct:2,hint:"Ở phản ứng C, HCO₃⁻ nhường H⁺ cho H₂O → H₂O nhận H⁺ → base."},
+{id:23,text:"Nước đóng vai trò acid theo Brønsted–Lowry trong phản ứng nào?",options:["Fe³⁺ + H₂O ⇌ Fe(OH)²⁺ + H⁺","Al³⁺ + 3H₂O ⇌ Al(OH)₃ + 3H⁺","NH₃ + H₂O ⇌ NH₄⁺ + OH⁻","NH₄⁺ + H₂O ⇌ NH₃ + H₃O⁺"],correct:2,hint:"Ở phản ứng C, H₂O nhường H⁺ cho NH₃ → nước là acid."},
+{id:24,text:"Nhận xét nào sau đây đúng?",options:["Nitrogen không duy trì sự cháy, sự hô hấp và là khí độc","Vì có liên kết 3 nên phân tử nitrogen rất bền và ở nhiệt độ thường khá trơ","Khi tác dụng với kim loại hoạt động, nitrogen thể hiện tính khử","Số oxi hóa của N trong AlN, N₂O₄, NH₄⁺, NO₃⁻, NO₂⁻ lần lượt là -3,+4,-3,+5,+4"],correct:1,hint:"N₂ có liên kết ba bền vững nên ở nhiệt độ thường khá trơ."},
+{id:25,text:"Liên kết hoá học trong phân tử NH₃ là liên kết",options:["cộng hoá trị có cực","ion","cộng hoá trị không cực","kim loại"],correct:0,hint:"N và H có độ âm điện khác nhau → cộng hóa trị có cực."},
+{id:26,text:"Dạng hình học của phân tử ammonia là",options:["tam giác đều","hình tứ diện","chữ T","chóp tam giác"],correct:3,hint:"NH₃ có cấu trúc chóp tam giác."},
+{id:27,text:"Phát biểu nào sau đây sai?",options:["Muối ammonium dễ tan trong nước","Muối ammonium là chất điện li mạnh","Muối ammonium kém bền với nhiệt","Dung dịch muối ammonium có tính chất base"],correct:3,hint:"Dung dịch muối ammonium có tính acid yếu, không phải base."},
+{id:28,text:"Phát biểu nào sau đây sai?",options:["Muối ammonium bền với nhiệt","Các muối ammonium đều là chất điện li mạnh","Tất cả các muối ammonium đều tan trong nước","Các muối ammonium đều bị thủy phân trong nước"],correct:0,hint:"Muối ammonium kém bền với nhiệt."},
+{id:29,text:"Nitric acid được dùng phá mẫu quặng do có",options:["Tính oxi hoá mạnh","Tính acid mạnh","Tính khử mạnh","Tính base"],correct:0,hint:"HNO₃ có tính oxi hóa mạnh, hòa tan nhiều kim loại và khoáng vật."},
+{id:30,text:"Tác nhân chính gây mưa acid là",options:["CO₂ và H₂O","SO₂ và CO₂","SO₂ và NOₓ","CO₂ và CH₄"],correct:2,hint:"SO₂ và NOₓ là các oxide gây mưa acid chính."},
+{id:31,text:"Hai acid tạo thành từ quá trình oxi hóa oxide của sulfur và nitrogen là",options:["H₂CO₃ và HNO₃","H₂S và HNO₃","H₂S và H₂SO₄","H₂SO₄ và HNO₃"],correct:3,hint:"Oxide sulfur → H₂SO₄; oxide nitrogen → HNO₃."},
+{id:32,text:"HNO₃ chỉ thể hiện tính acid khi phản ứng với dãy chất nào?",options:["CaCO₃, Cu(OH)₂, Fe(OH)₂, FeO","CuO, NaOH, FeCO₃, Fe₂O₃","Fe(OH)₃, Na₂CO₃, Fe₂O₃, NH₃","KOH, FeS, K₂CO₃, Cu(OH)₂"],correct:1,hint:"Dãy B đều phản ứng trao đổi, không có oxi hóa khử."},
+{id:33,text:"HNO₃ chỉ thể hiện tính oxi hóa khi phản ứng với dãy chất nào?",options:["Mg, H₂S, S, Fe₃O₄, Fe(OH)₂","Al, FeCO₃, HI, CaO, FeO","Cu, C, Fe₂O₃, Fe(OH)₂, SO₂","Na₂SO₃, P, CuO, CaCO₃, Ag"],correct:0,hint:"Dãy A gồm các chất có tính khử → HNO₃ chỉ thể hiện tính oxi hóa."},
+{id:34,text:"Cho các phát biểu: (1) Ammonia lỏng làm chất làm lạnh; (2) Dẫn NH₃ qua H₂SO₄ đặc để làm khô; (3) Quỳ tím ẩm vào NH₃ hóa đỏ; (4) Nitrogen lỏng bảo quản máu. Số phát biểu đúng là",options:["2","3","1","4"],correct:0,hint:"(1) Đúng; (2) Sai; (3) Sai (hóa xanh); (4) Đúng → 2 đúng."},
+{id:35,text:"Cho phenolphthalein vào dung dịch NH₃, phenolphthalein chuyển sang màu",options:["hồng","xanh","không màu","vàng"],correct:0,hint:"NH₃ có tính base yếu → phenolphthalein hóa hồng."},
+{id:36,text:"Tổng hợp ammonia: N₂ + 3H₂ ⇌ 2NH₃, ΔH = -92 kJ. Để tăng hiệu suất phải",options:["giảm nhiệt độ và áp suất","tăng nhiệt độ và áp suất","tăng nhiệt độ và giảm áp suất","giảm nhiệt độ vừa phải và tăng áp suất"],correct:3,hint:"Phản ứng tỏa nhiệt → giảm nhiệt độ; số mol khí giảm → tăng áp suất."},
+{id:37,text:"Ứng dụng nào không phải của muối ammonium?",options:["Sản xuất giấy","Thuốc bổ sung chất điện giải","Phân bón hoá học","Chất phụ gia thực phẩm"],correct:1,hint:"Muối ammonium không dùng làm thuốc bổ sung chất điện giải."},
+{id:38,text:"Để tạo độ xốp cho bánh, có thể dùng chất nào?",options:["(NH₄)₃PO₄","NH₄HCO₃","CaCO₃","NaCl"],correct:1,hint:"NH₄HCO₃ phân hủy khi nung tạo khí làm xốp bánh."},
+{id:39,text:"Phát biểu nào sau đây không đúng?",options:["Ammonia là base theo Brønsted–Lowry khi tác dụng với nước","Ammonia được sử dụng làm chất làm lạnh","Muối ammonium là tinh thể ion, dễ tan trong nước","Các muối ammonium đều rất bền với nhiệt"],correct:3,hint:"Muối ammonium kém bền với nhiệt."},
+{id:40,text:"Cho KOH dư vào 20 ml (NH₄)₂SO₄ 1M, đun nóng nhẹ. Thể tích khí thu được ở đkc là",options:["0,9916 (lít)","0,9196 (lít)","0,4958 (lít)","0,448 (lít)"],correct:0,hint:"n(NH₃)=0,04 mol → V = 0,04 × 24,79 ≈ 0,9916 lít."},
+{id:41,text:"Khi có sấm chớp khí quyển sinh ra chất nào?",options:["oxide carbon","nitrogen monoxide","nước","nitrogen dioxide"],correct:1,hint:"Sấm chớp tạo NO."},
+{id:42,text:"X tác dụng NaOH dư tạo khí mùi khai; dung dịch X tác dụng BaCl₂ tạo kết tủa trắng không tan trong HNO₃. X là",options:["(NH₄)₂CO₃","NH₄HSO₃","NH₄Cl","(NH₄)₂SO₄"],correct:3,hint:"Có NH₄⁺ và SO₄²⁻ → (NH₄)₂SO₄."},
+{id:43,text:"X tác dụng NaOH dư tạo khí mùi khai; đun nóng X thấy khói trắng. X là",options:["(NH₄)₂CO₃","NH₄HCO₃","NH₄NO₃","NH₄Cl"],correct:3,hint:"NH₄Cl phân hủy tạo HCl và NH₃ → khói trắng NH₄Cl."},
+{id:44,text:"Axit HNO₃ thể hiện tính oxi hóa khi tác dụng với chất nào sau đây?",options:["Fe₂O₃","Al₂O₃","MgO","Cu"],correct:3,hint:"Cu là kim loại, phản ứng với HNO₃ tạo NO/NO₂ → HNO₃ thể hiện tính oxi hóa."},
+{id:45,text:"Cho từng chất: Zn, FeO, NaOH, Fe₃O₄, Fe(OH)₂, Fe(OH)₃, CaCO₃, NH₃ lần lượt phản ứng với HNO₃ đặc, nóng. Số phản ứng oxi hóa khử là",options:["4","3","2","5"],correct:0,hint:"Các chất có tính khử: Zn, FeO, Fe₃O₄, Fe(OH)₂ → 4 phản ứng oxi hóa khử."},
+{id:46,text:"Hòa tan hoàn toàn m gam Cu bằng dung dịch HNO₃ đặc, thu được 4,48 lít NO₂ (sản phẩm khử duy nhất, đktc). Giá trị của m là",options:["9,6","3,2","12,8","6,4"],correct:3,hint:"n(NO₂)=0,2 mol. Bảo toàn e: 2n(Cu)=n(NO₂) → n(Cu)=0,1 mol → m=6,4 gam."},
+{id:47,text:"Dung dịch chất nào sau đây làm quỳ tím chuyển thành màu đỏ?",options:["H₂SO₄","KOH","NaCl","C₂H₅OH"],correct:0,hint:"H₂SO₄ là acid mạnh → quỳ tím hóa đỏ."},
+{id:48,text:"Dung dịch chất nào sau đây làm quỳ tím chuyển thành màu xanh?",options:["HCl","CH₃COONa","KNO₃","C₂H₅OH"],correct:1,hint:"CH₃COONa thủy phân tạo môi trường base → quỳ tím hóa xanh."},
+{id:49,text:"pH của dung dịch nào sau đây có giá trị nhỏ nhất?",options:["Dung dịch HCl 0,1M","Dung dịch CH₃COOH 0,1M","Dung dịch NaCl 0,1M","Dung dịch NaOH 0,01M"],correct:0,hint:"HCl 0,1M là acid mạnh, pH = 1 → nhỏ nhất."},
+{id:50,text:"Các dung dịch NaCl, NaOH, NH₃, Ba(OH)₂ có cùng nồng độ mol, dung dịch có pH lớn nhất là",options:["NaOH","Ba(OH)₂","NH₃","NaCl"],correct:1,hint:"Ba(OH)₂ phân li cho 2 OH⁻ → nồng độ OH⁻ lớn nhất → pH lớn nhất."}
 ];
 
-    let currentIdx = 0;
-    let scoreCorrect = 0;
-    let scoreWrong = 0;
-    let answered = false;
+// ==================== DỮ LIỆU ĐÚNG/SAI ====================
+const tfData = [
+{
+    id: "tf1",
+    context: "Xét cân bằng: 2NO₂(g) ⇌ N₂O₄(g) (NO₂ màu nâu đỏ, N₂O₄ không màu)",
+    statements: [
+        { text: "Khi đạt đến trạng thái cân bằng hóa học, phản ứng dừng lại.", correct: false },
+        { text: "Luôn tồn tại đồng thời NO₂ và N₂O₄.", correct: true },
+        { text: "Màu nhạt của hỗn hợp không thay đổi nếu giữ nguyên các điều kiện bên ngoài.", correct: true },
+        { text: "Ở trạng thái cân bằng nồng độ các chất NO₂ và N₂O₄ trong hỗn hợp không thay đổi theo thời gian.", correct: true }
+    ]
+},
+{
+    id: "tf2",
+    context: "Trong công nghiệp, amonia được tổng hợp theo phản ứng: 3H₂(g) + N₂(g) ⇌ 2NH₃(g) ΔᵣH°₂₉₈ = -91,8 kJ",
+    statements: [
+        { text: "Phản ứng tổng hợp NH₃ là phản ứng thu nhiệt.", correct: false },
+        { text: "Khi thêm chất xúc tác, hằng số cân bằng K_c tăng.", correct: false },
+        { text: "Khi tăng áp suất thì cân bằng chuyển dịch theo chiều thuận.", correct: true },
+        { text: "Để tăng hiệu suất phản ứng, cần tăng nồng độ của H₂, N₂ và giảm nồng độ của NH₃.", correct: true }
+    ]
+}
+];
 
-    function loadQuestion() {
-        answered = false;
-        const q = quizData[currentIdx];
-        document.getElementById("question-text").innerText = q.question;
-        document.getElementById("question-number").innerText = `Câu ${currentIdx + 1}/${quizData.length}`;
-        document.getElementById("next-btn").style.display = "none";
-        
-        const optionsContainer = document.getElementById("answer-options");
-        optionsContainer.innerHTML = "";
-        
-        q.answers.forEach((ans, index) => {
-            const btn = document.createElement("button");
-            btn.className = "btn-answer";
-            btn.innerText = ans;
-            btn.onclick = () => checkAnswer(index, btn);
-            optionsContainer.appendChild(btn);
+// ==================== STATE ====================
+let state = {
+    questions: [],       // shuffled questions
+    currentIndex: 0,     // câu hiện tại (0..49)
+    answers: {},         // qid -> { selected, correct }
+    correctCount: 0,
+    wrongCount: 0,
+    phase: "mc",         // "mc" | "tf" | "done"
+    tfAnswers: {},
+    tfSubmitted: false
+};
+
+// ==================== HELPERS ====================
+function shuffleArray(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+}
+function escapeHtml(str) {
+    return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+// ==================== RENDER 1 CÂU ====================
+function renderCurrentQuestion() {
+    const container = document.getElementById("singleQuestionContainer");
+    const q = state.questions[state.currentIndex];
+    const total = state.questions.length;
+    const idx = state.currentIndex;
+
+    document.getElementById("progressText").textContent = `Câu ${idx + 1} / ${total}`;
+    document.getElementById("progressFill").style.width = ((idx) / total * 100) + "%";
+
+    const answered = state.answers[q.id];
+    const isAnswered = answered !== undefined;
+
+    container.innerHTML = `
+        <div class="question-card" id="currentCard">
+            <div class="q-header">
+                <span class="q-number">Câu ${idx + 1}</span>
+                <span class="q-text">${escapeHtml(q.text)}</span>
+                <button class="hint-btn" id="hintBtn">💡 Gợi ý</button>
+            </div>
+            <div class="hint-box" id="hintBox">${escapeHtml(q.hint)}</div>
+            <div class="options" id="optionsWrap">
+                ${q.options.map((opt, i) => {
+                    let cls = "option";
+                    if (isAnswered) {
+                        cls += " disabled";
+                        if (i === q.correct) cls += " correct-answer";
+                        else if (i === answered.selected) cls += " wrong-answer";
+                    }
+                    return `
+                        <div class="${cls}" data-opt="${i}">
+                            <span class="opt-label">${String.fromCharCode(65 + i)}.</span>
+                            <span class="opt-text">${escapeHtml(opt)}</span>
+                        </div>`;
+                }).join("")}
+            </div>
+            <div class="feedback-box ${isAnswered ? 'show' : ''} ${isAnswered ? (answered.correct ? 'correct' : 'wrong') : ''}" id="feedbackBox">
+                ${isAnswered ? `
+                    <div class="feedback-title ${answered.correct ? 'correct' : 'wrong'}">
+                        ${answered.correct ? '✅ Chính xác!' : '❌ Sai rồi!'}
+                    </div>
+                    <div class="feedback-explain">
+                        <strong>Đáp án đúng:</strong> ${String.fromCharCode(65 + q.correct)}. ${escapeHtml(q.options[q.correct])}<br>
+                        <strong>Giải thích:</strong> ${escapeHtml(q.hint)}
+                    </div>
+                ` : ''}
+            </div>
+        </div>
+        <div class="actions">
+            ${isAnswered && idx < total - 1 ? `<button class="btn btn-primary" id="nextBtn">Tiếp theo →</button>` : ''}
+            ${isAnswered && idx === total - 1 ? `<button class="btn btn-primary" id="toTFBtn">Chuyển sang phần Đúng/Sai →</button>` : ''}
+        </div>
+    `;
+
+    // Hint toggle
+    document.getElementById("hintBtn").addEventListener("click", () => {
+        document.getElementById("hintBox").classList.toggle("show");
+    });
+
+    // Option click
+    if (!isAnswered) {
+        container.querySelectorAll(".option").forEach(optEl => {
+            optEl.addEventListener("click", () => {
+                const optIdx = parseInt(optEl.dataset.opt);
+                handleAnswer(q, optIdx);
+            });
         });
-
-        updateProgress();
     }
 
-    function checkAnswer(selectedIdx, btn) {
-        if (answered) return;
-        answered = true;
-        const correctIdx = quizData[currentIdx].correct;
-        const buttons = document.getElementsByClassName("btn-answer");
-
-        if (selectedIdx === correctIdx) {
-            btn.classList.add("correct");
-            scoreCorrect++;
-            document.getElementById("correct-score").innerText = scoreCorrect;
-        } else {
-            btn.classList.add("wrong");
-            buttons[correctIdx].classList.add("correct"); // Hiện câu đúng khi trả lời sai
-            scoreWrong++;
-            document.getElementById("wrong-score").innerText = scoreWrong;
-        }
-        
-        document.getElementById("next-btn").style.display = "block";
+    // Next button
+    const nextBtn = document.getElementById("nextBtn");
+    if (nextBtn) {
+        nextBtn.addEventListener("click", () => {
+            state.currentIndex++;
+            renderCurrentQuestion();
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        });
     }
 
-    function nextQuestion() {
-        currentIdx++;
-        if (currentIdx < quizData.length) {
-            loadQuestion();
-        } else {
-            showResult();
-        }
+    const toTFBtn = document.getElementById("toTFBtn");
+    if (toTFBtn) {
+        toTFBtn.addEventListener("click", () => {
+            state.phase = "tf";
+            document.getElementById("singleQuestionContainer").innerHTML = "";
+            document.getElementById("progressText").textContent = "Hoàn thành phần trắc nghiệm!";
+            document.getElementById("progressFill").style.width = "100%";
+            document.getElementById("tfSection").classList.remove("hidden");
+            renderTF();
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        });
     }
 
-    function updateProgress() {
-        const percent = (currentIdx / quizData.length) * 100;
-        document.getElementById("progress-bar").style.width = percent + "%";
-    }
+    updateStatus();
+}
 
-    function showResult() {
-        document.getElementById("quiz-screen").style.display = "none";
-        document.getElementById("result-screen").style.display = "block";
-        document.getElementById("final-correct").innerText = scoreCorrect;
-    }
+// ==================== XỬ LÝ CHỌN ĐÁP ÁN ====================
+function handleAnswer(q, optIdx) {
+    const isCorrect = optIdx === q.correct;
+    state.answers[q.id] = { selected: optIdx, correct: isCorrect };
+    if (isCorrect) state.correctCount++;
+    else state.wrongCount++;
 
-    loadQuestion();
+    // Re-render câu hiện tại để hiện feedback + nút Tiếp theo
+    renderCurrentQuestion();
+}
+
+// ==================== STATUS ====================
+function updateStatus() {
+    document.getElementById("correctCount").textContent = state.correctCount;
+    document.getElementById("wrongCount").textContent = state.wrongCount;
+    document.getElementById("doneCount").textContent = state.currentIndex + (state.answers[state.questions[state.currentIndex]?.id] !== undefined ? 1 : 0);
+}
+
+// ==================== RENDER TRUE/FALSE ====================
+function renderTF() {
+    const tbody = document.getElementById("tfBody");
+    tbody.innerHTML = "";
+
+    tfData.forEach(tf => {
+        const ctxRow = document.createElement("tr");
+        ctxRow.innerHTML = `<td colspan="3" style="background:var(--table-header); font-weight:600; font-style:italic;">${escapeHtml(tf.context)}</td>`;
+        tbody.appendChild(ctxRow);
+
+        tf.statements.forEach((stmt, sIdx) => {
+            const key = `${tf.id}-${sIdx}`;
+            const val = state.tfAnswers[key];
+            const tr = document.createElement("tr");
+            tr.id = `tf-row-${key}`;
+            tr.innerHTML = `
+                <td>${escapeHtml(stmt.text)}</td>
+                <td><input type="radio" name="tf-${key}" value="true" ${val === true ? 'checked' : ''} ${state.tfSubmitted ? 'disabled' : ''}></td>
+                <td><input type="radio" name="tf-${key}" value="false" ${val === false ? 'checked' : ''} ${state.tfSubmitted ? 'disabled' : ''}></td>
+            `;
+            tbody.appendChild(tr);
+
+            if (!state.tfSubmitted) {
+                tr.querySelectorAll("input[type=radio]").forEach(inp => {
+                    inp.addEventListener("change", () => {
+                        state.tfAnswers[key] = inp.value === "true";
+                    });
+                });
+            }
+        });
+    });
+
+    const submitBtn = document.getElementById("submitTF");
+    if (state.tfSubmitted) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = "Đã nộp";
+    } else {
+        submitBtn.disabled = false;
+        submitBtn.textContent = "✅ Nộp bài Đúng/Sai";
+    }
+}
+
+// ==================== SUBMIT TF ====================
+function submitTF() {
+    if (state.tfSubmitted) return;
+    state.tfSubmitted = true;
+    state.phase = "done";
+
+    let tfCorrect = 0, tfWrong = 0, tfTotal = 0;
+
+    tfData.forEach(tf => {
+        tf.statements.forEach((stmt, sIdx) => {
+            tfTotal++;
+            const key = `${tf.id}-${sIdx}`;
+            const val = state.tfAnswers[key];
+            const isCorrect = val === stmt.correct;
+            if (isCorrect) tfCorrect++; else tfWrong++;
+
+            const row = document.getElementById(`tf-row-${key}`);
+            row.classList.add(isCorrect ? "correct-row" : "wrong-row");
+
+            // Hiển thị feedback nếu sai
+            if (!isCorrect) {
+                const td = row.querySelector("td:first-child");
+                const fb = document.createElement("div");
+                fb.className = "tf-feedback wrong";
+                fb.textContent = `→ Đáp án đúng: ${stmt.correct ? "Đúng" : "Sai"}`;
+                td.appendChild(fb);
+            }
+
+            row.querySelectorAll("input").forEach(inp => inp.disabled = true);
+        });
+    });
+
+    // Cộng vào tổng
+    state.correctCount += tfCorrect;
+    state.wrongCount += tfWrong;
+    document.getElementById("correctCount").textContent = state.correctCount;
+    document.getElementById("wrongCount").textContent = state.wrongCount;
+
+    const total = state.correctCount + state.wrongCount;
+    const pct = ((state.correctCount / total) * 100).toFixed(1);
+
+    const banner = document.getElementById("resultBanner");
+    banner.className = "result-banner show";
+    banner.innerHTML = `🎯 Kết quả cuối: <strong>${state.correctCount}/${total}</strong> câu đúng (${pct}%) — Sai: <strong>${state.wrongCount}</strong> câu`;
+    banner.scrollIntoView({ behavior: "smooth", block: "center" });
+
+    renderTF();
+}
+
+// ==================== RESET ====================
+function resetQuiz() {
+    state = {
+        questions: shuffleArray(questionsData),
+        currentIndex: 0,
+        answers: {},
+        correctCount: 0,
+        wrongCount: 0,
+        phase: "mc",
+        tfAnswers: {},
+        tfSubmitted: false
+    };
+
+    document.getElementById("tfSection").classList.add("hidden");
+    document.getElementById("resultBanner").className = "result-banner";
+    document.getElementById("resultBanner").innerHTML = "";
+    document.getElementById("progressFill").style.width = "0%";
+
+    renderCurrentQuestion();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+// ==================== THEME ====================
+function initTheme() {
+    const btn = document.getElementById("themeToggle");
+    const saved = localStorage.getItem("quiz-theme") || "light";
+    document.body.setAttribute("data-theme", saved);
+    btn.textContent = saved === "dark" ? "☀️ Sáng" : "🌙 Tối";
+
+    btn.addEventListener("click", () => {
+        const cur = document.body.getAttribute("data-theme");
+        const next = cur === "dark" ? "light" : "dark";
+        document.body.setAttribute("data-theme", next);
+        localStorage.setItem("quiz-theme", next);
+        btn.textContent = next === "dark" ? "☀️ Sáng" : "🌙 Tối";
+    });
+}
+
+// ==================== INIT ====================
+document.addEventListener("DOMContentLoaded", () => {
+    initTheme();
+    resetQuiz();
+
+    document.getElementById("resetBtn").addEventListener("click", resetQuiz);
+    document.getElementById("submitTF").addEventListener("click", submitTF);
+});
 </script>
-
 </body>
 </html>
