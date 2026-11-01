@@ -1,557 +1,595 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="vi" data-theme="light">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Quiz Hóa Học - Từng câu</title>
+<title>Quiz học tập · Ôn tập kiến thức</title>
 <style>
-:root {
-    --bg: #f4f7fc; --card-bg: #ffffff; --text: #1e2a3a; --text-muted: #5a6e85;
-    --border: #d0dae8; --primary: #2563eb; --primary-hover: #1d4ed8;
-    --success: #16a34a; --success-bg: #e6f7ec; --danger: #dc2626; --danger-bg: #fde8e8;
-    --hint-bg: #fef9e7; --hint-border: #f0d98c; --shadow: 0 4px 16px rgba(0,0,0,0.06);
-    --radius: 12px; --table-header: #eef2f9;
-}
-[data-theme="dark"] {
-    --bg: #0f172a; --card-bg: #1e293b; --text: #e2e8f0; --text-muted: #94a3b8;
-    --border: #334155; --primary: #3b82f6; --primary-hover: #60a5fa;
-    --success: #22c55e; --success-bg: #143d2a; --danger: #ef4444; --danger-bg: #4a1d1d;
-    --hint-bg: #2d2a1a; --hint-border: #6b5d1e; --shadow: 0 4px 16px rgba(0,0,0,0.4);
-    --table-header: #1a2537;
-}
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body {
-    font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
-    background: var(--bg); color: var(--text); line-height: 1.6;
-    transition: background .3s, color .3s; padding: 16px;
-}
-.container { max-width: 900px; margin: 0 auto; }
+  :root{
+    --bg:#f2f5fb;
+    --card:#ffffff;
+    --text:#16203a;
+    --muted:#6b7794;
+    --border:#e3e8f2;
+    --opt-bg:#ffffff;
+    --primary:#5b8cff;
+    --primary-2:#7c4dff;
+    --ok:#16a34a;
+    --ok-bg:#e8f8ee;
+    --bad:#e5484d;
+    --bad-bg:#fdecec;
+    --hint:#b8860b;
+    --hint-bg:#fff8e1;
+    --shadow:0 10px 30px rgba(28,45,90,.08);
+    --shadow-sm:0 4px 14px rgba(28,45,90,.06);
+  }
+  [data-theme="dark"]{
+    --bg:#0e1320;
+    --card:#161c2c;
+    --text:#e8edf8;
+    --muted:#94a1bd;
+    --border:#26304a;
+    --opt-bg:#1b2334;
+    --primary:#6f9bff;
+    --primary-2:#a07cff;
+    --ok:#3ddc84;
+    --ok-bg:#12281c;
+    --bad:#ff6b6b;
+    --bad-bg:#2a1518;
+    --hint:#ffd166;
+    --hint-bg:#2a2415;
+    --shadow:0 10px 30px rgba(0,0,0,.45);
+    --shadow-sm:0 4px 14px rgba(0,0,0,.35);
+  }
 
-/* Header */
-header {
-    display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center;
-    gap: 12px; padding: 16px 20px; background: var(--card-bg);
-    border-radius: var(--radius); box-shadow: var(--shadow);
-    margin-bottom: 20px; border: 1px solid var(--border);
-}
-header h1 { font-size: 1.3rem; font-weight: 700; }
-.status-bar { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; font-size: .9rem; }
-.status-item {
-    display: flex; align-items: center; gap: 6px; padding: 4px 12px;
-    border-radius: 20px; background: var(--bg); border: 1px solid var(--border);
-}
-.dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
-.dot.green { background: var(--success); } .dot.red { background: var(--danger); }
-.dot.gray { background: var(--text-muted); }
-.theme-toggle {
-    background: var(--bg); border: 1px solid var(--border); color: var(--text);
-    padding: 8px 14px; border-radius: 20px; cursor: pointer; font-size: .9rem;
-    display: flex; align-items: center; gap: 6px; transition: all .2s;
-}
-.theme-toggle:hover { border-color: var(--primary); }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;
+    padding:22px 16px 70px;
+    font-family:"Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    transition:background .3s ease,color .3s ease;
+    -webkit-font-smoothing:antialiased;
+  }
+  body::before{
+    content:"";
+    position:fixed; inset:0; z-index:-1; pointer-events:none;
+    background:
+      radial-gradient(620px 420px at 8% -8%, rgba(91,140,255,.28), transparent 62%),
+      radial-gradient(620px 420px at 102% 2%, rgba(124,77,255,.22), transparent 62%);
+  }
 
-/* Progress */
-.progress-wrap {
-    width: 100%; height: 8px; background: var(--border); border-radius: 4px;
-    margin-bottom: 20px; overflow: hidden;
-}
-.progress-fill {
-    height: 100%; background: linear-gradient(90deg, var(--primary), #7c3aed);
-    width: 0%; transition: width .3s; border-radius: 4px;
-}
-.progress-text { text-align: center; font-size: .85rem; color: var(--text-muted); margin-bottom: 14px; }
+  .app{max-width:880px;margin:0 auto}
 
-/* Question Card */
-.question-card {
-    background: var(--card-bg); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 22px; box-shadow: var(--shadow);
-    margin-bottom: 18px; animation: fadeIn .3s ease;
-}
-@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-.q-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 14px; }
-.q-number { font-weight: 700; color: var(--primary); font-size: .95rem; white-space: nowrap; }
-.q-text { font-weight: 600; font-size: 1.05rem; flex: 1; }
-.hint-btn {
-    background: none; border: 1px solid var(--hint-border); color: var(--text-muted);
-    padding: 4px 10px; border-radius: 16px; cursor: pointer; font-size: .8rem;
-    white-space: nowrap; transition: all .2s;
-}
-.hint-btn:hover { background: var(--hint-bg); color: var(--text); }
-.hint-box {
-    display: none; background: var(--hint-bg); border: 1px solid var(--hint-border);
-    border-radius: 8px; padding: 10px 14px; margin: 10px 0 4px; font-size: .9rem;
-}
-.hint-box.show { display: block; }
+  /* ---------- Top bar ---------- */
+  .topbar{
+    display:flex;align-items:center;justify-content:space-between;
+    gap:16px;margin-bottom:22px;padding:15px 18px;
+    background:color-mix(in srgb,var(--card) 78%,transparent);
+    border:1px solid color-mix(in srgb,var(--border) 82%,transparent);
+    border-radius:20px;box-shadow:var(--shadow-sm);
+    backdrop-filter:blur(14px);
+  }
+  .brand{display:flex;align-items:center;gap:13px}
+  .brand-copy{display:flex;flex-direction:column;gap:3px}
+  .eyebrow{font-size:.66rem;font-weight:800;letter-spacing:1.35px;color:var(--primary);text-transform:uppercase}
+  .brand p{margin:0;font-size:.8rem;color:var(--muted);font-weight:500}
+  .brand h1{
+    margin:0;font-size:1.22rem;letter-spacing:-.4px;font-weight:800;
+    background:linear-gradient(100deg,var(--primary),var(--primary-2));
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .logo{width:48px;height:48px;flex:0 0 48px;filter:drop-shadow(0 6px 14px rgba(91,140,255,.35))}
 
-.options { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
-.option {
-    display: flex; align-items: flex-start; gap: 10px; padding: 12px 14px;
-    border: 1.5px solid var(--border); border-radius: 10px; cursor: pointer;
-    transition: all .2s; background: var(--bg);
-}
-.option:hover:not(.disabled) { border-color: var(--primary); }
-.option.selected { border-color: var(--primary); background: rgba(37,99,235,0.08); }
-.option.correct-answer { border-color: var(--success); background: var(--success-bg); }
-.option.wrong-answer { border-color: var(--danger); background: var(--danger-bg); }
-.option.disabled { cursor: default; }
-.opt-label { font-weight: 700; min-width: 22px; color: var(--primary); }
-.opt-text { flex: 1; }
+  .theme-btn{
+    width:46px;height:46px;border-radius:14px;border:1px solid var(--border);
+    background:var(--card);color:var(--text);cursor:pointer;
+    display:grid;place-items:center;box-shadow:var(--shadow-sm);
+    transition:transform .18s ease,border-color .18s ease,background .3s;
+  }
+  .theme-btn:hover{transform:translateY(-2px) rotate(-6deg);border-color:var(--primary)}
+  .theme-btn svg{width:21px;height:21px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+  [data-theme="light"] .i-sun{display:none}
+  [data-theme="dark"]  .i-moon{display:none}
 
-/* Feedback */
-.feedback-box {
-    margin-top: 16px; padding: 14px 16px; border-radius: 10px; font-size: .95rem;
-    display: none; animation: fadeIn .3s ease;
-}
-.feedback-box.show { display: block; }
-.feedback-box.correct { background: var(--success-bg); border: 1px solid var(--success); }
-.feedback-box.wrong { background: var(--danger-bg); border: 1px solid var(--danger); }
-.feedback-title { font-weight: 700; margin-bottom: 6px; font-size: 1rem; }
-.feedback-title.correct { color: var(--success); }
-.feedback-title.wrong { color: var(--danger); }
-.feedback-explain { color: var(--text); font-size: .92rem; }
+  /* ---------- Stats ---------- */
+  .stats{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px;
+  }
+  .stat{
+    background:color-mix(in srgb,var(--card) 92%,var(--primary) 8%);
+    border:1px solid var(--border);border-radius:17px;
+    padding:13px 16px;display:flex;align-items:center;gap:11px;
+    box-shadow:var(--shadow-sm);transition:background .3s,border-color .3s,transform .2s;
+  }
+  .stat:hover{transform:translateY(-2px)}
+  .stat .dot{width:9px;height:9px;border-radius:50%;flex:0 0 9px}
+  .stat.ok .dot{background:var(--ok);box-shadow:0 0 0 4px color-mix(in srgb,var(--ok) 18%,transparent)}
+  .stat.bad .dot{background:var(--bad);box-shadow:0 0 0 4px color-mix(in srgb,var(--bad) 18%,transparent)}
+  .stat.idx .dot{background:var(--primary);box-shadow:0 0 0 4px color-mix(in srgb,var(--primary) 18%,transparent)}
+  .stat b{display:block;font-size:1.05rem;line-height:1.1}
+  .stat small{color:var(--muted);font-size:.72rem;font-weight:600;letter-spacing:.3px}
 
-/* Buttons */
-.btn {
-    padding: 12px 28px; border: none; border-radius: 10px; font-size: 1rem;
-    font-weight: 600; cursor: pointer; transition: all .2s;
-}
-.btn-primary { background: var(--primary); color: #fff; }
-.btn-primary:hover { background: var(--primary-hover); }
-.btn-primary:disabled { opacity: .5; cursor: not-allowed; }
-.btn-outline { background: transparent; border: 1.5px solid var(--border); color: var(--text); }
-.btn-outline:hover { border-color: var(--primary); color: var(--primary); }
-.actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 20px; justify-content: center; }
+  .progress{
+    height:9px;border-radius:99px;background:var(--border);overflow:hidden;margin-bottom:22px;
+    box-shadow:inset 0 1px 2px rgba(20,30,60,.08);
+  }
+  .progress .bar{
+    height:100%;width:0;border-radius:99px;
+    background:linear-gradient(90deg,var(--primary),var(--primary-2));
+    transition:width .45s cubic-bezier(.4,0,.2,1);
+  }
 
-/* True/False Table */
-.tf-section {
-    background: var(--card-bg); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 22px; box-shadow: var(--shadow);
-    margin-top: 24px;
-}
-.tf-section h2 { font-size: 1.2rem; margin-bottom: 8px; }
-.tf-section p.intro { color: var(--text-muted); font-size: .9rem; margin-bottom: 14px; }
-.tf-table { width: 100%; border-collapse: collapse; font-size: .95rem; }
-.tf-table th, .tf-table td { border: 1px solid var(--border); padding: 10px 12px; text-align: left; vertical-align: top; }
-.tf-table th { background: var(--table-header); font-weight: 700; text-align: center; }
-.tf-table td:first-child { width: 60%; }
-.tf-table td:nth-child(2), .tf-table td:nth-child(3) { text-align: center; width: 20%; }
-.tf-table input[type="radio"] { accent-color: var(--primary); transform: scale(1.2); cursor: pointer; }
-.tf-table tr.correct-row { background: var(--success-bg); }
-.tf-table tr.wrong-row { background: var(--danger-bg); }
-.tf-feedback { font-size: .85rem; margin-top: 4px; font-weight: 600; }
-.tf-feedback.correct { color: var(--success); }
-.tf-feedback.wrong { color: var(--danger); }
+  /* ---------- Card ---------- */
+  .card{
+    position:relative;overflow:hidden;
+    background:var(--card);border:1px solid var(--border);border-radius:24px;
+    padding:30px 30px 25px;box-shadow:var(--shadow);
+    transition:background .3s,border-color .3s;
+    animation:pop .34s cubic-bezier(.2,.8,.3,1);
+  }
+  .card::before{
+    content:"";position:absolute;top:0;left:30px;right:30px;height:3px;
+    border-radius:0 0 8px 8px;background:linear-gradient(90deg,var(--primary),var(--primary-2));
+  }
+  @keyframes pop{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
 
-/* Result banner */
-.result-banner {
-    display: none; text-align: center; padding: 18px; border-radius: var(--radius);
-    margin-bottom: 20px; font-size: 1.05rem; font-weight: 600;
-    border: 1px solid var(--border); background: var(--card-bg);
-}
-.result-banner.show { display: block; }
+  .qtext{
+    margin:0 0 18px;font-size:1.12rem;line-height:1.55;font-weight:700;letter-spacing:-.2px;
+  }
 
-.hidden { display: none !important; }
+  .options{display:flex;flex-direction:column;gap:11px}
+  .option{
+    display:flex;align-items:flex-start;gap:13px;width:100%;text-align:left;
+    padding:14px 16px;border-radius:15px;cursor:pointer;
+    font:inherit;font-size:.96rem;line-height:1.5;color:var(--text);
+    background:var(--opt-bg);border:1.6px solid var(--border);
+    transition:border-color .16s,transform .16s,box-shadow .16s,background .25s,color .25s;
+  }
+  .option:hover:not(:disabled){
+    border-color:var(--primary);transform:translateY(-2px);
+    box-shadow:0 8px 20px color-mix(in srgb,var(--primary) 22%,transparent);
+  }
+  :where(button):focus-visible{outline:3px solid color-mix(in srgb,var(--primary) 70%,white);outline-offset:3px}
+  .option:disabled{cursor:default}
+  .badge{
+    flex:0 0 27px;width:27px;height:27px;border-radius:9px;display:grid;place-items:center;
+    font-size:.8rem;font-weight:800;color:var(--muted);
+    background:color-mix(in srgb,var(--muted) 13%,transparent);
+    transition:background .2s,color .2s;
+  }
+  .option.correct{border-color:var(--ok);background:var(--ok-bg)}
+  .option.correct .badge{background:var(--ok);color:#fff}
+  .option.wrong{border-color:var(--bad);background:var(--bad-bg)}
+  .option.wrong .badge{background:var(--bad);color:#fff}
+  .option.dim{opacity:.55}
 
-@media (max-width: 640px) {
-    header { flex-direction: column; align-items: stretch; }
-    .status-bar { justify-content: center; }
-    .tf-table { font-size: .82rem; }
-    .tf-table th, .tf-table td { padding: 8px 5px; }
-}
+  /* ---------- Hint ---------- */
+  .hint-wrap{margin-top:16px}
+  .hint-btn{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:9px 16px;border-radius:12px;cursor:pointer;
+    font:inherit;font-size:.86rem;font-weight:700;letter-spacing:.2px;
+    color:var(--hint);background:var(--hint-bg);
+    border:1.4px dashed color-mix(in srgb,var(--hint) 55%,transparent);
+    transition:transform .16s,box-shadow .16s,opacity .2s;
+  }
+  .hint-btn:hover{transform:translateY(-1px);box-shadow:0 6px 16px color-mix(in srgb,var(--hint) 25%,transparent)}
+  .hint-btn .bulb{font-size:1rem;line-height:1}
+  .hint-content{
+    margin-top:10px;padding:13px 16px;border-radius:13px;
+    font-size:.9rem;line-height:1.55;font-weight:500;
+    color:var(--text);background:var(--hint-bg);
+    border:1px solid color-mix(in srgb,var(--hint) 40%,transparent);
+    animation:pop .28s ease;
+  }
+  .hint-content strong{color:var(--hint)}
+  [hidden]{display:none !important}
+
+  /* ---------- Feedback ---------- */
+  .feedback{
+    margin-top:16px;padding:13px 16px;border-radius:14px;font-size:.9rem;
+    font-weight:600;display:none;animation:pop .28s ease;
+  }
+  .feedback.show{display:block}
+  .feedback.ok{background:var(--ok-bg);color:var(--ok);border:1px solid color-mix(in srgb,var(--ok) 35%,transparent)}
+  .feedback.bad{background:var(--bad-bg);color:var(--bad);border:1px solid color-mix(in srgb,var(--bad) 35%,transparent)}
+
+  /* ---------- Buttons ---------- */
+  .actions{display:flex;justify-content:flex-end;margin-top:18px}
+  .btn{
+    border:none;cursor:pointer;font:inherit;font-weight:700;font-size:.94rem;
+    padding:13px 26px;border-radius:14px;color:#fff;
+    background:linear-gradient(100deg,var(--primary),var(--primary-2));
+    box-shadow:0 10px 22px color-mix(in srgb,var(--primary) 38%,transparent);
+    transition:transform .16s,box-shadow .16s,opacity .2s;
+  }
+  .btn:hover{transform:translateY(-2px);box-shadow:0 14px 28px color-mix(in srgb,var(--primary) 46%,transparent)}
+  .btn:active{transform:translateY(0)}
+  .btn[hidden]{display:none}
+
+  /* ---------- Result ---------- */
+  .result{text-align:center;padding:8px 0 4px;animation:pop .4s ease}
+  .ring{
+    width:170px;height:170px;border-radius:50%;margin:6px auto 20px;
+    display:grid;place-items:center;
+    background:conic-gradient(var(--ok) calc(var(--p) * 1%), var(--border) 0);
+    transition:background .6s ease;
+  }
+  .ring-in{
+    width:132px;height:132px;border-radius:50%;background:var(--card);
+    display:grid;place-items:center;align-content:center;gap:2px;
+    box-shadow:inset 0 0 0 1px var(--border);
+  }
+  .ring-in b{font-size:2rem;line-height:1;letter-spacing:-1px}
+  .ring-in small{font-size:.72rem;color:var(--muted);font-weight:700;letter-spacing:.6px}
+  .result h2{margin:0 0 8px;font-size:1.35rem;letter-spacing:-.4px}
+  .result p{margin:0 0 20px;color:var(--muted);font-size:.94rem}
+  .result .pills{display:flex;justify-content:center;gap:10px;margin-bottom:24px;flex-wrap:wrap}
+  .pill{
+    padding:9px 16px;border-radius:12px;font-size:.85rem;font-weight:700;
+    border:1px solid var(--border);background:var(--opt-bg);
+  }
+  .pill.ok{color:var(--ok);border-color:color-mix(in srgb,var(--ok) 40%,transparent)}
+  .pill.bad{color:var(--bad);border-color:color-mix(in srgb,var(--bad) 40%,transparent)}
+
+  @media (max-width:560px){
+    body{padding:12px 12px 42px}
+    .topbar{padding:12px 13px;border-radius:17px;margin-bottom:16px}
+    .card{padding:23px 17px 18px;border-radius:19px}
+    .card::before{left:18px;right:18px}
+    .qtext{font-size:1.02rem}
+    .option{font-size:.9rem;padding:12px 13px}
+    .stat{padding:9px 10px;gap:8px}
+    .stat b{font-size:.95rem}
+    .stat small{font-size:.66rem}
+    .brand h1{font-size:1.02rem}
+    .logo{width:42px;height:42px;flex-basis:42px}
+    .theme-btn{width:42px;height:42px}
+  }
 </style>
 </head>
-<body data-theme="light">
-<div class="container">
-    <header>
-        <h1>🧪 Quiz Hóa Học</h1>
-        <div class="status-bar">
-            <div class="status-item"><span class="dot green"></span> Đúng: <strong id="correctCount">0</strong></div>
-            <div class="status-item"><span class="dot red"></span> Sai: <strong id="wrongCount">0</strong></div>
-            <div class="status-item"><span class="dot gray"></span> Đã làm: <strong id="doneCount">0</strong></div>
-            <button class="theme-toggle" id="themeToggle">🌙 Tối</button>
-        </div>
-    </header>
+<body>
+<div class="app">
 
-    <div class="progress-wrap"><div class="progress-fill" id="progressFill"></div></div>
-    <div class="progress-text" id="progressText">Câu 1 / 50</div>
-
-    <div class="result-banner" id="resultBanner"></div>
-
-    <!-- Phần trắc nghiệm từng câu -->
-    <div id="singleQuestionContainer"></div>
-
-    <!-- Phần Đúng/Sai (hiển thị sau khi xong 50 câu) -->
-    <div class="tf-section hidden" id="tfSection">
-        <h2>📋 Phần II: Trắc nghiệm Đúng/Sai</h2>
-        <p class="intro">Chọn <strong>Đúng</strong> hoặc <strong>Sai</strong> cho mỗi phát biểu. Kết quả hiển thị sau khi bấm "Nộp bài".</p>
-        <table class="tf-table">
-            <thead><tr><th>Câu hỏi / Phát biểu</th><th>Đúng</th><th>Sai</th></tr></thead>
-            <tbody id="tfBody"></tbody>
-        </table>
-        <div class="actions">
-            <button class="btn btn-primary" id="submitTF">✅ Nộp bài Đúng/Sai</button>
-        </div>
+  <!-- ===== Header ===== -->
+  <header class="topbar">
+    <div class="brand">
+      <svg class="logo" viewBox="0 0 48 48" aria-hidden="true">
+        <defs>
+          <linearGradient id="lg" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#5b8cff"/>
+            <stop offset="1" stop-color="#7c4dff"/>
+          </linearGradient>
+        </defs>
+        <rect width="48" height="48" rx="14" fill="url(#lg)"/>
+        <path d="M24 17c-4.2-3.3-9-3.2-13-.8v17c4-2.4 8.8-2.5 13 .8 4.2-3.3 9-3.2 13-.8v-17c-4-2.4-8.8-2.5-13 .8Z"
+              fill="none" stroke="#fff" stroke-width="2.3" stroke-linejoin="round"/>
+        <path d="M24 17v17" stroke="#fff" stroke-width="2.3" stroke-linecap="round"/>
+        <path d="M15.5 21.5c2-.7 4.2-.5 6 .3M32.5 21.5c-2-.7-4.2-.5-6 .3"
+              fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/>
+      </svg>
+      <div>
+        <span class="eyebrow">Không gian học tập</span>
+        <h1>Quiz học tập</h1>
+        <p>Ôn tập kiến thức Hóa Học · 50 câu hỏi</p>
+      </div>
     </div>
 
-    <div class="actions" id="mainActions">
-        <button class="btn btn-outline" id="resetBtn">🔄 Làm lại (xáo trộn)</button>
-    </div>
+    <button class="theme-btn" id="themeBtn" title="Chuyển chế độ sáng / tối" aria-label="Đổi giao diện">
+      <svg class="i-moon" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+      <svg class="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+    </button>
+  </header>
+
+  <!-- ===== Status bar ===== -->
+  <section class="stats">
+    <div class="stat ok"><span class="dot"></span><div><b id="sCorrect">0</b><small>ĐÚNG</small></div></div>
+    <div class="stat bad"><span class="dot"></span><div><b id="sWrong">0</b><small>SAI</small></div></div>
+    <div class="stat idx"><span class="dot"></span><div><b id="sIndex">1/50</b><small>CÂU HỎI</small></div></div>
+  </section>
+  <div class="progress"><div class="bar" id="bar"></div></div>
+
+  <!-- ===== Quiz card ===== -->
+  <main class="card" id="card"></main>
 </div>
 
 <script>
-// ==================== DỮ LIỆU 50 CÂU TRẮC NGHIỆM ====================
-const questionsData = [
-{id:1,text:"Mối quan hệ giữa tốc độ phản ứng thuận (v_t) và tốc độ phản ứng nghịch (v_n) ở trạng thái cân bằng được biểu diễn như thế nào?",options:["v_t = 2v_n","v_t = v_n ≠ 0","v_t = 0,5v_n","v_t = v_n = 0 (hoặc v_t = v_n)"],correct:1,hint:"Ở trạng thái cân bằng, tốc độ phản ứng thuận bằng tốc độ phản ứng nghịch nhưng cả hai vẫn tiếp tục diễn ra, không dừng lại."},
-{id:2,text:"Điền từ hoặc cụm từ thích hợp vào dấu “...” trong câu sau: “Cân bằng hóa học là trạng thái của phản ứng thuận nghịch khi tốc độ phản ứng thuận ... tốc độ phản ứng nghịch”.",options:["lớn hơn","bằng","nhỏ hơn","khác"],correct:1,hint:"Cân bằng hóa học đạt được khi tốc độ phản ứng thuận bằng tốc độ phản ứng nghịch."},
-{id:3,text:"Yếu tố nào sau đây không làm dịch chuyển cân bằng của hệ phản ứng?",options:["Nhiệt độ","Áp suất","Nồng độ","Chất xúc tác"],correct:3,hint:"Chất xúc tác làm tăng tốc độ cả phản ứng thuận và nghịch như nhau, không làm dịch chuyển cân bằng."},
-{id:4,text:"Các yếu tố ảnh hưởng đến cân bằng hoá học là:",options:["nồng độ, nhiệt độ và chất xúc tác","nồng độ, áp suất và diện tích bề mặt","nồng độ, nhiệt độ và áp suất","áp suất, nhiệt độ và chất xúc tác"],correct:2,hint:"Ba yếu tố ảnh hưởng đến cân bằng hóa học là nồng độ, nhiệt độ và áp suất (theo nguyên lý Le Chatelier)."},
-{id:5,text:"Trong khí quyển Trái Đất, nguyên tố nitrogen tồn tại chủ yếu dưới dạng nào?",options:["NO","N₂","N₂O","NH₃"],correct:1,hint:"Nitrogen trong khí quyển chủ yếu tồn tại dưới dạng phân tử N₂ (khí nitơ)."},
-{id:6,text:"Trong khí quyển trái đất, nitrogen chiếm bao nhiêu phần trăm thể tích khí quyển?",options:["15%","78,1%","80%","21%"],correct:1,hint:"Nitrogen chiếm khoảng 78,1% thể tích không khí, oxygen chiếm khoảng 21%."},
-{id:7,text:"Oxide được điều chế trực tiếp từ phản ứng của nitrogen với oxygen là",options:["NO₂","NO","N₂O","N₂O₅"],correct:1,hint:"Ở nhiệt độ cao (tia lửa điện), N₂ phản ứng với O₂ tạo thành NO."},
-{id:8,text:"Khi có sấm chớp, khí quyển sinh ra khí",options:["CO","NO","SO₂","CO₂"],correct:1,hint:"Sấm chớp cung cấp năng lượng để N₂ phản ứng với O₂ tạo NO."},
-{id:9,text:"Khi rút xăng, dầu ra khỏi các bồn chứa, người ta thường bơm khí nitrogen để thay thế hoàn toàn hoặc một phần không khí làm giảm nồng độ oxygen để giảm nguy cơ cháy nổ. Tính chất nào sau đây của nitrogen được sử dụng trong trường hợp trên?",options:["Nitrogen chiếm 78,1% thể tích không khí","Nitrogen có tính oxi hóa mạnh ở điều kiện thường","Nitrogen tác dụng được với oxygen ở nhiệt độ thường","Nitrogen trơ về mặt hóa học ở nhiệt độ thường"],correct:3,hint:"Nitrogen trơ ở nhiệt độ thường nên được dùng để tạo môi trường trơ, giảm nguy cơ cháy nổ."},
-{id:10,text:"Cho cân bằng hoá học: H₂(g) + I₂(g) ⇌ 2HI(g); ΔᵣH°₂₉₈ > 0. Cân bằng không bị chuyển dịch khi",options:["tăng nhiệt độ của hệ","giảm nồng độ HI","tăng nồng độ H₂","giảm áp suất chung của hệ"],correct:3,hint:"Phản ứng có số mol khí hai vế bằng nhau (1+1=2), nên áp suất không ảnh hưởng đến cân bằng."},
-{id:11,text:"Trong những điều kiện khẳng định dưới đây, điều nào không phù hợp với một hệ hoá học đang ở trạng thái cân bằng?",options:["Phản ứng thuận và nghịch vẫn tiếp tục diễn ra","Nồng độ của các sản phẩm và chất phản ứng không đổi","Tốc độ phản ứng thuận và phản ứng nghịch bằng nhau","Nồng độ của các sản phẩm và chất phản ứng bằng nhau"],correct:3,hint:"Ở cân bằng, nồng độ các chất không đổi nhưng không nhất thiết phải bằng nhau."},
-{id:12,text:"Trong các phát biểu sau, phát biểu nào đúng khi một hệ ở trạng thái cân bằng?",options:["Phản ứng thuận đã dừng","Phản ứng nghịch đã dừng","Nồng độ chất tham gia và sản phẩm bằng nhau","Nồng độ của các chất trong hệ không đổi"],correct:3,hint:"Ở trạng thái cân bằng, nồng độ các chất không thay đổi theo thời gian."},
-{id:13,text:"Cho cân bằng (trong bình kín): CO(g) + H₂O(g) ⇌ CO₂(g) + H₂(g); ΔᵣH°₂₉₈ < 0. Các yếu tố: (1) tăng nhiệt độ; (2) thêm hơi nước; (3) thêm H₂; (4) tăng áp suất chung; (5) dùng xúc tác. Dãy gồm các yếu tố đều làm thay đổi cân bằng là",options:["(1), (4), (5)","(1), (2), (3)","(2), (3), (4)","(1), (2), (4)"],correct:1,hint:"Xúc tác (5) không dịch chuyển cân bằng; áp suất (4) không ảnh hưởng vì số mol khí hai vế bằng nhau. Vậy (1),(2),(3)."},
-{id:14,text:"Cho phản ứng thuận nghịch: 2SO₂(g) + O₂(g) ⇌ 2SO₃(g). Biểu thức hằng số cân bằng là",options:["K_c = [SO₃]² / ([SO₂]² · [O₂])","K_c = [SO₃] / ([SO₂] · [O₂])","K_c = ([SO₂]² · [O₂]) / [SO₃]²","K_c = ([SO₂] · [O₂]) / [SO₃]"],correct:0,hint:"K_c = [SO₃]² / ([SO₂]² · [O₂])."},
-{id:15,text:"Khi tăng áp suất, cân bằng nào chuyển dịch theo chiều thuận? (1) 2SO₂(g)+O₂(g)⇌2SO₃(g); (2) NH₄Cl(s)⇌NH₃(g)+HCl(g); (3) 2H₂O₂(aq)⇌2H₂O(l)+O₂(g); (4) 3O₂(g)⇌2O₃(g)",options:["(1) và (4)","(1) và (2)","(2) và (3)","Chỉ có (4)"],correct:0,hint:"Tăng áp suất dịch chuyển về phía ít phân tử khí hơn. (1): 3→2; (4): 3→2 → thuận."},
-{id:16,text:"Ở một nhiệt độ nhất định, phản ứng N₂ + 3H₂ ⇌ 2NH₃ đạt cân bằng khi [N₂]=0,01M, [H₂]=2,0M, [NH₃]=0,4M. Hằng số cân bằng là",options:["2,6","2,2","0,21","2,0"],correct:3,hint:"K_c = (0,4)² / (0,01 · 2³) = 0,16 / 0,08 = 2,0."},
-{id:17,text:"Môi trường acid là môi trường có",options:["[H⁺] < [OH⁻]","[H⁺] > [OH⁻]","[H⁺] = [OH⁻]","[H⁺] < 1,0·10⁻⁷"],correct:1,hint:"Trong môi trường acid, [H⁺] > [OH⁻]."},
-{id:18,text:"Trong các dung dịch cùng nồng độ 0,1M, dung dịch nào có pH nhỏ nhất?",options:["NaOH","HCl","H₂SO₄","Ba(OH)₂"],correct:2,hint:"H₂SO₄ phân li cho 2 H⁺ → pH nhỏ nhất."},
-{id:19,text:"Cho 10,0 mL NaOH 0,1M vào 15,0 mL HCl 0,1M. Dung dịch tạo thành làm",options:["phenolphthalein không màu chuyển đỏ","giấy quỳ tím hóa đỏ","giấy quỳ tím hóa xanh","giấy quỳ tím không chuyển màu"],correct:1,hint:"n(NaOH)=0,001; n(HCl)=0,0015 → HCl dư → quỳ hóa đỏ."},
-{id:20,text:"Chất nào sau đây thuộc loại chất điện li mạnh?",options:["HNO₃","Mg(OH)₂","H₂S","HClO"],correct:0,hint:"HNO₃ là acid mạnh → điện li mạnh."},
-{id:21,text:"Chất nào sau đây thuộc loại chất điện li mạnh?",options:["H₃PO₄","Na₃PO₄","H₂CO₃","Fe(OH)₃"],correct:1,hint:"Na₃PO₄ là muối tan, phân li hoàn toàn → điện li mạnh."},
-{id:22,text:"Nước đóng vai trò base theo Brønsted–Lowry trong phản ứng nào?",options:["CO₃²⁻ + H₂O ⇌ HCO₃⁻ + OH⁻","S²⁻ + H₂O ⇌ HS⁻ + OH⁻","HCO₃⁻ + H₂O ⇌ CO₃²⁻ + H₃O⁺","CH₃COO⁻ + H₂O ⇌ CH₃COOH + OH⁻"],correct:2,hint:"Ở phản ứng C, HCO₃⁻ nhường H⁺ cho H₂O → H₂O nhận H⁺ → base."},
-{id:23,text:"Nước đóng vai trò acid theo Brønsted–Lowry trong phản ứng nào?",options:["Fe³⁺ + H₂O ⇌ Fe(OH)²⁺ + H⁺","Al³⁺ + 3H₂O ⇌ Al(OH)₃ + 3H⁺","NH₃ + H₂O ⇌ NH₄⁺ + OH⁻","NH₄⁺ + H₂O ⇌ NH₃ + H₃O⁺"],correct:2,hint:"Ở phản ứng C, H₂O nhường H⁺ cho NH₃ → nước là acid."},
-{id:24,text:"Nhận xét nào sau đây đúng?",options:["Nitrogen không duy trì sự cháy, sự hô hấp và là khí độc","Vì có liên kết 3 nên phân tử nitrogen rất bền và ở nhiệt độ thường khá trơ","Khi tác dụng với kim loại hoạt động, nitrogen thể hiện tính khử","Số oxi hóa của N trong AlN, N₂O₄, NH₄⁺, NO₃⁻, NO₂⁻ lần lượt là -3,+4,-3,+5,+4"],correct:1,hint:"N₂ có liên kết ba bền vững nên ở nhiệt độ thường khá trơ."},
-{id:25,text:"Liên kết hoá học trong phân tử NH₃ là liên kết",options:["cộng hoá trị có cực","ion","cộng hoá trị không cực","kim loại"],correct:0,hint:"N và H có độ âm điện khác nhau → cộng hóa trị có cực."},
-{id:26,text:"Dạng hình học của phân tử ammonia là",options:["tam giác đều","hình tứ diện","chữ T","chóp tam giác"],correct:3,hint:"NH₃ có cấu trúc chóp tam giác."},
-{id:27,text:"Phát biểu nào sau đây sai?",options:["Muối ammonium dễ tan trong nước","Muối ammonium là chất điện li mạnh","Muối ammonium kém bền với nhiệt","Dung dịch muối ammonium có tính chất base"],correct:3,hint:"Dung dịch muối ammonium có tính acid yếu, không phải base."},
-{id:28,text:"Phát biểu nào sau đây sai?",options:["Muối ammonium bền với nhiệt","Các muối ammonium đều là chất điện li mạnh","Tất cả các muối ammonium đều tan trong nước","Các muối ammonium đều bị thủy phân trong nước"],correct:0,hint:"Muối ammonium kém bền với nhiệt."},
-{id:29,text:"Nitric acid được dùng phá mẫu quặng do có",options:["Tính oxi hoá mạnh","Tính acid mạnh","Tính khử mạnh","Tính base"],correct:0,hint:"HNO₃ có tính oxi hóa mạnh, hòa tan nhiều kim loại và khoáng vật."},
-{id:30,text:"Tác nhân chính gây mưa acid là",options:["CO₂ và H₂O","SO₂ và CO₂","SO₂ và NOₓ","CO₂ và CH₄"],correct:2,hint:"SO₂ và NOₓ là các oxide gây mưa acid chính."},
-{id:31,text:"Hai acid tạo thành từ quá trình oxi hóa oxide của sulfur và nitrogen là",options:["H₂CO₃ và HNO₃","H₂S và HNO₃","H₂S và H₂SO₄","H₂SO₄ và HNO₃"],correct:3,hint:"Oxide sulfur → H₂SO₄; oxide nitrogen → HNO₃."},
-{id:32,text:"HNO₃ chỉ thể hiện tính acid khi phản ứng với dãy chất nào?",options:["CaCO₃, Cu(OH)₂, Fe(OH)₂, FeO","CuO, NaOH, FeCO₃, Fe₂O₃","Fe(OH)₃, Na₂CO₃, Fe₂O₃, NH₃","KOH, FeS, K₂CO₃, Cu(OH)₂"],correct:1,hint:"Dãy B đều phản ứng trao đổi, không có oxi hóa khử."},
-{id:33,text:"HNO₃ chỉ thể hiện tính oxi hóa khi phản ứng với dãy chất nào?",options:["Mg, H₂S, S, Fe₃O₄, Fe(OH)₂","Al, FeCO₃, HI, CaO, FeO","Cu, C, Fe₂O₃, Fe(OH)₂, SO₂","Na₂SO₃, P, CuO, CaCO₃, Ag"],correct:0,hint:"Dãy A gồm các chất có tính khử → HNO₃ chỉ thể hiện tính oxi hóa."},
-{id:34,text:"Cho các phát biểu: (1) Ammonia lỏng làm chất làm lạnh; (2) Dẫn NH₃ qua H₂SO₄ đặc để làm khô; (3) Quỳ tím ẩm vào NH₃ hóa đỏ; (4) Nitrogen lỏng bảo quản máu. Số phát biểu đúng là",options:["2","3","1","4"],correct:0,hint:"(1) Đúng; (2) Sai; (3) Sai (hóa xanh); (4) Đúng → 2 đúng."},
-{id:35,text:"Cho phenolphthalein vào dung dịch NH₃, phenolphthalein chuyển sang màu",options:["hồng","xanh","không màu","vàng"],correct:0,hint:"NH₃ có tính base yếu → phenolphthalein hóa hồng."},
-{id:36,text:"Tổng hợp ammonia: N₂ + 3H₂ ⇌ 2NH₃, ΔH = -92 kJ. Để tăng hiệu suất phải",options:["giảm nhiệt độ và áp suất","tăng nhiệt độ và áp suất","tăng nhiệt độ và giảm áp suất","giảm nhiệt độ vừa phải và tăng áp suất"],correct:3,hint:"Phản ứng tỏa nhiệt → giảm nhiệt độ; số mol khí giảm → tăng áp suất."},
-{id:37,text:"Ứng dụng nào không phải của muối ammonium?",options:["Sản xuất giấy","Thuốc bổ sung chất điện giải","Phân bón hoá học","Chất phụ gia thực phẩm"],correct:1,hint:"Muối ammonium không dùng làm thuốc bổ sung chất điện giải."},
-{id:38,text:"Để tạo độ xốp cho bánh, có thể dùng chất nào?",options:["(NH₄)₃PO₄","NH₄HCO₃","CaCO₃","NaCl"],correct:1,hint:"NH₄HCO₃ phân hủy khi nung tạo khí làm xốp bánh."},
-{id:39,text:"Phát biểu nào sau đây không đúng?",options:["Ammonia là base theo Brønsted–Lowry khi tác dụng với nước","Ammonia được sử dụng làm chất làm lạnh","Muối ammonium là tinh thể ion, dễ tan trong nước","Các muối ammonium đều rất bền với nhiệt"],correct:3,hint:"Muối ammonium kém bền với nhiệt."},
-{id:40,text:"Cho KOH dư vào 20 ml (NH₄)₂SO₄ 1M, đun nóng nhẹ. Thể tích khí thu được ở đkc là",options:["0,9916 (lít)","0,9196 (lít)","0,4958 (lít)","0,448 (lít)"],correct:0,hint:"n(NH₃)=0,04 mol → V = 0,04 × 24,79 ≈ 0,9916 lít."},
-{id:41,text:"Khi có sấm chớp khí quyển sinh ra chất nào?",options:["oxide carbon","nitrogen monoxide","nước","nitrogen dioxide"],correct:1,hint:"Sấm chớp tạo NO."},
-{id:42,text:"X tác dụng NaOH dư tạo khí mùi khai; dung dịch X tác dụng BaCl₂ tạo kết tủa trắng không tan trong HNO₃. X là",options:["(NH₄)₂CO₃","NH₄HSO₃","NH₄Cl","(NH₄)₂SO₄"],correct:3,hint:"Có NH₄⁺ và SO₄²⁻ → (NH₄)₂SO₄."},
-{id:43,text:"X tác dụng NaOH dư tạo khí mùi khai; đun nóng X thấy khói trắng. X là",options:["(NH₄)₂CO₃","NH₄HCO₃","NH₄NO₃","NH₄Cl"],correct:3,hint:"NH₄Cl phân hủy tạo HCl và NH₃ → khói trắng NH₄Cl."},
-{id:44,text:"Axit HNO₃ thể hiện tính oxi hóa khi tác dụng với chất nào sau đây?",options:["Fe₂O₃","Al₂O₃","MgO","Cu"],correct:3,hint:"Cu là kim loại, phản ứng với HNO₃ tạo NO/NO₂ → HNO₃ thể hiện tính oxi hóa."},
-{id:45,text:"Cho từng chất: Zn, FeO, NaOH, Fe₃O₄, Fe(OH)₂, Fe(OH)₃, CaCO₃, NH₃ lần lượt phản ứng với HNO₃ đặc, nóng. Số phản ứng oxi hóa khử là",options:["4","3","2","5"],correct:0,hint:"Các chất có tính khử: Zn, FeO, Fe₃O₄, Fe(OH)₂ → 4 phản ứng oxi hóa khử."},
-{id:46,text:"Hòa tan hoàn toàn m gam Cu bằng dung dịch HNO₃ đặc, thu được 4,48 lít NO₂ (sản phẩm khử duy nhất, đktc). Giá trị của m là",options:["9,6","3,2","12,8","6,4"],correct:3,hint:"n(NO₂)=0,2 mol. Bảo toàn e: 2n(Cu)=n(NO₂) → n(Cu)=0,1 mol → m=6,4 gam."},
-{id:47,text:"Dung dịch chất nào sau đây làm quỳ tím chuyển thành màu đỏ?",options:["H₂SO₄","KOH","NaCl","C₂H₅OH"],correct:0,hint:"H₂SO₄ là acid mạnh → quỳ tím hóa đỏ."},
-{id:48,text:"Dung dịch chất nào sau đây làm quỳ tím chuyển thành màu xanh?",options:["HCl","CH₃COONa","KNO₃","C₂H₅OH"],correct:1,hint:"CH₃COONa thủy phân tạo môi trường base → quỳ tím hóa xanh."},
-{id:49,text:"pH của dung dịch nào sau đây có giá trị nhỏ nhất?",options:["Dung dịch HCl 0,1M","Dung dịch CH₃COOH 0,1M","Dung dịch NaCl 0,1M","Dung dịch NaOH 0,01M"],correct:0,hint:"HCl 0,1M là acid mạnh, pH = 1 → nhỏ nhất."},
-{id:50,text:"Các dung dịch NaCl, NaOH, NH₃, Ba(OH)₂ có cùng nồng độ mol, dung dịch có pH lớn nhất là",options:["NaOH","Ba(OH)₂","NH₃","NaCl"],correct:1,hint:"Ba(OH)₂ phân li cho 2 OH⁻ → nồng độ OH⁻ lớn nhất → pH lớn nhất."}
+/* =========================================================
+   DỮ LIỆU CÂU HỎI  (c: chỉ số đáp án đúng trong mảng gốc,
+                     hint: gợi ý hiển thị khi bấm nút)
+   ========================================================= */
+const QUESTIONS = [
+  { q:"Mối quan hệ giữa tốc độ phản ứng thuận (vt) và tốc độ phản ứng nghịch (vn) ở trạng thái cân bằng được biểu diễn như thế nào?", a:["vt = 2vn","vt = vn ≠ 0","vt = 0,5vn","vt = vn = 0 (hoặc vt = vn)"], c:1, hint:"Ở cân bằng động, phản ứng thuận và nghịch vẫn diễn ra với tốc độ bằng nhau và khác 0." },
+  { q:"Cân bằng hóa học là trạng thái của phản ứng thuận nghịch khi tốc độ phản ứng thuận ... tốc độ phản ứng nghịch.", a:["lớn hơn","bằng","nhỏ hơn","khác"], c:1, hint:"Cân bằng hóa học đạt được khi tốc độ phản ứng thuận bằng tốc độ phản ứng nghịch." },
+  { q:"Yếu tố nào sau đây không làm dịch chuyển cân bằng của hệ phản ứng?", a:["Nhiệt độ","Áp suất","Nồng độ","Chất xúc tác"], c:3, hint:"Chất xúc tác chỉ làm tăng tốc độ đạt cân bằng, không làm dịch chuyển cân bằng." },
+  { q:"Các yếu tố ảnh hưởng đến cân bằng hoá học là:", a:["nồng độ, nhiệt độ và chất xúc tác","nồng độ, áp suất và diện tích bề mặt","nồng độ, nhiệt độ và áp suất","áp suất, nhiệt độ và chất xúc tác"], c:2, hint:"Các yếu tố ảnh hưởng cân bằng gồm nồng độ, nhiệt độ và áp suất." },
+  { q:"Trong khí quyển Trái Đất, nguyên tố nitrogen tồn tại chủ yếu dưới dạng nào?", a:["NO","N2","N2O","NH3"], c:1, hint:"Nitrogen trong không khí chủ yếu là khí N2." },
+  { q:"Trong khí quyển Trái Đất, nitrogen chiếm bao nhiêu phần trăm thể tích khí quyển?", a:["15%","78,1%","80%","21%"], c:1, hint:"Nitrogen chiếm khoảng 78,1% thể tích không khí." },
+  { q:"Oxide được điều chế trực tiếp từ phản ứng của nitrogen với oxygen là", a:["NO2","NO","N2O","N2O5"], c:1, hint:"Ở nhiệt độ cao, N2 tác dụng với O2 tạo NO." },
+  { q:"Khi có sấm chớp, khí quyển sinh ra khí", a:["CO","NO","SO2","CO2"], c:1, hint:"Sấm chớp cung cấp năng lượng cho N2 và O2 tạo NO." },
+  { q:"Khi rút xăng, dầu ra khỏi các bồn chứa, người ta thường bơm khí nitrogen để thay thế không khí, giảm nồng độ oxygen để giảm nguy cơ cháy nổ. Tính chất nào sau đây của nitrogen được sử dụng?", a:["Nitrogen chiếm 78,1% thể tích không khí","Nitrogen có tính oxi hóa mạnh ở điều kiện thường","Nitrogen tác dụng được với oxygen ở nhiệt độ thường","Nitrogen trơ về mặt hóa học ở nhiệt độ thường"], c:3, hint:"Nitrogen khá trơ ở điều kiện thường nên dùng để thay thế không khí, hạn chế cháy nổ." },
+  { q:"Cho cân bằng: H2(g) + I2(g) ⇌ 2HI(g); ΔH > 0. Cân bằng không bị chuyển dịch khi", a:["tăng nhiệt độ của hệ","giảm nồng độ HI","tăng nồng độ H2","giảm áp suất chung của hệ"], c:3, hint:"Số mol khí hai vế bằng nhau nên thay đổi áp suất không làm dịch chuyển cân bằng." },
+  { q:"Điều nào không phù hợp với một hệ hoá học đang ở trạng thái cân bằng?", a:["Phản ứng thuận và nghịch vẫn tiếp tục diễn ra","Nồng độ của các sản phẩm và chất phản ứng không đổi","Tốc độ phản ứng thuận và phản ứng nghịch bằng nhau","Nồng độ của các sản phẩm và chất phản ứng bằng nhau"], c:3, hint:"Ở cân bằng, nồng độ các chất không đổi chứ không nhất thiết bằng nhau." },
+  { q:"Phát biểu nào đúng khi một hệ ở trạng thái cân bằng?", a:["Phản ứng thuận đã dừng","Phản ứng nghịch đã dừng","Nồng độ chất tham gia và sản phẩm bằng nhau","Nồng độ của các chất trong hệ không đổi"], c:3, hint:"Cân bằng hóa học là cân bằng động, nồng độ các chất không đổi theo thời gian." },
+  { q:"Cho cân bằng: CO(g) + H2O(g) ⇌ CO2(g) + H2(g); ΔH < 0. Các yếu tố đều làm thay đổi cân bằng của hệ là", a:["(1), (4), (5)","(1), (2), (3)","(2), (3), (4)","(1), (2), (4)"], c:1, hint:"Tăng nhiệt độ, thêm hơi nước, thêm H2 đều làm dịch chuyển cân bằng; áp suất không đổi vì số mol khí hai vế bằng nhau." },
+  { q:"Cho phản ứng thuận nghịch: 2SO2(g) + O2(g) ⇌ 2SO3(g). Biểu thức hằng số cân bằng là", a:["Kc = [SO3]^2 / ([SO2]^2.[O2])","Kc = [SO3] / ([SO2].[O2])","Kc = ([SO2]^2.[O2]) / [SO3]^2","Kc = ([SO2].[O2]) / [SO3]"], c:0, hint:"Hằng số cân bằng bằng tích nồng độ sản phẩm mũ hệ số chia tích nồng độ chất phản ứng mũ hệ số." },
+  { q:"Khi tăng áp suất, những cân bằng hóa học nào dưới đây chuyển dịch theo chiều thuận?", a:["(1) và (4)","(1) và (2)","(2) và (3)","Chỉ có (4)"], c:0, hint:"Tăng áp suất làm cân bằng chuyển về phía có ít mol khí hơn: (1) và (4)." },
+  { q:"Ở một nhiệt độ nhất định, phản ứng N2 + 3H2 ⇌ 2NH3 đạt cân bằng khi [N2] = 0,01 mol/l, [H2] = 2,0 mol/l, [NH3] = 0,4 mol/l. Hằng số cân bằng là", a:["2,6","2,2","0,21","2,0"], c:3, hint:"Kc = [NH3]^2 / ([N2].[H2]^3) = 0,4^2 / (0,01.2^3) = 2,0." },
+  { q:"Môi trường acid là môi trường có", a:["[H+] < [OH-]","[H+] > [OH-]","[H+] = [OH-]","[H+] < 1,0.10^-7"], c:1, hint:"Trong môi trường acid, nồng độ H+ lớn hơn nồng độ OH-." },
+  { q:"Trong số các dung dịch có cùng nồng độ 0,1M dưới đây, dung dịch chất nào có giá trị pH nhỏ nhất?", a:["NaOH","HCl","H2SO4","Ba(OH)2"], c:2, hint:"H2SO4 là acid mạnh hai nấc, tạo nồng độ H+ lớn hơn HCl cùng nồng độ." },
+  { q:"Cho 10,0 mL dung dịch NaOH 0,1M vào 15,0 mL dung dịch HCl 0,1M. Dung dịch tạo thành sẽ làm cho", a:["phenolphthalein không màu chuyển thành màu đỏ","giấy quỳ tím hóa đỏ","giấy quỳ tím hóa xanh","giấy quỳ tím không chuyển màu"], c:1, hint:"Số mol HCl lớn hơn NaOH nên dung dịch dư acid, quỳ tím hóa đỏ." },
+  { q:"Chất nào sau đây thuộc loại chất điện li mạnh?", a:["HNO3","Mg(OH)2","H2S","HClO"], c:0, hint:"HNO3 là acid mạnh, điện li hoàn toàn trong nước." },
+  { q:"Chất nào sau đây thuộc loại chất điện li mạnh?", a:["H3PO4","Na3PO4","H2CO3","Fe(OH)3"], c:1, hint:"Na3PO4 là muối tan, điện li mạnh; H3PO4, H2CO3, Fe(OH)3 điện li yếu." },
+  { q:"Nước đóng vai trò là base theo thuyết Brønsted – Lowry trong phản ứng nào sau đây?", a:["CO3^2- + H2O ⇌ HCO3^- + OH^-","S^2- + H2O ⇌ HS^- + OH^-","HCO3^- + H2O ⇌ CO3^2- + H3O+","CH3COO^- + H2O ⇌ CH3COOH + OH^-"], c:2, hint:"Nước nhận H+ từ HCO3^- tạo H3O+ nên nước là base." },
+  { q:"Nước đóng vai trò là acid theo thuyết Brønsted – Lowry trong phản ứng nào sau đây?", a:["Fe3+ + H2O ⇌ Fe(OH)^2+ + H+","Al3+ + 3H2O ⇌ Al(OH)3 + 3H+","NH3 + H2O ⇌ NH4+ + OH^-","NH4+ + H2O ⇌ NH3 + H3O+"], c:2, hint:"Nước nhường H+ cho NH3 tạo NH4+ và OH-, nên nước là acid." },
+  { q:"Nhận xét nào sau đây đúng?", a:["Nitrogen không duy trì sự cháy, sự hô hấp và là một khí độc","Vì có liên kết 3 nên phân tử nitrogen rất bền và ở nhiệt độ thường khá trơ về mặt hóa học","Khi tác dụng với kim loại hoạt động, nitrogen thể hiện tính khử","Số oxi hóa của nitrogen trong AlN, N2O4, NH4+, NO3-, NO2- lần lượt là -3, +4, -3, +5, +4"], c:1, hint:"Liên kết ba N≡N rất bền làm N2 khá trơ ở điều kiện thường." },
+  { q:"Liên kết hoá học trong phân tử NH3 là liên kết", a:["cộng hoá trị có cực","ion","cộng hoá trị không cực","kim loại"], c:0, hint:"N và H có độ âm điện khác nhau nên liên kết N–H là cộng hóa trị có cực." },
+  { q:"Dạng hình học của phân tử ammonia là", a:["tam giác đều","hình tứ diện","chữ T","chóp tam giác"], c:3, hint:"NH3 có cấu trúc chóp tam giác do cặp electron tự do trên N." },
+  { q:"Phát biểu nào sau đây sai?", a:["Muối ammonium dễ tan trong nước","Muối ammonium là chất điện li mạnh","Muối ammonium kém bền với nhiệt","Dung dịch muối ammonium có tính chất base"], c:3, hint:"Dung dịch muối ammonium thường có tính acid yếu, không phải base." },
+  { q:"Phát biểu nào sau đây sai?", a:["Muối ammonium bền với nhiệt","Các muối ammonium đều là chất điện li mạnh","Tất cả các muối ammonium đều tan trong nước","Các muối ammonium đều bị thủy phân trong nước"], c:0, hint:"Muối ammonium thường kém bền với nhiệt, dễ phân hủy khi đun nóng." },
+  { q:"Nitric acid thường được sử dụng để phá mẫu quặng trong nghiên cứu, xác định hàm lượng kim loại do có", a:["Tính oxi hoá mạnh","Tính acid mạnh","Tính khử mạnh","Tính base"], c:0, hint:"HNO3 có tính oxi hóa mạnh, hòa tan được nhiều kim loại và khoáng vật." },
+  { q:"Tác nhân chính gây mưa acid là", a:["CO2 và H2O","SO2 và CO2","SO2 và NOx","CO2 và CH4"], c:2, hint:"SO2 và NOx bị oxi hóa, hòa tan vào nước tạo acid gây mưa acid." },
+  { q:"Hai acid tạo thành từ quá trình oxi hóa các oxide của sulfur và nitrogen trong khí quyển là", a:["H2CO3 và HNO3","H2S và HNO3","H2S và H2SO4","H2SO4 và HNO3"], c:3, hint:"Oxide của sulfur tạo H2SO4, oxide của nitrogen tạo HNO3." },
+  { q:"HNO3 chỉ thể hiện tính acid khi phản ứng với dãy chất nào sau đây?", a:["CaCO3, Cu(OH)2, Fe(OH)2, FeO","CuO, NaOH, FeCO3, Fe2O3","Fe(OH)3, Na2CO3, Fe2O3, NH3","KOH, FeS, K2CO3, Cu(OH)2"], c:2, hint:"Các chất trong dãy C chỉ xảy ra phản ứng acid–base, không có sự thay đổi số oxi hóa." },
+  { q:"HNO3 chỉ thể hiện tính oxi hóa khi phản ứng với dãy chất nào sau đây?", a:["Mg, H2S, S, Fe3O4, Fe(OH)2","Al, FeCO3, HI, CaO, FeO","Cu, C, Fe2O3, Fe(OH)2, SO2","Na2SO3, P, CuO, CaCO3, Ag"], c:0, hint:"Các chất trong dãy A đều có thể bị HNO3 oxi hóa." },
+  { q:"Cho các phát biểu: (1) Ammonia lỏng được dùng làm chất làm lạnh; (2) Để làm khô NH3 có lẫn hơi nước, có thể dẫn qua H2SO4 đặc; (3) Quỳ tím ẩm vào khí NH3 chuyển thành màu đỏ; (4) Nitrogen lỏng được dùng bảo quản máu và mẫu vật sinh học. Số phát biểu đúng là", a:["2","3","1","4"], c:0, hint:"Chỉ (1) và (4) đúng; NH3 phản ứng với H2SO4 và làm quỳ ẩm hóa xanh." },
+  { q:"Cho vài giọt dung dịch phenolphthalein vào dung dịch NH3, phenolphthalein chuyển sang màu nào?", a:["hồng","xanh","không màu","vàng"], c:0, hint:"Dung dịch NH3 có tính base yếu nên phenolphthalein chuyển hồng." },
+  { q:"Trong phản ứng tổng hợp ammonia: N2(g) + 3H2(g) ⇌ 2NH3(g); ΔH = -92 kJ. Để tăng hiệu suất phản ứng tổng hợp phải", a:["giảm nhiệt độ và áp suất","tăng nhiệt độ và áp suất","tăng nhiệt độ và giảm áp suất","giảm nhiệt độ vừa phải và tăng áp suất"], c:3, hint:"Phản ứng tỏa nhiệt và giảm số mol khí nên cần giảm nhiệt độ vừa phải, tăng áp suất." },
+  { q:"Ứng dụng nào sau đây không phải của muối ammonium?", a:["Sản xuất giấy","Thuốc bổ sung chất điện giải","Phân bón hoá học","Chất phụ gia thực phẩm"], c:1, hint:"Muối ammonium dùng làm phân bón, phụ gia thực phẩm, một số ngành công nghiệp; không dùng làm thuốc bổ sung chất điện giải." },
+  { q:"Để tạo độ xốp cho một số loại bánh, có thể dùng chất nào sau đây?", a:["(NH4)3PO4","NH4HCO3","CaCO3","NaCl"], c:1, hint:"NH4HCO3 phân hủy tạo khí CO2 làm bánh xốp." },
+  { q:"Phát biểu nào sau đây không đúng?", a:["Ammonia là base theo Brønsted – Lowry khi tác dụng với nước","Ammonia được sử dụng làm chất làm lạnh","Muối ammonium là tinh thể ion, dễ tan trong nước","Các muối ammonium đều rất bền với nhiệt"], c:3, hint:"Muối ammonium thường kém bền với nhiệt." },
+  { q:"Cho dung dịch KOH đến dư vào 20 ml dung dịch (NH4)2SO4 1M, đun nóng nhẹ. Thể tích khí thu được ở đkc là", a:["0,9916 lít","0,9196 lít","0,4958 lít","0,448 lít"], c:0, hint:"nNH4+ = 0,04 mol; V = 0,04.24,79 ≈ 0,9916 lít." },
+  { q:"Khi có sấm chớp khí quyển sinh ra chất nào sau đây?", a:["oxide carbon","nitrogen monoxide","nước","nitrogen dioxide"], c:1, hint:"Sấm chớp tạo NO từ N2 và O2." },
+  { q:"X là muối mà dung dịch của nó tác dụng với NaOH dư tạo khí mùi khai; dung dịch X tác dụng với BaCl2 tạo kết tủa trắng không tan trong HNO3. X là", a:["(NH4)2CO3","NH4HSO3","NH4Cl","(NH4)2SO4"], c:3, hint:"Khí mùi khai là NH3; kết tủa trắng không tan trong HNO3 là BaSO4, nên X là (NH4)2SO4." },
+  { q:"X là muối mà khi tác dụng với NaOH dư tạo khí mùi khai; đun nóng X thấy có khói trắng trong ống nghiệm. X là", a:["(NH4)2CO3","NH4HCO3","NH4NO3","NH4Cl"], c:3, hint:"NH4Cl khi đun nóng phân hủy/tạo khói trắng NH4Cl; với NaOH tạo NH3." },
+  { q:"Axit HNO3 thể hiện tính oxi hóa khi tác dụng với chất nào sau đây?", a:["Fe2O3","Al2O3","MgO","Cu"], c:3, hint:"Cu bị HNO3 oxi hóa, số oxi hóa của N giảm." },
+  { q:"Cho từng chất: Zn, FeO, NaOH, Fe3O4, Fe(OH)2, Fe(OH)3, CaCO3, NH3 lần lượt phản ứng với HNO3 đặc, nóng. Số phản ứng thuộc loại oxi hóa khử là", a:["4","3","2","5"], c:0, hint:"Các chất gây oxi hóa khử: Zn, FeO, Fe3O4, Fe(OH)2; còn lại là acid–base." },
+  { q:"Hòa tan hoàn toàn m gam Cu bằng dung dịch HNO3 đặc, thu được 4,48 lít NO2 (sản phẩm khử duy nhất, đktc). Giá trị của m là", a:["9,6","3,2","12,8","6,4"], c:3, hint:"nNO2 = 0,2 mol; nCu = 0,1 mol; m = 0,1.64 = 6,4 gam." },
+  { q:"Dung dịch chất nào sau đây làm quỳ tím chuyển thành màu đỏ?", a:["H2SO4","KOH","NaCl","C2H5OH"], c:0, hint:"H2SO4 là acid mạnh nên làm quỳ tím hóa đỏ." },
+  { q:"Dung dịch chất nào sau đây làm quỳ tím chuyển thành màu xanh?", a:["HCl","CH3COONa","KNO3","C2H5OH"], c:1, hint:"CH3COONa bị thủy phân tạo môi trường base yếu, làm quỳ tím hóa xanh." },
+  { q:"pH của dung dịch nào sau đây có giá trị nhỏ nhất?", a:["Dung dịch HCl 0,1M","Dung dịch CH3COOH 0,1M","Dung dịch NaCl 0,1M","Dung dịch NaOH 0,01M"], c:0, hint:"HCl là acid mạnh, điện li hoàn toàn nên pH nhỏ hơn CH3COOH cùng nồng độ." },
+  { q:"Các dung dịch NaCl, NaOH, NH3, Ba(OH)2 có cùng nồng độ mol, dung dịch có pH lớn nhất là", a:["NaOH","Ba(OH)2","NH3","NaCl"], c:1, hint:"Ba(OH)2 là base mạnh hai nấc, cùng nồng độ cho nồng độ OH- lớn nhất nên pH lớn nhất." }
 ];
 
-// ==================== DỮ LIỆU ĐÚNG/SAI ====================
-const tfData = [
-{
-    id: "tf1",
-    context: "Xét cân bằng: 2NO₂(g) ⇌ N₂O₄(g) (NO₂ màu nâu đỏ, N₂O₄ không màu)",
-    statements: [
-        { text: "Khi đạt đến trạng thái cân bằng hóa học, phản ứng dừng lại.", correct: false },
-        { text: "Luôn tồn tại đồng thời NO₂ và N₂O₄.", correct: true },
-        { text: "Màu nhạt của hỗn hợp không thay đổi nếu giữ nguyên các điều kiện bên ngoài.", correct: true },
-        { text: "Ở trạng thái cân bằng nồng độ các chất NO₂ và N₂O₄ trong hỗn hợp không thay đổi theo thời gian.", correct: true }
-    ]
-},
-{
-    id: "tf2",
-    context: "Trong công nghiệp, amonia được tổng hợp theo phản ứng: 3H₂(g) + N₂(g) ⇌ 2NH₃(g) ΔᵣH°₂₉₈ = -91,8 kJ",
-    statements: [
-        { text: "Phản ứng tổng hợp NH₃ là phản ứng thu nhiệt.", correct: false },
-        { text: "Khi thêm chất xúc tác, hằng số cân bằng K_c tăng.", correct: false },
-        { text: "Khi tăng áp suất thì cân bằng chuyển dịch theo chiều thuận.", correct: true },
-        { text: "Để tăng hiệu suất phản ứng, cần tăng nồng độ của H₂, N₂ và giảm nồng độ của NH₃.", correct: true }
-    ]
-}
-];
+/* =========================================================
+   TIỆN ÍCH
+   ========================================================= */
+const LETTERS = ["A","B","C","D","E","F"];
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;" }[c]));
 
-// ==================== STATE ====================
-let state = {
-    questions: [],       // shuffled questions
-    currentIndex: 0,     // câu hiện tại (0..49)
-    answers: {},         // qid -> { selected, correct }
-    correctCount: 0,
-    wrongCount: 0,
-    phase: "mc",         // "mc" | "tf" | "done"
-    tfAnswers: {},
-    tfSubmitted: false
-};
-
-// ==================== HELPERS ====================
-function shuffleArray(arr) {
-    const a = [...arr];
-    for (let i = a.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [a[i], a[j]] = [a[j], a[i]];
-    }
-    return a;
-}
-function escapeHtml(str) {
-    return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+function shuffle(arr){
+  for(let i = arr.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
 }
 
-// ==================== RENDER 1 CÂU ====================
-function renderCurrentQuestion() {
-    const container = document.getElementById("singleQuestionContainer");
-    const q = state.questions[state.currentIndex];
-    const total = state.questions.length;
-    const idx = state.currentIndex;
+/* =========================================================
+   TRẠNG THÁI
+   ========================================================= */
+const card       = document.getElementById("card");
+const bar        = document.getElementById("bar");
+const sCorrect   = document.getElementById("sCorrect");
+const sWrong     = document.getElementById("sWrong");
+const sIndex     = document.getElementById("sIndex");
 
-    document.getElementById("progressText").textContent = `Câu ${idx + 1} / ${total}`;
-    document.getElementById("progressFill").style.width = ((idx) / total * 100) + "%";
+let quiz = [];
+let idx = 0;
+let correct = 0;
+let wrong = 0;
+let answered = false;
 
-    const answered = state.answers[q.id];
-    const isAnswered = answered !== undefined;
-
-    container.innerHTML = `
-        <div class="question-card" id="currentCard">
-            <div class="q-header">
-                <span class="q-number">Câu ${idx + 1}</span>
-                <span class="q-text">${escapeHtml(q.text)}</span>
-                <button class="hint-btn" id="hintBtn">💡 Gợi ý</button>
-            </div>
-            <div class="hint-box" id="hintBox">${escapeHtml(q.hint)}</div>
-            <div class="options" id="optionsWrap">
-                ${q.options.map((opt, i) => {
-                    let cls = "option";
-                    if (isAnswered) {
-                        cls += " disabled";
-                        if (i === q.correct) cls += " correct-answer";
-                        else if (i === answered.selected) cls += " wrong-answer";
-                    }
-                    return `
-                        <div class="${cls}" data-opt="${i}">
-                            <span class="opt-label">${String.fromCharCode(65 + i)}.</span>
-                            <span class="opt-text">${escapeHtml(opt)}</span>
-                        </div>`;
-                }).join("")}
-            </div>
-            <div class="feedback-box ${isAnswered ? 'show' : ''} ${isAnswered ? (answered.correct ? 'correct' : 'wrong') : ''}" id="feedbackBox">
-                ${isAnswered ? `
-                    <div class="feedback-title ${answered.correct ? 'correct' : 'wrong'}">
-                        ${answered.correct ? '✅ Chính xác!' : '❌ Sai rồi!'}
-                    </div>
-                    <div class="feedback-explain">
-                        <strong>Đáp án đúng:</strong> ${String.fromCharCode(65 + q.correct)}. ${escapeHtml(q.options[q.correct])}<br>
-                        <strong>Giải thích:</strong> ${escapeHtml(q.hint)}
-                    </div>
-                ` : ''}
-            </div>
-        </div>
-        <div class="actions">
-            ${isAnswered && idx < total - 1 ? `<button class="btn btn-primary" id="nextBtn">Tiếp theo →</button>` : ''}
-            ${isAnswered && idx === total - 1 ? `<button class="btn btn-primary" id="toTFBtn">Chuyển sang phần Đúng/Sai →</button>` : ''}
-        </div>
-    `;
-
-    // Hint toggle
-    document.getElementById("hintBtn").addEventListener("click", () => {
-        document.getElementById("hintBox").classList.toggle("show");
-    });
-
-    // Option click
-    if (!isAnswered) {
-        container.querySelectorAll(".option").forEach(optEl => {
-            optEl.addEventListener("click", () => {
-                const optIdx = parseInt(optEl.dataset.opt);
-                handleAnswer(q, optIdx);
-            });
-        });
-    }
-
-    // Next button
-    const nextBtn = document.getElementById("nextBtn");
-    if (nextBtn) {
-        nextBtn.addEventListener("click", () => {
-            state.currentIndex++;
-            renderCurrentQuestion();
-            window.scrollTo({ top: 0, behavior: "smooth" });
-        });
-    }
-
-    const toTFBtn = document.getElementById("toTFBtn");
-    if (toTFBtn) {
-        toTFBtn.addEventListener("click", () => {
-            state.phase = "tf";
-            document.getElementById("singleQuestionContainer").innerHTML = "";
-            document.getElementById("progressText").textContent = "Hoàn thành phần trắc nghiệm!";
-            document.getElementById("progressFill").style.width = "100%";
-            document.getElementById("tfSection").classList.remove("hidden");
-            renderTF();
-            window.scrollTo({ top: 0, behavior: "smooth" });
-        });
-    }
-
-    updateStatus();
+/* =========================================================
+   KHỞI TẠO
+   ========================================================= */
+function buildQuiz(){
+  return shuffle(QUESTIONS.map(item => {
+    const opts = item.a.map((text, i) => ({ text, isCorrect: i === item.c }));
+    shuffle(opts);
+    return { question: item.q, opts, hint: item.hint };
+  }));
 }
 
-// ==================== XỬ LÝ CHỌN ĐÁP ÁN ====================
-function handleAnswer(q, optIdx) {
-    const isCorrect = optIdx === q.correct;
-    state.answers[q.id] = { selected: optIdx, correct: isCorrect };
-    if (isCorrect) state.correctCount++;
-    else state.wrongCount++;
-
-    // Re-render câu hiện tại để hiện feedback + nút Tiếp theo
-    renderCurrentQuestion();
+function start(){
+  quiz = buildQuiz();
+  idx = 0; correct = 0; wrong = 0; answered = false;
+  updateStats();
+  renderQuestion();
 }
 
-// ==================== STATUS ====================
-function updateStatus() {
-    document.getElementById("correctCount").textContent = state.correctCount;
-    document.getElementById("wrongCount").textContent = state.wrongCount;
-    document.getElementById("doneCount").textContent = state.currentIndex + (state.answers[state.questions[state.currentIndex]?.id] !== undefined ? 1 : 0);
+/* =========================================================
+   THANH TRẠNG THÁI
+   ========================================================= */
+function updateStats(){
+  sCorrect.textContent = correct;
+  sWrong.textContent   = wrong;
+  sIndex.textContent   = Math.min(idx + 1, quiz.length) + "/" + quiz.length;
+  bar.style.width = ((correct + wrong) / quiz.length * 100) + "%";
 }
 
-// ==================== RENDER TRUE/FALSE ====================
-function renderTF() {
-    const tbody = document.getElementById("tfBody");
-    tbody.innerHTML = "";
+/* =========================================================
+   HIỂN THỊ CÂU HỎI
+   ========================================================= */
+function renderQuestion(){
+  answered = false;
+  const q = quiz[idx];
 
-    tfData.forEach(tf => {
-        const ctxRow = document.createElement("tr");
-        ctxRow.innerHTML = `<td colspan="3" style="background:var(--table-header); font-weight:600; font-style:italic;">${escapeHtml(tf.context)}</td>`;
-        tbody.appendChild(ctxRow);
+  card.innerHTML = `
+    <h2 class="qtext">${esc(q.question)}</h2>
+    <div class="options" id="options">
+      ${q.opts.map((o, i) => `
+        <button class="option" data-i="${i}">
+          <span class="badge">${LETTERS[i]}</span>
+          <span>${esc(o.text)}</span>
+        </button>`).join("")}
+    </div>
 
-        tf.statements.forEach((stmt, sIdx) => {
-            const key = `${tf.id}-${sIdx}`;
-            const val = state.tfAnswers[key];
-            const tr = document.createElement("tr");
-            tr.id = `tf-row-${key}`;
-            tr.innerHTML = `
-                <td>${escapeHtml(stmt.text)}</td>
-                <td><input type="radio" name="tf-${key}" value="true" ${val === true ? 'checked' : ''} ${state.tfSubmitted ? 'disabled' : ''}></td>
-                <td><input type="radio" name="tf-${key}" value="false" ${val === false ? 'checked' : ''} ${state.tfSubmitted ? 'disabled' : ''}></td>
-            `;
-            tbody.appendChild(tr);
+    <div class="hint-wrap">
+      <button class="hint-btn" id="hintBtn" type="button">
+        <span class="bulb">💡</span> Xem gợi ý
+      </button>
+      <div class="hint-content" id="hintContent" hidden>
+        <strong>Gợi ý:</strong> ${esc(q.hint)}
+      </div>
+    </div>
 
-            if (!state.tfSubmitted) {
-                tr.querySelectorAll("input[type=radio]").forEach(inp => {
-                    inp.addEventListener("change", () => {
-                        state.tfAnswers[key] = inp.value === "true";
-                    });
-                });
-            }
-        });
-    });
+    <div class="feedback" id="feedback"></div>
+    <div class="actions">
+      <button class="btn" id="nextBtn" hidden>
+        ${idx === quiz.length - 1 ? "Xem kết quả 🎉" : "Câu tiếp theo →"}
+      </button>
+    </div>
+  `;
 
-    const submitBtn = document.getElementById("submitTF");
-    if (state.tfSubmitted) {
-        submitBtn.disabled = true;
-        submitBtn.textContent = "Đã nộp";
+  card.querySelectorAll(".option").forEach(btn => {
+    btn.addEventListener("click", () => choose(parseInt(btn.dataset.i, 10)));
+  });
+
+  const hintBtn = document.getElementById("hintBtn");
+  const hintContent = document.getElementById("hintContent");
+  hintBtn.addEventListener("click", () => {
+    const isHidden = hintContent.hasAttribute("hidden");
+    if (isHidden){
+      hintContent.removeAttribute("hidden");
+      hintBtn.innerHTML = '<span class="bulb">💡</span> Ẩn gợi ý';
     } else {
-        submitBtn.disabled = false;
-        submitBtn.textContent = "✅ Nộp bài Đúng/Sai";
+      hintContent.setAttribute("hidden", "");
+      hintBtn.innerHTML = '<span class="bulb">💡</span> Xem gợi ý';
     }
+  });
+
+  document.getElementById("nextBtn").addEventListener("click", next);
+
+  updateStats();
+  bar.style.width = (idx / quiz.length * 100) + "%";
 }
 
-// ==================== SUBMIT TF ====================
-function submitTF() {
-    if (state.tfSubmitted) return;
-    state.tfSubmitted = true;
-    state.phase = "done";
+/* =========================================================
+   CHỌN ĐÁP ÁN
+   ========================================================= */
+function choose(picked){
+  if (answered) return;
+  answered = true;
 
-    let tfCorrect = 0, tfWrong = 0, tfTotal = 0;
+  const q = quiz[idx];
+  const buttons = [...card.querySelectorAll(".option")];
+  const isRight = q.opts[picked].isCorrect;
 
-    tfData.forEach(tf => {
-        tf.statements.forEach((stmt, sIdx) => {
-            tfTotal++;
-            const key = `${tf.id}-${sIdx}`;
-            const val = state.tfAnswers[key];
-            const isCorrect = val === stmt.correct;
-            if (isCorrect) tfCorrect++; else tfWrong++;
+  buttons.forEach((btn, i) => {
+    btn.disabled = true;
+    if (q.opts[i].isCorrect)      btn.classList.add("correct");
+    else if (i === picked)        btn.classList.add("wrong");
+    else                          btn.classList.add("dim");
+  });
 
-            const row = document.getElementById(`tf-row-${key}`);
-            row.classList.add(isCorrect ? "correct-row" : "wrong-row");
+  const fb = document.getElementById("feedback");
+  if (isRight){
+    correct++;
+    fb.className = "feedback ok show";
+    fb.textContent = "✅ Chính xác! Làm tốt lắm.";
+  } else {
+    wrong++;
+    const rightText = q.opts.find(o => o.isCorrect).text;
+    fb.className = "feedback bad show";
+    fb.textContent = "❌ Chưa đúng. Đáp án đúng là: " + rightText;
+  }
 
-            // Hiển thị feedback nếu sai
-            if (!isCorrect) {
-                const td = row.querySelector("td:first-child");
-                const fb = document.createElement("div");
-                fb.className = "tf-feedback wrong";
-                fb.textContent = `→ Đáp án đúng: ${stmt.correct ? "Đúng" : "Sai"}`;
-                td.appendChild(fb);
-            }
-
-            row.querySelectorAll("input").forEach(inp => inp.disabled = true);
-        });
-    });
-
-    // Cộng vào tổng
-    state.correctCount += tfCorrect;
-    state.wrongCount += tfWrong;
-    document.getElementById("correctCount").textContent = state.correctCount;
-    document.getElementById("wrongCount").textContent = state.wrongCount;
-
-    const total = state.correctCount + state.wrongCount;
-    const pct = ((state.correctCount / total) * 100).toFixed(1);
-
-    const banner = document.getElementById("resultBanner");
-    banner.className = "result-banner show";
-    banner.innerHTML = `🎯 Kết quả cuối: <strong>${state.correctCount}/${total}</strong> câu đúng (${pct}%) — Sai: <strong>${state.wrongCount}</strong> câu`;
-    banner.scrollIntoView({ behavior: "smooth", block: "center" });
-
-    renderTF();
+  document.getElementById("nextBtn").hidden = false;
+  updateStats();
+  bar.style.width = ((correct + wrong) / quiz.length * 100) + "%";
 }
 
-// ==================== RESET ====================
-function resetQuiz() {
-    state = {
-        questions: shuffleArray(questionsData),
-        currentIndex: 0,
-        answers: {},
-        correctCount: 0,
-        wrongCount: 0,
-        phase: "mc",
-        tfAnswers: {},
-        tfSubmitted: false
-    };
-
-    document.getElementById("tfSection").classList.add("hidden");
-    document.getElementById("resultBanner").className = "result-banner";
-    document.getElementById("resultBanner").innerHTML = "";
-    document.getElementById("progressFill").style.width = "0%";
-
-    renderCurrentQuestion();
-    window.scrollTo({ top: 0, behavior: "smooth" });
+/* =========================================================
+   CÂU TIẾP THEO
+   ========================================================= */
+function next(){
+  idx++;
+  if (idx >= quiz.length) renderResult();
+  else renderQuestion();
 }
 
-// ==================== THEME ====================
-function initTheme() {
-    const btn = document.getElementById("themeToggle");
-    const saved = localStorage.getItem("quiz-theme") || "light";
-    document.body.setAttribute("data-theme", saved);
-    btn.textContent = saved === "dark" ? "☀️ Sáng" : "🌙 Tối";
+/* =========================================================
+   KẾT QUẢ
+   ========================================================= */
+function renderResult(){
+  const total = quiz.length;
+  const pct = Math.round(correct / total * 100);
 
-    btn.addEventListener("click", () => {
-        const cur = document.body.getAttribute("data-theme");
-        const next = cur === "dark" ? "light" : "dark";
-        document.body.setAttribute("data-theme", next);
-        localStorage.setItem("quiz-theme", next);
-        btn.textContent = next === "dark" ? "☀️ Sáng" : "🌙 Tối";
-    });
+  let title, msg;
+  if (pct === 100){ title = "Hoàn hảo! 🏆"; msg = "Bạn trả lời đúng toàn bộ " + total + " câu. Quá xuất sắc!"; }
+  else if (pct >= 80){ title = "Rất tốt! 🎯"; msg = "Kiến thức của bạn rất vững, chỉ cần ôn thêm vài câu nữa."; }
+  else if (pct >= 60){ title = "Khá ổn! 👍"; msg = "Bạn đã nắm được phần lớn nội dung, hãy xem lại các câu sai nhé."; }
+  else if (pct >= 40){ title = "Cố gắng thêm! 💪"; msg = "Hãy ôn lại lý thuyết từng bài rồi làm lại bài kiểm tra."; }
+  else { title = "Đừng nản! 🌱"; msg = "Mọi thứ đều bắt đầu từ việc luyện tập. Thử lại lần nữa nhé!"; }
+
+  card.innerHTML = `
+    <div class="result">
+      <div class="ring" style="--p:${pct}">
+        <div class="ring-in"><b>${pct}%</b><small>CHÍNH XÁC</small></div>
+      </div>
+      <h2>${title}</h2>
+      <p>${msg}</p>
+      <div class="pills">
+        <span class="pill ok">✅ Đúng: ${correct}</span>
+        <span class="pill bad">❌ Sai: ${wrong}</span>
+        <span class="pill">📋 Tổng: ${total} câu</span>
+      </div>
+      <button class="btn" id="restartBtn">🔄 Làm lại từ đầu</button>
+    </div>
+  `;
+
+  sIndex.textContent = total + "/" + total;
+  bar.style.width = "100%";
+  document.getElementById("restartBtn").addEventListener("click", start);
 }
 
-// ==================== INIT ====================
-document.addEventListener("DOMContentLoaded", () => {
-    initTheme();
-    resetQuiz();
+/* =========================================================
+   CHẾ ĐỘ SÁNG / TỐI
+   ========================================================= */
+const themeBtn = document.getElementById("themeBtn");
+const root = document.documentElement;
 
-    document.getElementById("resetBtn").addEventListener("click", resetQuiz);
-    document.getElementById("submitTF").addEventListener("click", submitTF);
+function applyTheme(mode){
+  root.setAttribute("data-theme", mode);
+  try { localStorage.setItem("quiz-theme", mode); } catch(e){}
+}
+
+(function initTheme(){
+  let saved = null;
+  try { saved = localStorage.getItem("quiz-theme"); } catch(e){}
+  if (saved) { applyTheme(saved); return; }
+  const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+  applyTheme(prefersDark ? "dark" : "light");
+})();
+
+themeBtn.addEventListener("click", () => {
+  applyTheme(root.getAttribute("data-theme") === "dark" ? "light" : "dark");
 });
+
+/* =========================================================
+   PHÍM TẮT
+   ========================================================= */
+document.addEventListener("keydown", e => {
+  if (idx >= quiz.length) return;
+  if (["1","2","3","4"].includes(e.key)){
+    const i = parseInt(e.key, 10) - 1;
+    const btn = card.querySelector(`.option[data-i="${i}"]`);
+    if (btn && !answered) btn.click();
+  }
+  if (e.key === "Enter"){
+    const nb = document.getElementById("nextBtn");
+    if (nb && !nb.hidden) nb.click();
+  }
+});
+
+/* =========================================================
+   BẮT ĐẦU
+   ========================================================= */
+start();
 </script>
 </body>
 </html>
